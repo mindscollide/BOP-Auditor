@@ -1,0 +1,122 @@
+.sign-in {
+  height: 100vh !important;
+  background: url(../../../assets/images/login-bg.png) no-repeat !important;
+  background-size: cover !important;
+  background-position: fixed !important;
+  padding: 15px 0px !important;
+}
+
+.login-container {
+  min-height: 80vh !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-div {
+  display: flex;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  width: 400px;
+  height: 219px;
+  background: rgba(255, 255, 255, 0.5);
+  min-height: 100px;
+  align-items: center !important;
+  border-radius: 12px;
+  padding: 10px 20px;
+}
+
+.Heading-js {
+  display: flex;
+  justify-content: center;
+  color: #eb5300;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
+}
+
+.login-btn {
+  font-size: 14px;
+  font-weight: 500;
+  width: 90px !important;
+  height: 39px !important;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border: none !important;
+}
+
+.login-btn:is(:hover, ) {
+  background: linear-gradient(to bottom, #5b67cd 0%, #2a38af 100%) !important;
+}
+
+.signup-btn {
+  font-size: 14px;
+  font-weight: 500;
+  width: 101px !important;
+  height: 39px !important;
+  background: linear-gradient(to bottom, #5b67cd 0%, #2a38af 100%) !important;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border: none !important;
+}
+
+.signup-btn:is(:hover, ) {
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+}
+
+.form-comtrol-textfield {
+  height: 37px !important;
+  font-family: "Montserrat", sans-serif !important;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.5) !important;
+  font-size: 14px !important;
+  outline: none !important;
+  color: #002650 !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+.form-comtrol-textfield-password {
+  height: 37px !important;
+  font-family: "Montserrat", sans-serif !important;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.5) !important;
+  font-size: 14px !important;
+  outline: none !important;
+  color: #002650 !important;
+  box-shadow: none !important;
+  border: none !important;
+  -webkit-text-security: disc !important;
+}
+
+.form-control-password {
+  height: 37px !important;
+  font-family: "Montserrat", sans-serif !important;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.5) !important;
+  font-size: 14px !important;
+  outline: none !important;
+  color: #002650 !important;
+  box-shadow: none !important;
+  border: none !important;
+  -webkit-text-security: disc !important;
+}
+
+.Icon-Field-class {
+  background: rgba(255, 255, 255, 0.5) !important;
+  font-size: 17px !important;
+  outline: none !important;
+  color: #002650 !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.signIn-Signup-btn-col {
+  display: flex;
+  justify-content: center !important;
+  gap: 5px !important;
+}

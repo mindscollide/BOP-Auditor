@@ -1,0 +1,86 @@
+.container-header-2 {
+  background: #f26522;
+  z-index: 1;
+  width: 100% !important;
+  display: flex;
+  justify-content: space-between; /* Ensures logo on the left and dropdown on the right */
+  align-items: center;
+  margin: -5px 0px !important;
+}
+
+.navbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Ensure the brand and dropdown are spaced correctly */
+  align-items: center;
+}
+
+.navbar-brand {
+  margin-right: auto; /* Push the logo to the left */
+}
+
+.dropdown-toggle-header2 {
+  align-items: center;
+  background-color: #f26522 !important;
+  color: #fff;
+  border: none !important;
+  display: flex !important;
+}
+
+.dropdown-toggle-header2::after {
+  display: none !important;
+}
+
+.user-name-header2 {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  padding: 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown_menu-Header2.dropdown-menu {
+  border: none !important;
+  margin-top: 15px !important;
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .container-header-2 {
+    padding: 0 10px;
+    width: 100% !important;
+  }
+
+  .user-name-header2 {
+    max-width: 90px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) and (min-width: 768px) {
+  .container-header-2 {
+    padding: 0 10px;
+    width: 102% !important;
+  }
+
+  .user-name-header2 {
+    max-width: 80px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 767px) {
+  .dropdown-toggle-header2 {
+    padding: 8px 10px;
+  }
+
+  .user-name-header2 {
+    font-size: 12px;
+    max-width: 60px;
+  }
+
+  .container-header-2 {
+    width: 100% !important;
+  }
+}
