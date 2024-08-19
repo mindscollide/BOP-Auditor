@@ -1,0 +1,244 @@
+.report-user-container {
+  width: 100% !important;
+  margin: 0 10px 0 0;
+}
+
+.report-user-label {
+  font-size: 24px;
+  color: #4d4946 !important;
+  font-weight: 600;
+  margin-top: 20px;
+}
+
+.report-text-field-column {
+  margin-left: -5px;
+  display: flex;
+  justify-content: start;
+  align-items: center !important;
+  gap: 6px;
+}
+
+.text-fields-report {
+  font-size: 13px;
+  font-weight: 500;
+  color: #45494d;
+  height: 37px;
+}
+
+:where(.css-dev-only-do-not-override-1e3x2xa).ant-select-single:not(
+    .ant-select-customize-input
+  )
+  .ant-select-selector {
+  width: 100%;
+  height: 37px;
+  padding: 0 11px;
+}
+
+.date-to-security {
+  padding: 9px 12px;
+  font-size: 14px;
+  align-items: center !important;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+}
+
+.Security-report-reset {
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 7px 15px !important;
+  border: none;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+}
+
+.Security-report-reset:hover {
+  background: #096fed !important;
+}
+
+.user-reset {
+  font-size: 17px;
+  align-items: center !important;
+  margin-right: 5px !important;
+}
+
+.user-status-heading {
+  font-size: 18px;
+  color: #000000;
+  font-weight: 600;
+}
+
+.report-btm-buttons {
+  width: 260px;
+  height: 47px;
+  font-weight: 500;
+  font-size: 20px;
+  border-radius: 4px;
+  background-color: white;
+  color: #096fed;
+  border: 1px solid #096fed;
+}
+
+.report-btm-buttons:hover {
+  background-color: #0d6efd;
+  border: none !important;
+}
+
+.report-btm-button-col {
+  display: flex;
+  justify-content: center;
+}
+
+.download-btn-icons {
+  margin-right: 10px !important;
+}
+
+.span-user-color {
+  border-radius: 4px;
+  padding: 20px 15px !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  background-color: #ffffff !important;
+}
+
+.date-picker-security-left {
+  padding: 0px 5px !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+  border-top-left-radius: 6px !important;
+  border-bottom-left-radius: 6px !important;
+  border: 1px solid #ced4da;
+  width: 135px !important;
+  height: 39px !important;
+  font-size: 13px !important;
+  font-weight: 500;
+  font-family: "Montserrat", sans-serif !important;
+  cursor: pointer;
+}
+.date-picker-security-left:is(:focus, :focus-visible) {
+  outline: none !important;
+}
+.date-picker-security-right {
+  padding: 0px 5px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-top-right-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
+  border: 1px solid #ced4da;
+  font-weight: 500;
+  font-size: 13px !important;
+  width: 135px !important;
+  height: 39px !important;
+  font-family: "Montserrat", sans-serif !important;
+  cursor: pointer;
+}
+.date-picker-security-right:is(:focus, :focus-visible) {
+  outline: none !important;
+}
+.Security-text-field-column {
+  display: flex;
+  justify-content: start;
+  gap: 8px;
+}
+
+/* .Security-Datepicker-column {
+  position: a;
+  right: 12px;
+  display: flex;
+  justify-content: start !important;
+} */
+
+/* .reset-btn-col {
+  position: relative;
+  right: 100px;
+  display: flex;
+  justify-content: start !important;
+} */
+
+:where(
+    .css-dev-only-do-not-override-1e3x2xa
+  ).ant-select-single.ant-select-show-arrow
+  .ant-select-selection-placeholder {
+  color: #45494d;
+  padding-inline-end: 18px;
+}
+.SecurityAdmin-Datepicker-Start {
+  /* width: 267px !important;
+  margin-left: -10px; */
+  margin-top: -1px;
+}
+.SecurityAdmin-Datepicker-Start .rmdp-container .rmdp-input:nth-child(1) {
+  border: 1px solid #c0c4d6;
+  border-radius: 5px;
+  height: 37px !important;
+  width: 100px;
+  font-size: 13px;
+  padding: 14px 4px;
+  font-family: "Montserrat", sans-serif !important;
+}
+.SecurityAdmin-Datepicker-Start .rmdp-container .rmdp-input:nth-child(2) {
+  border: 1px solid #c0c4d6;
+  border-radius: 5px;
+  height: 37px !important;
+  width: 100px;
+  font-size: 13px;
+  padding: 14px 4px;
+  font-family: "Montserrat", sans-serif !important;
+}
+
+.SecurityAdmin-Datepicker-Start .rmdp-header-values {
+  color: #000 !important;
+  font-weight: 700 !important;
+  margin: auto;
+}
+
+.SecurityAdmin-Datepicker-Start .rmdp-week-day {
+  color: #000 !important;
+  cursor: default;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.SecurityAdmin-Datepicker-Start .rmdp-calendar {
+  height: max-content;
+  padding: 0px;
+}
+
+.SecurityAdmin-Datepicker-Start .rmdp-day-picker {
+  padding: 0px;
+}
+
+.SecurityAdmin-Datepicker-Start .rmdp-day {
+  cursor: pointer;
+  height: 30px;
+  position: relative;
+  width: 34px;
+}
+
+.SecurityAdmin-Datepicker-Start .rmdp-day span {
+  border-radius: 0%;
+  bottom: 0px;
+  font-size: 13px;
+  font-weight: 500;
+  left: 0px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
+.SecurityAdmin-Datepicker-Start .rmdp-day.rmdp-selected span:not(.highlight) {
+  background-color: #2e3cb2 !important;
+  border-radius: 4px;
+  border-color: #2e3cb2 !important;
+  box-shadow: 0 0 3px #8798ad;
+  color: #fff;
+}
+
+.SecurityAdmin-Datepicker-Start .rmdp-arrow {
+  border: solid #000000;
+  border-width: 0 1px 1px 0;
+  display: inline-block;
+  height: 3px;
+  margin-top: 5px;
+  padding: 3px;
+  width: 3px;
+}

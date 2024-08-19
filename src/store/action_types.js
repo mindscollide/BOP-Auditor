@@ -1,0 +1,61 @@
+// for Login Api Action type
+
+export const LOG_IN_INIT = "LOG_IN_INIT";
+export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
+export const LOG_IN_FAIL = "LOG_IN_FAIL";
+
+export const SIGN_UP_INIT = "SIGN_UP_INIT";
+export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
+export const SIGN_UP_FAIL = "SIGN_UP_FAIL";
+
+export const SIGN_OUT = "SIGN_OUT";
+
+// Refresh Token
+export const REFRESH_TOKEN_SUCCESS = "REFRESH_TOKEN_SUCCESS";
+export const REFRESH_TOKEN_FAIL = "REFRESH_TOKEN_FAIL";
+
+// for search and get API in trade Count in Auditor
+export const SEARCH_GET_TRANSACTION_DETAILS_INIT =
+  "SEARCH_GET_TRANSACTION_DETAILS_INIT";
+export const SEARCH_GET_TRANSACTION_DETAILS_SUCCESS =
+  "SEARCH_GET_TRANSACTION_DETAILS_SUCCESS";
+export const SEARCH_GET_TRANSACTION_DETAILS_FAIL =
+  "SEARCH_GET_TRANSACTION_DETAILS_FAIL";
+
+//For Get All Corporate Category Api
+export const GET_ALL_CORPORATES_CATEGORY_INIT =
+  "GET_ALL_CORPORATES_CATEGORY_INIT";
+export const GET_ALL_CORPORATES_CATEGORY_SUCCESS =
+  "GET_ALL_CORPORATES_CATEGORY_SUCCESS";
+export const GET_ALL_CORPORATES_CATEGORY_FAIL =
+  "GET_ALL_CORPORATES_CATEGORY_FAIL";
+
+// for get all corporate name by bank ID for company dropdown
+export const GET_ALL_CORPORATE_NAME_BY_BANK_INIT =
+  "GET_ALL_CORPORATE_NAME_BY_BANK_INIT";
+export const GET_ALL_CORPORATE_NAME_BY_BANK_SUCCESS =
+  "GET_ALL_CORPORATE_NAME_BY_BANK_SUCCESS";
+export const GET_ALL_CORPORATE_NAME_BY_BANK_FAIL =
+  "GET_ALL_CORPORATE_NAME_BY_BANK_FAIL";
+
+// get all audit action api in dropdown for action by
+export const GET_ALL_AUDIT_ACTION_INIT = "GET_ALL_AUDIT_ACTION_INIT";
+export const GET_ALL_AUDIT_ACTION_SUCCESS = "GET_ALL_AUDIT_ACTION_SUCCESS";
+export const GET_ALL_AUDIT_ACTION_FAIL = "GET_ALL_AUDIT_ACTION_FAIL";
+
+// for download audit trial Excel File
+export const DOWNLOAD_EXCEL_AUDIT_TRIAL_INIT =
+  "DOWNLOAD_EXCEL_AUDIT_TRIAL_INIT";
+
+//for download Report Loader Api
+export const DOWNLOAD_REPORT_INIT = "DOWNLOAD_REPORT_INIT";
+
+//for download something went wrong
+export const SOME_THING_WENT_WRONG = "SOME_THING_WENT_WRONG";
+
+// for download security file
+export const DOWNLOAD_SECURITY_EXCEL_INIT = "DOWNLOAD_SECURITY_EXCEL_INIT";
+
+//for download trade count File
+export const DOWNLOAD_TRADE_COUNT_EXCEL_INIT =
+  "DOWNLOAD_TRADE_COUNT_EXCEL_INIT";

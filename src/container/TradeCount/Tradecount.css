@@ -1,0 +1,346 @@
+.tradeCount-container {
+  width: 100% !important;
+  margin: 0 10px 0 0;
+}
+
+.tradeCount-label {
+  font-size: 24px;
+  color: #4d4946 !important;
+  font-weight: 600;
+}
+
+.tradeCount-paper {
+  border-radius: 4px;
+  padding: 3px 20px !important;
+  background-color: #ffffff !important;
+}
+
+.tradeCount-textField-fontsize {
+  font-size: 13px !important;
+  font-weight: 500;
+  height: 39px !important;
+}
+
+.tradeCount-select {
+  font-size: 13px !important;
+  font-weight: 500;
+  z-index: 20;
+}
+
+.tradeCount-col-search-download-btn {
+  display: flex;
+  justify-content: center !important;
+  gap: 10px !important;
+}
+
+.Search-tradeCount-btn {
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 6px 12px !important;
+  border-color: #6873a9;
+  background-color: #6873a9 !important;
+}
+
+.Search-tradeCount-btn:hover {
+  background-color: #6873a9 !important;
+  border-color: #6873a9;
+}
+
+.tradeCount-Download-Excel-btn {
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 6px 18px !important;
+  border-color: #019308 !important;
+  background-color: #019308 !important;
+}
+
+.tradeCount-table {
+  max-height: 45vh !important;
+  max-width: 77vw;
+  width: 100%;
+  box-sizing: border-box !important;
+  overflow-x: auto !important;
+  border-radius: 0px !important;
+}
+
+.tradeCount-table th.ant-table-cell {
+  color: #ffffff !important;
+  border-radius: 0% !important;
+  position: sticky !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  top: 0 !important;
+  z-index: 10;
+  background: linear-gradient(to bottom, #5b67cd 0%, #2a38af 100%) !important;
+}
+
+.tradeCount-table::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 20px;
+  background-color: #ffffff;
+}
+
+.tradeCount-table::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background: #ccc;
+  margin-left: -15px;
+}
+
+.Tradecount-Datepicker {
+  /* margin-top: -25px;
+  width: 350px !important;
+  align-items: center !important; */
+}
+
+.Tradecount-Datepicker .rmdp-header-values {
+  color: #000 !important;
+  font-weight: 700 !important;
+  margin: auto;
+}
+
+.Tradecount-Datepicker .rmdp-week-day {
+  color: #000 !important;
+  cursor: default;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.Tradecount-Datepicker .rmdp-calendar {
+  height: max-content;
+  padding: 0px;
+}
+
+.Tradecount-Datepicker .rmdp-day-picker {
+  padding: 0px;
+}
+
+.Tradecount-Datepicker .rmdp-day {
+  cursor: pointer;
+  height: 30px;
+  position: relative;
+  width: 34px;
+}
+
+.Tradecount-Datepicker .rmdp-day span {
+  border-radius: 0%;
+  bottom: 0px;
+  font-size: 13px;
+  font-weight: 500;
+  left: 0px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
+.Tradecount-Datepicker .rmdp-day.rmdp-selected span:not(.highlight) {
+  background-color: #2e3cb2 !important;
+  border-radius: 4px;
+  border-color: #2e3cb2 !important;
+  box-shadow: 0 0 3px #8798ad;
+  color: #fff;
+}
+
+.Tradecount-Datepicker .rmdp-arrow {
+  border: solid #000000;
+  border-width: 0 1px 1px 0;
+  display: inline-block;
+  height: 3px;
+  margin-top: 5px;
+  padding: 3px;
+  width: 3px;
+}
+
+.Tradecount-Datepicker-left {
+  padding: 0px 5px !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+  border-top-left-radius: 6px !important;
+  border-bottom-left-radius: 6px !important;
+  border: 1px solid #ced4da;
+  width: 195px !important;
+  font-weight: 500;
+  height: 39px !important;
+  font-size: 13px !important;
+  font-family: "Montserrat", sans-serif !important;
+  cursor: pointer;
+}
+.Tradecount-Datepicker-left:is(:focus, :focus-visible) {
+  outline: none !important;
+}
+
+.Tradecount-date-to {
+  padding: 8px 12px;
+  font-size: 14px;
+  align-items: center !important;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+}
+
+.Tradecount-Datepicker-right {
+  padding: 0px 5px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-top-right-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
+  border: 1px solid #ced4da;
+  font-size: 13px !important;
+  font-weight: 500;
+  width: 195px !important;
+  height: 39px !important;
+  font-family: "Montserrat", sans-serif !important;
+  cursor: pointer;
+}
+
+.Tradecount-Datepicker-right:is(:focus, :focus-visible) {
+  outline: none !important;
+}
+
+.PaginationStyle-TradeCount {
+  background-color: #fff !important;
+  display: flex !important;
+  justify-content: center !important;
+  width: auto !important;
+  padding: 10px 0px !important;
+  margin: 10px 0 10px 0;
+  height: auto !important;
+  box-shadow: 0px 0px 5px #ccc !important;
+  border-radius: 4px !important;
+}
+
+.PaginationStyle-TradeCount:is(:focus-visible) {
+  outline: none !important;
+}
+
+.icons-spaces {
+  font-size: 17px;
+  align-items: center !important;
+  margin-right: 5px !important;
+}
+
+.TradeCount-spinner {
+  height: 40vh !important;
+  align-items: center !important;
+  display: flex;
+  justify-content: center !important;
+}
+
+.Trade-count-reset {
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 7px 15px !important;
+  border: none;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+}
+
+.Trade-count-reset:hover {
+  background: #096fed !important;
+}
+
+.issue-date-column {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #000000 !important;
+  font-family: "Montserrat", sans-serif !important;
+}
+
+.bottom-table-header {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* for responsiveness on zoom in and zoom out */
+
+@media (max-width: 1300px) {
+  .tradeCount-table {
+    max-height: 45vh !important;
+    max-width: 75vw;
+    box-sizing: border-box !important;
+    border-radius: 0px !important;
+    overflow-x: scroll !important;
+  }
+}
+
+@media (max-width: 1100px) {
+  .tradeCount-table {
+    max-height: 45vh !important;
+    max-width: 71vw;
+    box-sizing: border-box !important;
+    border-radius: 0px !important;
+    overflow-x: scroll !important;
+  }
+}
+
+@media (max-width: 1000px) {
+  .tradeCount-table {
+    max-height: 45vh !important;
+    max-width: 66vw;
+    box-sizing: border-box !important;
+    border-radius: 0px !important;
+    overflow-x: scroll !important;
+  }
+}
+
+@media (min-width: 1500px) {
+  .tradeCount-table {
+    max-height: 45vh !important;
+    max-width: 79vw;
+    box-sizing: border-box !important;
+    border-radius: 0px !important;
+    overflow-x: scroll !important;
+  }
+}
+
+@media (min-width: 1600px) {
+  .tradeCount-table {
+    max-height: 45vh !important;
+    max-width: 81vw;
+    box-sizing: border-box !important;
+    border-radius: 0px !important;
+    overflow-x: scroll !important;
+  }
+}
+
+@media (min-width: 1700px) {
+  .tradeCount-table {
+    max-height: 45vh !important;
+    max-width: 81vw;
+    box-sizing: border-box !important;
+    border-radius: 0px !important;
+    overflow-x: scroll !important;
+  }
+}
+
+@media (min-width: 1800px) {
+  .tradeCount-table {
+    max-height: 45vh !important;
+    max-width: 82vw;
+    box-sizing: border-box !important;
+    border-radius: 0px !important;
+    overflow-x: scroll !important;
+  }
+}
+
+@media (min-width: 1900px) {
+  .tradeCount-table {
+    max-height: 45vh !important;
+    max-width: 82vw;
+    box-sizing: border-box !important;
+    border-radius: 0px !important;
+    overflow-x: scroll !important;
+  }
+}
+
+@media (min-width: 2000px) {
+  .tradeCount-table {
+    max-height: 45vh !important;
+    max-width: 100vw;
+    box-sizing: border-box !important;
+    border-radius: 0px !important;
+    overflow-x: scroll !important;
+  }
+}
