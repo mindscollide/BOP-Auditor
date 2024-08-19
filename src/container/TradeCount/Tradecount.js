@@ -51,7 +51,7 @@ const TradeCount = () => {
 
   const [open, setOpen] = useState({
     open: false,
-    message: "",
+    messages: "",
   });
 
   // state for LoginHistory fields
