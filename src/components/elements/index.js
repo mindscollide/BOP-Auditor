@@ -10,6 +10,7 @@ import Loader from "./loader/Loader";
 import CustomRadio from "./radioButton/Radio";
 import Table from "./table/Table";
 import Paper from "./paper/Paper";
+import VerificationInputField from "./verification_input/Verification_Input";
 import { Notification, Message } from "./snack_bar";
 
 export {
@@ -26,5 +27,6 @@ export {
   Table,
   Paper,
   Notification,
+  VerificationInputField,
   Message,
 };
