@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 import { Container, Col, Row, InputGroup, Form } from "react-bootstrap";
 import {
   Button,
@@ -9,7 +9,7 @@ import {
 import { logIn } from "../../../store/actions/Auth-Actions";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import jsLogo from "../../../assets/images/js-logo.png";
+import BOPlogo from "../../../assets/images/BOPlogo.png";
 import "./Audit-Login.css";
 const AuditLogin = () => {
   const { auth } = useSelector((state) => state);
@@ -22,11 +22,26 @@ const AuditLogin = () => {
     message: "",
   });
 
-  const [auditCredentials, setAuditCredentials] = useState({
+  const UserName = useRef(null);
+  const Password = useRef(null);
+
+  const [passwordText, setPasswordText] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  //state for login credentials
+  const [securityCredentials, setSecurityCredentials] = useState({
     UserName: "",
     Password: "",
     fakePassword: "",
   });
+  console.log("showPasswordshowPassword", showPassword);
+
+  // Enter key handler
+  const enterKeyHandler = (event, nextInput) => {
+    if (event.key === "Enter") {
+      nextInput.current.focus();
+    }
+  };
 
   // credentials for email and password
   const setCredentialHandler = (e) => {
@@ -36,14 +51,14 @@ const AuditLogin = () => {
       for (let i = 0; i < numChars.length; i++) {
         showText += "•";
       }
-      setAuditCredentials({
-        ...auditCredentials,
+      setSecurityCredentials({
+        ...securityCredentials,
         [e.target.name]: e.target.value,
         ["fakePassword"]: showText,
       });
     } else {
-      setAuditCredentials({
-        ...auditCredentials,
+      setSecurityCredentials({
+        ...securityCredentials,
         [e.target.name]: e.target.value,
       });
     }
@@ -52,33 +67,40 @@ const AuditLogin = () => {
   // handler for submit login
   const loginValidateHandler = (e) => {
     e.preventDefault();
-    if (auditCredentials.UserName !== "" && auditCredentials.Password !== "") {
-      dispatch(logIn(auditCredentials, navigate));
+    if (
+      securityCredentials.UserName !== "" &&
+      securityCredentials.Password !== ""
+    ) {
+      dispatch(logIn(navigate, securityCredentials));
     } else {
       setOpen({
         ...open,
         open: true,
-        message: "Please Fill All Credentials",
+        message: "Please Enter All Credentials",
       });
     }
+  };
+
+  // eye on Click on Eye Icon on Password
+  const toggleEyeIcon = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
     <Fragment>
       <Col sm={12} lg={12} md={12} className="sign-in">
-        <Col lg={12} md={12} sm={12} className="js-logo-image">
-          <img src={jsLogo} width="150px" />
-        </Col>
         <Container>
           <Row className="">
             <Col sm={12} md={12} lg={12} className="login-container">
               <Row>
-                <Col sm={5} md={5} lg={5} className="center-div flex-column">
+                <Col className="mb-4">
+                  <img src={BOPlogo} width="300px" />
+                </Col>
+              </Row>
+              <Row>
+                <Col className="center-div flex-column">
                   <Form onSubmit={loginValidateHandler}>
                     <Row>
-                      <Col sm={12} md={12} lg={12}>
-                        <span className="Heading-js">JS Login Portal</span>
-                      </Col>
                       <Col sm={12} md={12} lg={12} className="mt-3">
                         <InputGroup className="mb-3">
                           <InputGroup.Text
@@ -88,11 +110,16 @@ const AuditLogin = () => {
                             <i className="icon-user"></i>
                           </InputGroup.Text>
                           <Form.Control
+                            ref={UserName}
+                            onKeyDown={(event) =>
+                              enterKeyHandler(event, Password)
+                            }
                             name="UserName"
+                            autoComplete="off"
+                            value={securityCredentials.UserName}
+                            onChange={setCredentialHandler}
                             className="form-comtrol-textfield"
                             placeholder="Email ID"
-                            value={auditCredentials.UserName}
-                            onChange={setCredentialHandler}
                             aria-label="Username"
                             aria-describedby="basic-addon1"
                           />
@@ -107,18 +134,29 @@ const AuditLogin = () => {
                             <i className="icon-lock"></i>
                           </InputGroup.Text>
                           <Form.Control
-                            name="Password"
-                            className="form-control-password"
+                            name="passwordText"
+                            // ref={Password}
+                            autoComplete="off"
+                            className="form-comtrol-textfield-password"
                             placeholder="Password"
-                            onChange={setCredentialHandler}
-                            aria-label="Username"
-                            aria-describedby="basic-addon1"
+                            aria-label="passwordText"
+                            aria-describedby="basic-addon2"
+                            type={showPassword ? "text" : "password"}
+                            value={passwordText}
+                            onChange={(e) => setPasswordText(e.target.value)}
                           />
+                          <InputGroup.Text
+                            id="basic-addon2"
+                            className="eyeIcon-Field-class-BOP-login"
+                            onClick={toggleEyeIcon}
+                          >
+                            {showPassword ? (
+                              <i className="icon-eye-slash"></i>
+                            ) : (
+                              <i className="icon-eye"></i>
+                            )}
+                          </InputGroup.Text>
                         </InputGroup>
-                        {/* <TextField
-                        placeholder="User Password"
-                        className="Text-field"
-                      /> */}
                       </Col>
                       <Col
                         sm={12}
@@ -126,12 +164,7 @@ const AuditLogin = () => {
                         lg={12}
                         className="signIn-Signup-btn-col"
                       >
-                        <Button
-                          text="Login"
-                          className="login-btn"
-                          onClick={loginValidateHandler}
-                        />
-                        <Button text="Signup" className="signup-btn" />
+                        <Button text="Login" className="login-btn" />
                       </Col>
                     </Row>
                   </Form>

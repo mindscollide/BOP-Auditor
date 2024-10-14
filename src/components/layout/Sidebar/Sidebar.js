@@ -29,11 +29,11 @@ const Sidebar = () => {
     navigate("/JS/SecurityActivity");
   };
 
-  const navigateToTradeCount = () => {
-    localStorage.setItem("defaultOpenKey", "sub1");
-    localStorage.setItem("defaultSelectedKey", "5");
-    navigate("/JS/TradeCount");
-  };
+  // const navigateToTradeCount = () => {
+  //   localStorage.setItem("defaultOpenKey", "sub1");
+  //   localStorage.setItem("defaultSelectedKey", "5");
+  //   navigate("/JS/TradeCount");
+  // };
 
   // useEffect(() => {
   //   navigate("/JS/AuditTrial");
@@ -69,13 +69,13 @@ const Sidebar = () => {
             >
               Security Admin Activity
             </Menu.Item>
-            <Menu.Item
+            {/* <Menu.Item
               className="menu-items-sidebar"
               key="5"
               onClick={navigateToTradeCount}
             >
               Trade Count
-            </Menu.Item>
+            </Menu.Item> */}
           </SubMenu>
         </Menu>
       </Col>
