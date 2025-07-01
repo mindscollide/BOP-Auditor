@@ -1,0 +1,62 @@
+.container-header-2 {
+  background: #f26522;
+  width: 100% !important;
+  min-height: calc(100vh - 93vh) !important;
+  display: flex;
+  align-items: center;
+}
+
+.navbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Ensure the brand and dropdown are spaced correctly */
+  align-items: center;
+}
+
+.navbar-brand {
+  margin-right: auto; /* Push the logo to the left */
+}
+
+.dropdown-toggle-header2 {
+  align-items: center;
+  background-color: #f26522 !important;
+  color: #fff;
+  border: none !important;
+  display: flex !important;
+}
+
+.dropdown-toggle-header2::after {
+  display: none !important;
+}
+
+.user-name-header2 {
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+  padding: 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dropdown_menu-Header2 {
+  position: relative;
+}
+.headerDropdown .show {
+  display: none;
+}
+
+.headerDropdown .dropdown-menu .show {
+  border: none !important;
+  margin-top: 15px !important;
+  position: absolute;
+  background: #fff;
+  min-width: 200px !important;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+}
+.dropdown_menu-Header2.dropdown-menu a {
+  color: #000 !important;
+  width: 100%;
+  max-width: 200px;
+}
