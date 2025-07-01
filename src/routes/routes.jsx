@@ -5,6 +5,7 @@ import AuditTrialByCorporate from "../container/Pages/AuditTrialByCorporate/Audi
 import AuditTrialByBank from "../container/Pages/AuditTrialByBank/AuditTrialByBank.jsx";
 import TradeCount from "../container/Pages/TradeCount/TradeCount.jsx";
 import ActivityByBank from "../container/Pages/ActivityByBank/ActivityByBank.jsx";
+import ActivityByCorporate from "../container/Pages/ActivityByCorporate/ActivityByCorporate.jsx";
 
 const router = createBrowserRouter([
   {
@@ -24,7 +25,7 @@ const router = createBrowserRouter([
       { path: "audittrailCorporate", element: <AuditTrialByCorporate /> },
       { path: "TradeCount", element: <TradeCount /> },
       { path: "ActivityByBank", element: <ActivityByBank /> },
-      { path: "ActivityByCorporate", element: <ActivityByBank /> },
+      { path: "ActivityByCorporate", element: <ActivityByCorporate /> },
     ],
   },
 ]);
