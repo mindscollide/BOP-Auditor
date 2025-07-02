@@ -13,7 +13,7 @@ const Dashboard = () => {
         <Sider width={250} style={{ background: "#4d4946", color: "#fff" }}>
           <Sidebar />
         </Sider>
-        <Content>
+        <Content className="p-4">
           <Outlet />
         </Content>
       </Layout>

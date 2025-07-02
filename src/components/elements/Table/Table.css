@@ -1,0 +1,141 @@
+.disabled-row {
+  background-color: red;
+  pointer-events: none;
+}
+
+.rowColor {
+  background-color: #fff !important;
+}
+
+.ant-table-thead thead tr th {
+  background-color: #fff !important;
+}
+
+.ant-table-row {
+  margin: 30px 0 0 0 !important;
+  background: #fff !important;
+}
+
+.ant-table-tbody {
+  margin: 20px 0 20px 0 !important;
+}
+.ant-table-measure-row {
+  visibility: collapse !important;
+}
+.ant-table-tbody > tr > td {
+  padding: 10px !important;
+}
+
+.ant-table-thead > tr > th {
+  background-color: #fff !important;
+}
+
+.ant-table-thead tr {
+  border-bottom: 3px solid #ccc;
+}
+
+.ant-table-cell::before {
+  height: 0px !important;
+}
+
+.nodata-table-icon {
+  font-size: 5rem;
+  color: #2097d6;
+}
+
+.NoData-Button {
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+}
+/* change color blue to this */
+.title {
+  color: #2097d6;
+}
+
+/* Bank Table One Commmon Class (Universal Used CSS Over All used in the Project For table) */
+.BankUserList-table {
+  /* max-height: 45vh !important; */
+  /* height: 45vh; */
+  /* max-width: 76vw; */
+  width: 100%;
+  box-sizing: border-box !important;
+  /* overflow-x: auto !important; */
+  border-radius: 0px !important;
+}
+
+.BankUserList-table th.ant-table-cell {
+  color: #ffffff !important;
+  border-radius: 0% !important;
+  position: sticky !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  /* top: 0 !important; */
+  z-index: 10;
+  background: #f26522 !important;
+  padding-left: 10px !important;
+}
+
+.BankUserList-table::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 20px;
+  background-color: #ffffff;
+}
+
+.BankUserList-table::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background: #ccc;
+  margin-left: -15px;
+}
+
+.BankUserList-table .ant-table-thead > tr > th {
+  height: 40px;
+  line-height: 30px;
+  padding: 0;
+}
+
+/* Bulk Upload Table One Commmon Class (Universal Used CSS Over All used in the Project For table) */
+.BulkUpload-table {
+  /* max-height: 45vh !important; */
+  /* height: 45vh; */
+  /* max-width: 76vw; */
+  width: 100%;
+  box-sizing: border-box !important;
+  /* overflow-x: auto !important; */
+  border-radius: 0px !important;
+}
+
+.BulkUpload-table th.ant-table-cell {
+  color: #ffffff !important;
+  border-radius: 0% !important;
+  position: sticky !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  /* top: 0 !important; */
+  z-index: 10;
+  background: #f26522 !important;
+}
+
+.BulkUpload-table::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 20px;
+  background-color: #ffffff;
+}
+
+.BulkUpload-table::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background: #ccc;
+  margin-left: -15px;
+}
+
+.BulkUpload-table .ant-table-thead > tr > th {
+  padding: 5px;
+}
+
+.BulkUpload-table .ant-table-tbody > tr > td {
+  padding: 5px;
+}
