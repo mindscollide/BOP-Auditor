@@ -171,7 +171,7 @@ const AuditTrialByBank = () => {
               applyClass={"TextFieldAuditors"}
             />
           </Col>
-          <Col lg={4} md={4} sm={12} className="d-flex align-items-center pe-4">
+          <Col lg={3} md={3} sm={12} className="d-flex align-items-center ">
             <DatePicker
               name={"dateFrom"}
               labelClass={"d-none"}
@@ -191,11 +191,11 @@ const AuditTrialByBank = () => {
             />
           </Col>
           <Col
-            lg={3}
-            md={3}
-            sm={3}
+            lg={6}
+            md={6}
+            sm={6}
             xs={12}
-            className="d-flex justify-content-center gap-2"
+            className="d-flex justify-content-start gap-2"
           >
             <Button
               icon={<i className="icon-search icon-check-space"></i>}
@@ -238,7 +238,6 @@ const AuditTrialByBank = () => {
               />
             </Popover>
           </Col>
-          <Col lg={3} md={3} sm={3} xs={12}></Col>
         </Row>
         <Row className="mt-5">
           <Col lg={12} md={12} sm={12} xs={12}>
