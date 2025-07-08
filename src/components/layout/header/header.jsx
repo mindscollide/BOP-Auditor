@@ -2,47 +2,43 @@ import { Nav, Dropdown } from "react-bootstrap";
 import Navbar from "react-bootstrap/Navbar";
 import BOPLogo from "../../../assets/images/logo-white.png";
 import "./header.css";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 const Header = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const onClickSetting = () => {};
 
   const handleLogout = () => {};
   return (
     <>
-      <section fluid className='container-header-2'>
+      <section fluid className="container-header-2">
         <Navbar>
           <Navbar.Brand>
-            <img src={BOPLogo} width={200} alt='' />
+            <img src={BOPLogo} width={200} alt="" />
           </Navbar.Brand>
           <Dropdown className="headerDropdown">
-            <Dropdown.Toggle className='dropdown-toggle-header2'>
-              <p className='user-name-header2'>
+            <Dropdown.Toggle className="dropdown-toggle-header2">
+              <p className="user-name-header2">
                 {"Michel Jawn"}
 
                 {/* {localStorage.getItem("userName")} */}
               </p>
-              <i className='icon-arrow-down'></i>
+              <i className="icon-arrow-down"></i>
             </Dropdown.Toggle>
-            <Dropdown.Menu className='dropdown_menu-Header2'>
+            <Dropdown.Menu className="dropdown_menu-Header2">
               <Dropdown.Item>
                 <Nav.Link>
-                  <i className='icon-settings me-1'></i>
+                  <i className="icon-settings me-1"></i>
                   <label
-                    className='dropdown-select-labels'
-                    onClick={onClickSetting}>
+                    className="dropdown-select-labels"
+                    onClick={onClickSetting}
+                  >
                     Setting
                   </label>
                 </Nav.Link>
               </Dropdown.Item>
 
               <Dropdown.Item onClick={handleLogout}>
-                <i className='icon-logout me-1'></i>
-                <label className='dropdown-select-labels'>Logout</label>
+                <i className="icon-logout me-1"></i>
+                <label className="dropdown-select-labels">Logout</label>
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

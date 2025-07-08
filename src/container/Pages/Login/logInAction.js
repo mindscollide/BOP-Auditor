@@ -49,7 +49,7 @@ export const loginInApi = createAsyncThunk(
               console.log("", response.data);
               return rejectWithValue("Branch is InActive");
 
-            case "ERM_AuthService_AuthManager_Login_03".toLowerCase():
+            case "ERM_AuthService_AuthManager_Login_03".toLowerCase(): {
               const {
                 branch,
                 employeeID,
@@ -80,6 +80,7 @@ export const loginInApi = createAsyncThunk(
                 response: response.data.responseResult,
                 message: "Successfully logged In",
               };
+            }
 
             default:
               console.log("", response.data);

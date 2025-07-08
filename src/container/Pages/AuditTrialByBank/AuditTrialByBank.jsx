@@ -203,7 +203,7 @@ const AuditTrialByBank = () => {
               className={styles["SearchButtonStyles"]}
             />
             <Button
-              icon={<i class="icon-refresh"></i>}
+              icon={<i className="icon-refresh"></i>}
               value={"Reset"}
               className={styles["ResetButtonStyles"]}
             />

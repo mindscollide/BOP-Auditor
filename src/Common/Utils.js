@@ -2,7 +2,6 @@
 import CryptoJS from "crypto-js";
 
 // Function to set custom headers
-// Function to set custom headers
 const setCustomHeaders = (isDoc, ext) => {
   const token = localStorage.getItem("token");
 
@@ -56,18 +55,22 @@ const roleBasedNavigation = (navigate, roleID) => {
   // 8	Treasury
   // 9	Branch
   if (roleID === 1) {
+    console.log("RoleID", roleID);
   } else if (roleID === 2) {
-    navigate("/BOP/corporate");
+    console.log("RoleID", roleID);
   } else if (roleID === 3) {
+    console.log("RoleID", roleID);
   } else if (roleID === 6) {
+    navigate("/BOP/audittrailbank");
   } else if (roleID === 7) {
-    navigate("/BOP/dealer");
+    console.log("RoleID", roleID);
   } else if (roleID === 8) {
-    navigate("/BOP/treasury");
+    console.log("RoleID", roleID);
   } else if (roleID === 9) {
-    navigate("/BOP/branch");
+    console.log("RoleID", roleID);
   }
 };
+
 export { setCustomHeaders, emailValidation, roleBasedNavigation };
 
 export const getCookieValue = (cookieName) => {
@@ -101,6 +104,7 @@ export const xorEncryptDecrypt = (input, key) => {
   }
   return out;
 };
+
 export const encrypt = (data, key) => {
   try {
     const encrypted = xorEncryptDecrypt(data, key);
