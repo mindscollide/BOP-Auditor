@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./AuditTrialByBank.module.css";
 import {
   Button,
@@ -11,19 +11,66 @@ import excelIcon from "../../../assets/images/excel.png";
 import { Col, Row } from "react-bootstrap";
 import DatePicker from "react-multi-date-picker";
 import { Popover } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { GetTransactionDetailsByBankAuditor } from "../../../store/AuditorActions/AuditorActions";
 const AuditTrialByBank = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // Extracting the Transaction by Bank Details Data from Reducer
+  const AuditorTransactionBankData = useSelector(
+    (state) => state.AuditorReducer.transactionDetailsByBankData
+  );
+  console.log(AuditorTransactionBankData, "AuditorLoaderAuditorLoader");
   //Local States
   const [showExportOptions, setShowExportOptions] = useState(false);
   const [open, setOpen] = useState(false);
+  const [transactionByBankTblData, setTransactionByBankTblData] = useState([]);
+  //Calling GetTransactionDetailsByBankAPI
+  useEffect(() => {
+    try {
+      let Data = {
+        TXNID: 0,
+        corporateName: "",
+        BranchName: "",
+        TransactionByBankUser: "",
+        TransactionByTreasuryUser: "",
+        StartDate: "",
+        EndDate: "",
+        Length: 10,
+        sRow: 0,
+      };
+      dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+    } catch (error) {
+      console.log(error, "errorerror");
+    }
+  }, []);
+
+  //Extracting the Data
+  useEffect(() => {
+    try {
+      if (AuditorTransactionBankData && AuditorTransactionBankData !== null) {
+        console.log(AuditorTransactionBankData, "AuditorTransactionBankData");
+        setTransactionByBankTblData(
+          AuditorTransactionBankData.transactionForBank
+        );
+      }
+    } catch (error) {
+      console.log(error, "errorerror");
+    }
+  }, [AuditorTransactionBankData]);
 
   //Toggle for Export Button
   const toggleExportOptions = () => {
     setShowExportOptions(!showExportOptions);
   };
 
+  //Excel PDF PopOver Open Func
   const handleOpenChange = (newOpen) => {
     setOpen(newOpen);
   };
+
+  //Excel And PDF Icon Click Func
   const handleExport = (format) => {
     if (format === "excel") {
       exportToExcel();
@@ -42,83 +89,86 @@ const AuditTrialByBank = () => {
   const AuditTrialByBank = [
     {
       title: "TXN ID",
-      dataIndex: "userId",
-      key: "userId",
+      dataIndex: "txnid",
+      key: "txnid",
+      render: (text, record) => <span>{text}</span>,
     },
     {
-      title: "Customer Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Corporate Name",
+      dataIndex: "corporateName",
+      key: "corporateName",
     },
     {
       title: "Branch Name",
-      dataIndex: "email",
-      key: "email",
+      dataIndex: "branchName",
+      key: "branchName",
     },
     {
       title: "Branch User",
-      dataIndex: "email",
-      key: "email",
+      dataIndex: "branchUser",
+      key: "branchUser",
     },
     {
       title: "Treasury User",
-      dataIndex: "email",
-      key: "email",
+      dataIndex: "treasuryUser",
+      key: "treasuryUser",
     },
     {
       title: "Date",
-      dataIndex: "email",
-      key: "email",
+      dataIndex: "date",
+      key: "date",
     },
     {
       title: "Time",
-      dataIndex: "email",
-      key: "email",
+      dataIndex: "time",
+      key: "time",
     },
     {
       title: "Type",
-      dataIndex: "email",
-      key: "email",
+      dataIndex: "type",
+      key: "type",
     },
     {
       title: "Nature",
-      dataIndex: "email",
-      key: "email",
+      dataIndex: "nature",
+      key: "nature",
     },
     {
       title: "CCY1",
-      dataIndex: "email",
-      key: "email",
+      dataIndex: "ccY1",
+      key: "ccY1",
     },
     {
       title: "Amount",
-      dataIndex: "email",
-      key: "email",
+      dataIndex: "amount1",
+      key: "amount1",
     },
     {
       title: "Rate",
-      dataIndex: "email",
-      key: "email",
+      dataIndex: "rate",
+      key: "rate",
     },
     {
       title: "CCY2",
-      dataIndex: "email",
-      key: "email",
+      dataIndex: "ccY2",
+      key: "ccY2",
     },
     {
       title: "Amount",
-      dataIndex: "email",
-      key: "email",
+      dataIndex: "amount2",
+      key: "amount2",
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => (
-        <span style={{ color: status === "Active" ? "green" : "red" }}>
-          {status}
-        </span>
-      ),
+      render: (text, record) => {
+        return (
+          <span style={{ color: text === "Accepted" ? "green" : "red" }}>
+            {text}
+          </span>
+        );
+      },
     },
   ];
 
@@ -243,7 +293,9 @@ const AuditTrialByBank = () => {
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={AuditTrialByBank}
+              rows={transactionByBankTblData}
               pagination={false}
+              scroll={{ x: "max-content", y: 400 }}
               className={"BankUserList-table"}
             />
           </Col>

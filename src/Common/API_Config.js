@@ -5,3 +5,7 @@ export const loginRequestMethod = {
 export const refreshTokenRM = {
   RequestMethod: "ServiceManager.RefreshToken",
 };
+
+export const AuditTrialByBank = {
+  RequestMethod: "ServiceManager.GetTransactionDetailsByBankData",
+};

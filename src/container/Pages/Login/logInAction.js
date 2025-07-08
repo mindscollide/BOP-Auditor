@@ -4,7 +4,7 @@ import { loginRequestMethod, refreshTokenRM } from "../../../Common/API_Config";
 import { roleBasedNavigation } from "../../../Common/Utils";
 import { authApi } from "../../../Common/API_EndPoints";
 
-// Define the login async thunk
+//Login API
 export const loginInApi = createAsyncThunk(
   "auth/login", // A unique action type string
   async ({ navigate, Data }, { rejectWithValue }) => {
@@ -100,8 +100,6 @@ export const loginInApi = createAsyncThunk(
 );
 
 //Refresh Token
-
-// Define the login async thunk
 export const refreshTokenAction = createAsyncThunk(
   "auth/refreshToken", // A unique action type string
   async ({ navigate }, { rejectWithValue }) => {

@@ -7,11 +7,9 @@ const Loader = () => {
   const [isLoader, setIsLoading] = useState(false);
 
   const AuthLoader = useSelector((state) => state.authReducer.Loader);
+  const AuditorLoader = useSelector((state) => state.AuditorReducer.Loader);
 
-  console.log(AuthLoader, "AuthLoaderAuthLoaderAuthLoader");
-  const isLoading = [AuthLoader].some((loading) => loading);
-
-  console.log(isLoading, "AuthLoaderAuthLoaderAuthLoader");
+  const isLoading = [AuthLoader, AuditorLoader].some((loading) => loading);
 
   useEffect(() => {
     let timeout;
