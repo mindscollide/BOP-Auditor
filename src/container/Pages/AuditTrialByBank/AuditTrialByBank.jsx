@@ -14,6 +14,8 @@ import { Popover } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GetTransactionDetailsByBankAuditor } from "../../../store/AuditorActions/AuditorActions";
+import { useTableScrollBottomByClassName } from "../../../components/common/useTableScrollBottom";
+import { formatDate } from "../../../components/common/utils";
 const AuditTrialByBank = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -21,11 +23,25 @@ const AuditTrialByBank = () => {
   const AuditorTransactionBankData = useSelector(
     (state) => state.AuditorReducer.transactionDetailsByBankData
   );
-  console.log(AuditorTransactionBankData, "AuditorLoaderAuditorLoader");
+
+  console.log(AuditorTransactionBankData, "AuditorTransactionBankData");
   //Local States
   const [showExportOptions, setShowExportOptions] = useState(false);
   const [open, setOpen] = useState(false);
+  const [sRow, setSRow] = useState(0);
+  const [totalRecord, setTotalRecord] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [transactionByBankTblData, setTransactionByBankTblData] = useState([]);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [formData, setFormData] = useState({
+    txnId: "",
+    customerName: "",
+    branchName: "",
+    txnByBranchUser: "",
+    txnByTreasuryUser: "",
+  });
+
   //Calling GetTransactionDetailsByBankAPI
   useEffect(() => {
     try {
@@ -50,15 +66,37 @@ const AuditTrialByBank = () => {
   useEffect(() => {
     try {
       if (AuditorTransactionBankData && AuditorTransactionBankData !== null) {
+        const newRecords = AuditorTransactionBankData.transactionForBank || [];
         console.log(AuditorTransactionBankData, "AuditorTransactionBankData");
-        setTransactionByBankTblData(
-          AuditorTransactionBankData.transactionForBank
-        );
+
+        // Define your own search condition
+        const isSearchMode =
+          formData.txnId ||
+          formData.corporateName ||
+          formData.branchName ||
+          formData.txnByBranchUser ||
+          formData.txnByTreasuryUser ||
+          startDate ||
+          endDate;
+
+        if (isSearchMode || sRow === 0) {
+          setTransactionByBankTblData(newRecords); // replace
+          setSRow(newRecords.length);
+        } else {
+          setTransactionByBankTblData((prev) => [...prev, ...newRecords]); // append
+          setSRow((prev) => prev + newRecords.length);
+        }
+
+        setTotalRecord(AuditorTransactionBankData.totalCount);
+        setIsLoading(false);
       }
     } catch (error) {
       console.log(error, "errorerror");
+      setIsLoading(false);
     }
   }, [AuditorTransactionBankData]);
+
+  console.log(transactionByBankTblData, "AuditorTransactionBankData");
 
   //Toggle for Export Button
   const toggleExportOptions = () => {
@@ -85,92 +123,201 @@ const AuditTrialByBank = () => {
   //Export to Excel Trigger Function
   const exportToPDF = () => {};
 
+  //Common OnChange for textFields
+  const handleTextChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  //Handle Start Date Change
+  const handleStartDateChange = (dateObject) => {
+    setStartDate(formatDate(dateObject));
+  };
+
+  //Handle End Date Change
+  const handleEndDateChange = (dateObject) => {
+    setEndDate(formatDate(dateObject));
+  };
+
+  //Handle Search Button
+  const handleSearchBtn = () => {
+    let Data = {
+      TXNID: Number(formData.txnId),
+      corporateName: formData.corporateName,
+      BranchName: formData.branchName,
+      TransactionByBankUser: formData.txnByBranchUser,
+      TransactionByTreasuryUser: formData.txnByTreasuryUser,
+      StartDate: startDate !== "" ? startDate : "",
+      EndDate: endDate !== "" ? endDate : "",
+      Length: 10,
+      sRow: 0,
+    };
+
+    dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+  };
+
+  //Handle Reset Button
+  const handleResetBtn = () => {
+    setFormData({
+      txnId: "",
+      customerName: "",
+      branchName: "",
+      txnByBranchUser: "",
+      txnByTreasuryUser: "",
+    });
+    setStartDate(null);
+    setEndDate(null);
+    setTransactionByBankTblData([]);
+    setSRow(0);
+    let Data = {
+      TXNID: 0,
+      corporateName: "",
+      BranchName: "",
+      TransactionByBankUser: "",
+      TransactionByTreasuryUser: "",
+      StartDate: "",
+      EndDate: "",
+      Length: 10,
+      sRow: 0,
+    };
+    dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+  };
+
   // Columns for Audit Trial By Bank
   const AuditTrialByBank = [
     {
       title: "TXN ID",
       dataIndex: "txnid",
       key: "txnid",
-      render: (text, record) => <span>{text}</span>,
+      width: 100,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Corporate Name",
       dataIndex: "corporateName",
       key: "corporateName",
+      width: 180,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Branch Name",
       dataIndex: "branchName",
       key: "branchName",
+      width: 190,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Branch User",
       dataIndex: "branchUser",
       key: "branchUser",
+      width: 160,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Treasury User",
       dataIndex: "treasuryUser",
       key: "treasuryUser",
+      width: 150,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
+      width: 120,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Time",
       dataIndex: "time",
       key: "time",
+      width: 100,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Type",
       dataIndex: "type",
       key: "type",
+      width: 100,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Nature",
       dataIndex: "nature",
       key: "nature",
+      width: 220,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "CCY1",
       dataIndex: "ccY1",
       key: "ccY1",
+      width: 80,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Amount",
       dataIndex: "amount1",
       key: "amount1",
+      width: 130,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Rate",
       dataIndex: "rate",
       key: "rate",
+      width: 90,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "CCY2",
       dataIndex: "ccY2",
       key: "ccY2",
+      width: 80,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Amount",
       dataIndex: "amount2",
       key: "amount2",
+      width: 130,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (text, record) => {
-        return (
-          <span style={{ color: text === "Accepted" ? "green" : "red" }}>
-            {text}
-          </span>
-        );
-      },
+      width: 110,
+      render: (text) => (
+        <span style={{ color: text === "Accepted" ? "green" : "red" }}>
+          {text}
+        </span>
+      ),
     },
   ];
+
+  //Scroller Custom Hook
+  useTableScrollBottomByClassName(
+    () => {
+      if (!isLoading && transactionByBankTblData.length < totalRecord) {
+        setIsLoading(true);
+        const Data = {
+          TXNID: Number(formData.txnId),
+          corporateName: formData.corporateName,
+          BranchName: formData.branchName,
+          TransactionByBankUser: formData.txnByBranchUser,
+          TransactionByTreasuryUser: formData.txnByTreasuryUser,
+          StartDate: startDate !== "" ? startDate : "",
+          EndDate: endDate !== "" ? endDate : "",
+          sRow: sRow,
+          Length: 10,
+        };
+        dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+      }
+    },
+    0,
+    "BankUserList-table"
+  );
 
   return (
     <>
@@ -185,59 +332,72 @@ const AuditTrialByBank = () => {
         <Row>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              placeholder={"TXN ID"}
-              applyClass={"TextFieldAuditors"}
+              name="txnId"
+              placeholder="TXN ID"
+              value={formData.txnId}
+              onChange={handleTextChange}
+              applyClass="TextFieldAuditors"
             />
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              placeholder={"Customer Name"}
-              applyClass={"TextFieldAuditors"}
+              name="customerName"
+              placeholder="Customer Name"
+              value={formData.customerName}
+              onChange={handleTextChange}
+              applyClass="TextFieldAuditors"
             />
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              placeholder={"Branch Name"}
-              applyClass={"TextFieldAuditors"}
+              name="branchName"
+              placeholder="Branch Name"
+              value={formData.branchName}
+              onChange={handleTextChange}
+              applyClass="TextFieldAuditors"
             />
           </Col>
           <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
-              placeholder={"Transaction By Branch User"}
-              applyClass={"TextFieldAuditors"}
+              name="txnByBranchUser"
+              placeholder="Transaction By Branch User"
+              value={formData.txnByBranchUser}
+              onChange={handleTextChange}
+              applyClass="TextFieldAuditors"
             />
           </Col>
           <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
-              placeholder={"Transaction Accepted by  Treasury User"}
-              applyClass={"TextFieldAuditors"}
+              name="txnAcceptedByTreasuryUser"
+              placeholder="Transaction Accepted by Treasury User"
+              value={formData.txnByTreasuryUser}
+              onChange={handleTextChange}
+              applyClass="TextFieldAuditors"
             />
           </Col>
         </Row>
         <Row className="mt-3">
-          <Col lg={3} md={3} sm={3} xs={12}>
-            <TextField
-              placeholder={"Transaction Rejected by  Treasury User"}
-              applyClass={"TextFieldAuditors"}
-            />
-          </Col>
           <Col lg={3} md={3} sm={12} className="d-flex align-items-center ">
             <DatePicker
-              name={"dateFrom"}
-              labelClass={"d-none"}
+              name="dateFrom"
+              value={startDate}
+              onChange={handleStartDateChange}
+              placeholder="Start Date"
               inputClass={styles["Tradecount-Datepicker-left"]}
-              placeholder="Start date"
-              showOtherDays={true}
+              labelClass="d-none"
+              showOtherDays
             />
 
             <label className={styles["Tradecount-date-to"]}>to</label>
 
             <DatePicker
               name="dateTo"
-              labelClass={"d-none"}
+              value={endDate}
+              onChange={handleEndDateChange}
               placeholder="End Date"
-              showOtherDays={true}
               inputClass={styles["Tradecount-Datepicker-right"]}
+              labelClass="d-none"
+              showOtherDays
             />
           </Col>
           <Col
@@ -251,11 +411,13 @@ const AuditTrialByBank = () => {
               icon={<i className="icon-search icon-check-space"></i>}
               value={"Search"}
               className={styles["SearchButtonStyles"]}
+              onClick={handleSearchBtn}
             />
             <Button
               icon={<i className="icon-refresh"></i>}
               value={"Reset"}
               className={styles["ResetButtonStyles"]}
+              onClick={handleResetBtn}
             />
 
             <Popover
@@ -295,7 +457,7 @@ const AuditTrialByBank = () => {
               column={AuditTrialByBank}
               rows={transactionByBankTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: 400 }}
+              scroll={{ x: "max-content", y: 350 }}
               className={"BankUserList-table"}
             />
           </Col>

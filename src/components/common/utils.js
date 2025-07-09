@@ -8,3 +8,10 @@ export const emailValidation = (text) => {
 
   return isValid; // Return true if valid, false otherwise
 };
+
+//Convert the Date to YYMMDD format
+export const formatDate = (dateObj) => {
+  if (!dateObj) return null;
+  const jsDate = dateObj.toDate();
+  return jsDate.toISOString().split("T")[0]; // YYYY-MM-DD
+};

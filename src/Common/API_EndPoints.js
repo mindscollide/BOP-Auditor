@@ -11,5 +11,6 @@ const authApi = `${baseURL}${authPort}`;
 const reportApi = `${baseURL}${ReportPort}`;
 
 const auditorApi = `${baseURL}${AuditorPort}`;
+//const auditorApi = "https://localhost:44322/Auditor";
 
 export { authApi, reportApi, auditorApi };
