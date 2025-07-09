@@ -30,4 +30,5 @@ const updateUsername = (username, setCredentials) => {
     hasErrroOnUserName: username !== "" ? false : true,
   }));
 };
+
 export { updateEmail, updatePassword, updateUsername };

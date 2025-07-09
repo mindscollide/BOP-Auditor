@@ -139,3 +139,12 @@
 .BulkUpload-table .ant-table-tbody > tr > td {
   padding: 5px;
 }
+
+.BankUserList-table .ant-table-body {
+  scrollbar-color: auto !important;
+}
+
+:where(.css-dev-only-do-not-override-1v5z42l).ant-table-wrapper
+  .ant-table-cell-scrollbar:not([rowspan]) {
+  box-shadow: none !important;
+}

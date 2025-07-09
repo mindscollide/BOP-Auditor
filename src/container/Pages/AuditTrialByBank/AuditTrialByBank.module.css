@@ -10,7 +10,7 @@
   border-top-left-radius: 6px !important;
   border-bottom-left-radius: 6px !important;
   border: 1px solid #ced4da;
-  width: 155px !important;
+  width: 100% !important;
   height: 37px !important;
   font-size: 13px !important;
   font-family: "Montserrat", sans-serif !important;
@@ -28,7 +28,7 @@
   border-bottom-right-radius: 6px !important;
   border: 1px solid #ced4da;
   font-size: 13px !important;
-  width: 155px !important;
+  width: 100% !important;
   height: 37px !important;
   font-family: "Montserrat", sans-serif !important;
   cursor: pointer;
