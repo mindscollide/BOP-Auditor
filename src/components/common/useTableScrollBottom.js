@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 /**
  * A hook that watches scroll inside an Ant Design table body, using a container with a known className.
  *
- * @param {Function} onBottomReach - Callback when scroll reaches bottom.
+ * @param {Function} onBottomReach - Callback when scroll reaches bottom or all content is visible.
  * @param {number} threshold - Pixels from bottom before triggering.
  * @param {string} className - The className of the parent container of the Ant table.
  */
@@ -27,22 +27,30 @@ export const useTableScrollBottomByClassName = (
       return;
     }
 
-    const handleScroll = () => {
+    const handleTrigger = () => {
       const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
+
+      // Store scrollTop to detect vertical movement
       const scrolledVertically = scrollTop !== previousScrollTopRef.current;
       previousScrollTopRef.current = scrollTop;
 
-      if (!scrolledVertically) return;
-
-      const isScrollable = scrollHeight > clientHeight;
       const isBottom = scrollTop + clientHeight >= scrollHeight - threshold;
 
-      if (isScrollable && isBottom) {
+      // ✅ Trigger if either:
+      // 1. User scrolled to bottom, OR
+      // 2. Content is fully visible (not scrollable but more data is expected)
+      if (isBottom || scrollHeight <= clientHeight) {
         onBottomReach?.();
       }
     };
 
-    scrollContainer.addEventListener("scroll", handleScroll);
-    return () => scrollContainer.removeEventListener("scroll", handleScroll);
+    scrollContainer.addEventListener("scroll", handleTrigger);
+    window.addEventListener("resize", handleTrigger); // 👈 Handle resolution change
+    handleTrigger(); // 👈 Initial check in case content is fully visible
+
+    return () => {
+      scrollContainer.removeEventListener("scroll", handleTrigger);
+      window.removeEventListener("resize", handleTrigger);
+    };
   }, [onBottomReach, threshold, className]);
 };
