@@ -36,7 +36,7 @@ const AuditTrialByBank = () => {
   const [endDate, setEndDate] = useState(null);
   const [formData, setFormData] = useState({
     txnId: "",
-    customerName: "",
+    corporateName: "",
     branchName: "",
     txnByBranchUser: "",
     txnByTreasuryUser: "",
@@ -126,6 +126,8 @@ const AuditTrialByBank = () => {
   //Common OnChange for textFields
   const handleTextChange = (e) => {
     const { name, value } = e.target;
+
+    console.log({ name, value }, "DataDataDataData");
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -152,7 +154,7 @@ const AuditTrialByBank = () => {
       Length: 10,
       sRow: 0,
     };
-
+    console.log(Data, "DataDataDataData");
     dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
   };
 
@@ -160,7 +162,7 @@ const AuditTrialByBank = () => {
   const handleResetBtn = () => {
     setFormData({
       txnId: "",
-      customerName: "",
+      corporateName: "",
       branchName: "",
       txnByBranchUser: "",
       txnByTreasuryUser: "",
@@ -312,6 +314,7 @@ const AuditTrialByBank = () => {
           sRow: sRow,
           Length: 10,
         };
+        console.log(Data, "DataDataDataData");
         dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
       }
     },
@@ -341,9 +344,9 @@ const AuditTrialByBank = () => {
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              name="customerName"
-              placeholder="Customer Name"
-              value={formData.customerName}
+              name="corporateName"
+              placeholder="Corporate Name"
+              value={formData.corporateName}
               onChange={handleTextChange}
               applyClass="TextFieldAuditors"
             />
