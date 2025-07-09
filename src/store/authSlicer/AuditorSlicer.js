@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { GetTransactionDetailsByBankAuditor } from "../AuditorActions/AuditorActions";
+import {
+  GetTransactionDetailsByBankAuditor,
+  GetTransactionDetailsByCorporateAuditor,
+} from "../AuditorActions/AuditorActions";
 
 const AuditorSlice = createSlice({
   name: "Auditor",
@@ -8,6 +11,7 @@ const AuditorSlice = createSlice({
     Loader: false,
     error: null,
     transactionDetailsByBankData: null,
+    transactionDetailsByCorporateData: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -16,12 +20,12 @@ const AuditorSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Pending state (while the API call is being made)
+      // Pending state (while the API call is being made GetTransactionDetailsByBankAuditor)
       .addCase(GetTransactionDetailsByBankAuditor.pending, (state) => {
         state.Loader = true;
         state.error = null;
       })
-      // Fulfilled state (when the API call succeeds)
+      // Fulfilled state (when the API call succeeds GetTransactionDetailsByBankAuditor)
       .addCase(
         GetTransactionDetailsByBankAuditor.fulfilled,
         (state, { payload }) => {
@@ -31,13 +35,39 @@ const AuditorSlice = createSlice({
           state.responseMessage = payload.message;
         }
       )
-      // Rejected state (when the API call fails)
+      // Rejected state (when the API call fails GetTransactionDetailsByBankAuditor)
       .addCase(GetTransactionDetailsByBankAuditor.rejected, (state, action) => {
         console.log(action, "actionaction");
         state.Loader = false;
         state.responseMessage = action.payload;
         state.transactionDetailsByBankData = null;
-      });
+      })
+      // Pending state (while the API call is being made GetTransactionDetailsByCorporateAuditor)
+      .addCase(GetTransactionDetailsByCorporateAuditor.pending, (state) => {
+        state.Loader = true;
+        state.error = null;
+      })
+      // Fulfilled state (when the API call succeeds GetTransactionDetailsByCorporateAuditor)
+      .addCase(
+        GetTransactionDetailsByCorporateAuditor.fulfilled,
+        (state, { payload }) => {
+          console.log(payload.response, "payloadpayloadpayload");
+          state.Loader = false;
+          state.transactionDetailsByCorporateData = payload.response;
+          state.error = null;
+          state.responseMessage = payload.message;
+        }
+      )
+      // Rejected state (when the API call fails GetTransactionDetailsByCorporateAuditor)
+      .addCase(
+        GetTransactionDetailsByCorporateAuditor.rejected,
+        (state, action) => {
+          console.log(action, "actionaction");
+          state.Loader = false;
+          state.responseMessage = action.payload;
+          state.transactionDetailsByCorporateData = null;
+        }
+      );
   },
 });
 export const { clearAuthResponseMessage } = AuditorSlice.actions;

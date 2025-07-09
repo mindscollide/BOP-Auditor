@@ -41,7 +41,13 @@ const AuditTrialByBank = () => {
     txnByBranchUser: "",
     txnByTreasuryUser: "",
   });
-
+  console.log(formData.txnId, "pool");
+  console.log(formData.corporateName, "pool");
+  console.log(formData.branchName, "pool");
+  console.log(formData.txnByBranchUser, "pool");
+  console.log(formData.txnByTreasuryUser, "pool");
+  console.log(startDate, "pool");
+  console.log(endDate, "pool");
   //Calling GetTransactionDetailsByBankAPI
   useEffect(() => {
     try {
@@ -126,8 +132,6 @@ const AuditTrialByBank = () => {
   //Common OnChange for textFields
   const handleTextChange = (e) => {
     const { name, value } = e.target;
-
-    console.log({ name, value }, "DataDataDataData");
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -160,29 +164,39 @@ const AuditTrialByBank = () => {
 
   //Handle Reset Button
   const handleResetBtn = () => {
-    setFormData({
-      txnId: "",
-      corporateName: "",
-      branchName: "",
-      txnByBranchUser: "",
-      txnByTreasuryUser: "",
-    });
-    setStartDate(null);
-    setEndDate(null);
-    setTransactionByBankTblData([]);
-    setSRow(0);
-    let Data = {
-      TXNID: 0,
-      corporateName: "",
-      BranchName: "",
-      TransactionByBankUser: "",
-      TransactionByTreasuryUser: "",
-      StartDate: "",
-      EndDate: "",
-      Length: 10,
-      sRow: 0,
-    };
-    dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+    if (
+      formData.txnId !== "" ||
+      formData.corporateName !== "" ||
+      formData.branchName !== "" ||
+      formData.txnByBranchUser !== "" ||
+      formData.txnByTreasuryUser !== "" ||
+      startDate !== null ||
+      endDate !== null
+    ) {
+      setFormData({
+        txnId: "",
+        corporateName: "",
+        branchName: "",
+        txnByBranchUser: "",
+        txnByTreasuryUser: "",
+      });
+      setStartDate(null);
+      setEndDate(null);
+      setTransactionByBankTblData([]);
+      setSRow(0);
+      let Data = {
+        TXNID: 0,
+        corporateName: "",
+        BranchName: "",
+        TransactionByBankUser: "",
+        TransactionByTreasuryUser: "",
+        StartDate: "",
+        EndDate: "",
+        Length: 10,
+        sRow: 0,
+      };
+      dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+    }
   };
 
   // Columns for Audit Trial By Bank
@@ -314,7 +328,6 @@ const AuditTrialByBank = () => {
           sRow: sRow,
           Length: 10,
         };
-        console.log(Data, "DataDataDataData");
         dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
       }
     },
