@@ -1,18 +1,21 @@
 import { useEffect, useRef } from "react";
 
 /**
- * A hook that watches scroll inside an Ant Design table body, using a container with a known className.
+ * Scroll watcher for Ant Design table that triggers a callback
+ * when reaching the bottom or when all content is visible.
+ * It works across all screen zoom/resolution settings.
  *
- * @param {Function} onBottomReach - Callback when scroll reaches bottom or all content is visible.
- * @param {number} threshold - Pixels from bottom before triggering.
- * @param {string} className - The className of the parent container of the Ant table.
+ * @param {Function} onBottomReach - Callback to trigger.
+ * @param {number} threshold - Buffer distance from bottom (in px).
+ * @param {string} className - The className of the table's container.
  */
 export const useTableScrollBottomByClassName = (
   onBottomReach,
   threshold = 0,
   className = ""
 ) => {
-  const previousScrollTopRef = useRef(0);
+  const triggeredOnceRef = useRef(false);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
     const outerContainer = document.querySelector(`.${className}`);
@@ -27,30 +30,31 @@ export const useTableScrollBottomByClassName = (
       return;
     }
 
-    const handleTrigger = () => {
-      const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
+    const checkIfBottom = () => {
+      const scrollTop = Math.round(scrollContainer.scrollTop);
+      const scrollHeight = Math.round(scrollContainer.scrollHeight);
+      const clientHeight = Math.round(scrollContainer.clientHeight);
 
-      // Store scrollTop to detect vertical movement
-      const scrolledVertically = scrollTop !== previousScrollTopRef.current;
-      previousScrollTopRef.current = scrollTop;
+      const atBottom = scrollTop + clientHeight >= scrollHeight - threshold - 1; // -1 for pixel rounding
+      const notScrollable = scrollHeight - clientHeight <= 1; // Allow small margin
 
-      const isBottom = scrollTop + clientHeight >= scrollHeight - threshold;
-
-      // ✅ Trigger if either:
-      // 1. User scrolled to bottom, OR
-      // 2. Content is fully visible (not scrollable but more data is expected)
-      if (isBottom || scrollHeight <= clientHeight) {
+      if ((atBottom || notScrollable) && !triggeredOnceRef.current) {
+        triggeredOnceRef.current = true;
         onBottomReach?.();
+      }
+
+      // Reset flag if user scrolls up
+      if (!atBottom && triggeredOnceRef.current) {
+        triggeredOnceRef.current = false;
       }
     };
 
-    scrollContainer.addEventListener("scroll", handleTrigger);
-    window.addEventListener("resize", handleTrigger); // 👈 Handle resolution change
-    handleTrigger(); // 👈 Initial check in case content is fully visible
+    intervalRef.current = setInterval(checkIfBottom, 200);
+    const timeoutId = setTimeout(checkIfBottom, 500); // Initial delayed check
 
     return () => {
-      scrollContainer.removeEventListener("scroll", handleTrigger);
-      window.removeEventListener("resize", handleTrigger);
+      clearInterval(intervalRef.current);
+      clearTimeout(timeoutId);
     };
   }, [onBottomReach, threshold, className]);
 };
