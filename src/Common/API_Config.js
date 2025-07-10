@@ -13,3 +13,7 @@ export const AuditTrialByBank = {
 export const AuditTrialByCorporate = {
   RequestMethod: "ServiceManager.GetTransactionDetailsByCorporateData",
 };
+
+export const ExcelReportTrasactionDetailsByBank = {
+  RequestMethod: "ServiceManager.DownloadTransactionByBankAuditorReport",
+};
