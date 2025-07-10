@@ -100,32 +100,11 @@ const AuditTrialByBank = () => {
     }
   }, [AuditorTransactionBankData]);
 
-  //Click any where dissapear the the export options
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (exportRef.current && !exportRef.current.contains(event.target)) {
-        setOpen(false);
-      }
-    };
-
-    if (open) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    // Cleanup on component unmount
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [open]);
-
-  console.log(transactionByBankTblData, "AuditorTransactionBankData");
-
   const toggleExportOptions = () => {
     setOpen((prev) => !prev);
   };
 
+  // Automatically export icons closed UseEffect using Useref Hook
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (exportRef.current && !exportRef.current.contains(event.target)) {
@@ -150,7 +129,9 @@ const AuditTrialByBank = () => {
   };
 
   //Export to PDF Trigger Function
-  const exportToExcel = () => {};
+  const exportToExcel = () => {
+    //Excel Export Transaction By Bank API call
+  };
 
   //Export to Excel Trigger Function
   const exportToPDF = () => {};
