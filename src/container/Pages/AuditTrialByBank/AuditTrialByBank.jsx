@@ -43,13 +43,7 @@ const AuditTrialByBank = () => {
     txnByBranchUser: "",
     txnByTreasuryUser: "",
   });
-  console.log(formData.txnId, "pool");
-  console.log(formData.corporateName, "pool");
-  console.log(formData.branchName, "pool");
-  console.log(formData.txnByBranchUser, "pool");
-  console.log(formData.txnByTreasuryUser, "pool");
-  console.log(startDate, "pool");
-  console.log(endDate, "pool");
+
   //Calling GetTransactionDetailsByBankAPI
   useEffect(() => {
     try {

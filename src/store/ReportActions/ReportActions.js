@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { reportApi } from "../../Common/API_EndPoints";
 import {
   ExcelReportTrasactionDetailsByBank,
+  ExcelReportTrasactionDetailsByCorporate,
   PDFReportTrasactionDetailsByBank,
 } from "../../Common/API_Config";
 import { refreshTokenAction } from "../../container/Pages/Login/logInAction";
@@ -105,3 +106,55 @@ export const GetTransactionDetailsByBankPDFTypeReportAuditor = createAsyncThunk(
     }
   }
 );
+
+//Excel File Report Download For Transaction Details By Bank (API Func)
+export const GetTransactionDetailsByCorporateExcelTypeReportAuditor =
+  createAsyncThunk(
+    "Report/GetTransactionDetailsByCorporateExcelTypeReportAuditor",
+    async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+      try {
+        const getTransactionData = createPostAPI(
+          reportApi,
+          ExcelReportTrasactionDetailsByCorporate.RequestMethod
+        );
+
+        const response = await getTransactionData(Data, true);
+        console.log(response, "errorerrorerrorerror");
+
+        // 🚨 Ensure response is valid before trying to read Excel blob
+        if (response?.status === 200) {
+          const blob = new Blob([response.data], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "TransactionDetailsByCorporate.xlsx");
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+
+          return { message: "Excel downloaded successfully" };
+        } else {
+          return rejectWithValue(
+            "Something went wrong while downloading Excel"
+          );
+        }
+      } catch (error) {
+        console.log("Excel Download Error:", error);
+        if (error?.responseCode === 401) {
+          navigate("/");
+          return rejectWithValue("Unauthorized access, please login again");
+        }
+        console.log(error, "errorerrorerrorerror");
+        console.log(error?.responseCode, "errorerrorerrorerror");
+        if (error?.responseCode === 417) {
+          await dispatch(refreshTokenAction({ navigate }));
+          return;
+        }
+
+        return rejectWithValue("Something went wrong while downloading Excel");
+      }
+    }
+  );
