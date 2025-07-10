@@ -4,6 +4,7 @@ import {
   ExcelReportTrasactionDetailsByBank,
   ExcelReportTrasactionDetailsByCorporate,
   PDFReportTrasactionDetailsByBank,
+  PDFReportTrasactionDetailsByCorporate,
 } from "../../Common/API_Config";
 import { refreshTokenAction } from "../../container/Pages/Login/logInAction";
 import createPostAPI from "../../Common/GenericPostMethod";
@@ -107,7 +108,7 @@ export const GetTransactionDetailsByBankPDFTypeReportAuditor = createAsyncThunk(
   }
 );
 
-//Excel File Report Download For Transaction Details By Bank (API Func)
+//Excel File Report Download For Transaction Details By Coporate (API Func)
 export const GetTransactionDetailsByCorporateExcelTypeReportAuditor =
   createAsyncThunk(
     "Report/GetTransactionDetailsByCorporateExcelTypeReportAuditor",
@@ -155,6 +156,54 @@ export const GetTransactionDetailsByCorporateExcelTypeReportAuditor =
         }
 
         return rejectWithValue("Something went wrong while downloading Excel");
+      }
+    }
+  );
+
+//PDF File Report Download For Transaction Details By Corporate (API Func)
+export const GetTransactionDetailsByCorporatePDFTypeReportAuditor =
+  createAsyncThunk(
+    "Report/GetTransactionDetailsByCorporatePDFTypeReportAuditor",
+    async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+      try {
+        const getTransactionData = createPostAPI(
+          reportApi,
+          PDFReportTrasactionDetailsByCorporate.RequestMethod
+        );
+
+        const response = await getTransactionData(Data, true);
+
+        // 🟢 PDF file response
+        if (response?.status === 200) {
+          const blob = new Blob([response.data], {
+            type: "application/pdf",
+          });
+
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "TransactionDetailsByCorporate.pdf");
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+
+          return { message: "PDF downloaded successfully" };
+        } else {
+          return rejectWithValue("Something went wrong while downloading PDF");
+        }
+      } catch (error) {
+        console.log("PDF Download Error:", error);
+        if (error?.responseCode === 401) {
+          navigate("/");
+          return rejectWithValue("Unauthorized access, please login again");
+        }
+
+        if (error?.responseCode === 417) {
+          await dispatch(refreshTokenAction({ navigate }));
+          return;
+        }
+
+        return rejectWithValue("Something went wrong while downloading PDF");
       }
     }
   );

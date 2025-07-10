@@ -3,6 +3,7 @@ import {
   GetTransactionDetailsByBankExcelTypeReportAuditor,
   GetTransactionDetailsByBankPDFTypeReportAuditor,
   GetTransactionDetailsByCorporateExcelTypeReportAuditor,
+  GetTransactionDetailsByCorporatePDFTypeReportAuditor,
 } from "../ReportActions/ReportActions";
 
 const ReportSlice = createSlice({
@@ -15,6 +16,7 @@ const ReportSlice = createSlice({
     excelReportTransactionByBankReport: null,
     pdfReportTransactionByBankReport: null,
     excelReportTransactionByCorporateReport: null,
+    pdfReportTransactionByCorporateReport: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -89,6 +91,29 @@ const ReportSlice = createSlice({
         (state, { payload }) => {
           state.Loader = false;
           state.excelReportTransactionByCorporateReport = null;
+          state.responseMessage = payload;
+        }
+      )
+
+      .addCase(
+        GetTransactionDetailsByCorporatePDFTypeReportAuditor.pending,
+        (state) => {
+          state.Loader = true;
+        }
+      )
+      .addCase(
+        GetTransactionDetailsByCorporatePDFTypeReportAuditor.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.pdfReportTransactionByCorporateReport = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        GetTransactionDetailsByCorporatePDFTypeReportAuditor.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.pdfReportTransactionByCorporateReport = null;
           state.responseMessage = payload;
         }
       );

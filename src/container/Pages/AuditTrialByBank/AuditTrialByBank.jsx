@@ -24,10 +24,12 @@ const AuditTrialByBank = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const exportRef = useRef(null);
+
   // Extracting the Transaction by Bank Details Data from Reducer
   const AuditorTransactionBankData = useSelector(
     (state) => state.AuditorReducer.transactionDetailsByBankData
   );
+
   //Local States
   const [open, setOpen] = useState(false);
   const [sRow, setSRow] = useState(0);
@@ -98,6 +100,7 @@ const AuditTrialByBank = () => {
     }
   }, [AuditorTransactionBankData]);
 
+  //Toggle Functino to view Export Icons
   const toggleExportOptions = () => {
     setOpen((prev) => !prev);
   };

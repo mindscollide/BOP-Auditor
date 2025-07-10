@@ -16,11 +16,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GetTransactionDetailsByCorporateAuditor } from "../../../store/AuditorActions/AuditorActions";
 import { useTableScrollBottomByClassName } from "../../../components/common/useTableScrollBottom";
-import { GetTransactionDetailsByCorporateExcelTypeReportAuditor } from "../../../store/ReportActions/ReportActions";
+import {
+  GetTransactionDetailsByCorporateExcelTypeReportAuditor,
+  GetTransactionDetailsByCorporatePDFTypeReportAuditor,
+} from "../../../store/ReportActions/ReportActions";
 const AuditTrialByCorporate = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const exportRef = useRef(null);
+
   // Extracting the Transaction by Bank Details Data from Reducer
   const AuditorTransactionCorporateData = useSelector(
     (state) => state.AuditorReducer.transactionDetailsByCorporateData
@@ -129,7 +133,23 @@ const AuditTrialByCorporate = () => {
   };
 
   //Export to Excel Trigger Function
-  const exportToPDF = () => {};
+  const exportToPDF = () => {
+    let Data = {
+      TXNID: Number(formData.txnId),
+      CorporateUser:
+        formData.corporateUser !== "" ? formData.corporateUser : "",
+      CorporateName:
+        formData.corporateName !== "" ? formData.corporateName : "",
+      TransactionByTreasuryUser:
+        formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
+      StartDate: startDate !== null ? startDate : "",
+      EndDate: endDate !== null ? endDate : "",
+    };
+
+    dispatch(
+      GetTransactionDetailsByCorporatePDFTypeReportAuditor({ navigate, Data })
+    );
+  };
 
   //Handle Start Date Change
   const handleStartDateChange = (dateObject) => {
@@ -141,6 +161,7 @@ const AuditTrialByCorporate = () => {
     setEndDate(formatDate(dateObject));
   };
 
+  //Toggle Fucntion to view Export Icons
   const toggleExportOptions = () => {
     setOpen((prev) => !prev);
   };
