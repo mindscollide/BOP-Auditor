@@ -19,6 +19,7 @@ export const GetTransactionDetailsByBankExcelTypeReportAuditor =
         );
 
         const response = await getTransactionData(Data, true);
+        console.log(response, "errorerrorerrorerror");
 
         // 🚨 Ensure response is valid before trying to read Excel blob
         if (response?.status === 200) {
@@ -46,7 +47,8 @@ export const GetTransactionDetailsByBankExcelTypeReportAuditor =
           navigate("/");
           return rejectWithValue("Unauthorized access, please login again");
         }
-
+        console.log(error, "errorerrorerrorerror");
+        console.log(error?.responseCode, "errorerrorerrorerror");
         if (error?.responseCode === 417) {
           await dispatch(refreshTokenAction({ navigate }));
           return;

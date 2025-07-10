@@ -16,7 +16,10 @@ import { useNavigate } from "react-router-dom";
 import { GetTransactionDetailsByBankAuditor } from "../../../store/AuditorActions/AuditorActions";
 import { useTableScrollBottomByClassName } from "../../../components/common/useTableScrollBottom";
 import { formatDate } from "../../../components/common/utils";
-import { GetTransactionDetailsByBankExcelTypeReportAuditor } from "../../../store/ReportActions/ReportActions";
+import {
+  GetTransactionDetailsByBankExcelTypeReportAuditor,
+  GetTransactionDetailsByBankPDFTypeReportAuditor,
+} from "../../../store/ReportActions/ReportActions";
 const AuditTrialByBank = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -147,7 +150,21 @@ const AuditTrialByBank = () => {
   };
 
   //Export to Excel Trigger Function
-  const exportToPDF = () => {};
+  const exportToPDF = () => {
+    let Data = {
+      TXNID: Number(formData.txnId),
+      corporateName: formData.corporateName,
+      BranchName: formData.branchName,
+      TransactionByBankUser: formData.txnByBranchUser,
+      TransactionByTreasuryUser: formData.txnByTreasuryUser,
+      StartDate: startDate !== null ? startDate : "",
+      EndDate: endDate !== null ? endDate : "",
+    };
+
+    dispatch(
+      GetTransactionDetailsByBankPDFTypeReportAuditor({ navigate, Data })
+    );
+  };
 
   //Common OnChange for textFields
   const handleTextChange = (e) => {
