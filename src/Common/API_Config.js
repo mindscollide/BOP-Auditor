@@ -17,3 +17,7 @@ export const AuditTrialByCorporate = {
 export const ExcelReportTrasactionDetailsByBank = {
   RequestMethod: "ServiceManager.DownloadTransactionByBankAuditorReport",
 };
+
+export const PDFReportTrasactionDetailsByBank = {
+  RequestMethod: "ServiceManager.DownloadTransactionByBankAuditorReportPDF",
+};

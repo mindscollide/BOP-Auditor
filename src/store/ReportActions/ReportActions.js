@@ -1,9 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { reportApi } from "../../Common/API_EndPoints";
-import { ExcelReportTrasactionDetailsByBank } from "../../Common/API_Config";
+import {
+  ExcelReportTrasactionDetailsByBank,
+  PDFReportTrasactionDetailsByBank,
+} from "../../Common/API_Config";
 import { refreshTokenAction } from "../../container/Pages/Login/logInAction";
 import createPostAPI from "../../Common/GenericPostMethod";
 
+//Excel File Report Download For Transaction Details By Bank (API Func)
 export const GetTransactionDetailsByBankExcelTypeReportAuditor =
   createAsyncThunk(
     "Report/GetTransactionDetailsByBankExcelTypeReportAuditor",
@@ -14,30 +18,10 @@ export const GetTransactionDetailsByBankExcelTypeReportAuditor =
           ExcelReportTrasactionDetailsByBank.RequestMethod
         );
 
-        // Make the request expecting binary data (Excel)
-        const response = await getTransactionData(Data, {
-          headers: {
-            "Content-Type": "application/json",
-            Accept:
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          },
-          responseType: "arraybuffer",
-        });
+        const response = await getTransactionData(Data, true);
 
-        const { responseCode } = response.data;
-
-        if (responseCode === 401) {
-          navigate("/");
-          return rejectWithValue("Unauthorized access, please login again");
-        }
-
-        if (responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-        }
-
-        if (responseCode === 200) {
-          // Extract blob and trigger download
+        // 🚨 Ensure response is valid before trying to read Excel blob
+        if (response?.status === 200) {
           const blob = new Blob([response.data], {
             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           });
@@ -45,17 +29,77 @@ export const GetTransactionDetailsByBankExcelTypeReportAuditor =
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", "TransactionDetails.xlsx");
+          link.setAttribute("download", "TransactionDetailsByBank.xlsx");
           document.body.appendChild(link);
           link.click();
           link.remove();
+
+          return { message: "Excel downloaded successfully" };
         } else {
-          console.log("Unhandled response code:", response.data);
-          return rejectWithValue("Something went wrong");
+          return rejectWithValue(
+            "Something went wrong while downloading Excel"
+          );
         }
       } catch (error) {
-        console.log("Catch Error:", error);
-        return rejectWithValue("Something went wrong");
+        console.log("Excel Download Error:", error);
+        if (error?.responseCode === 401) {
+          navigate("/");
+          return rejectWithValue("Unauthorized access, please login again");
+        }
+
+        if (error?.responseCode === 417) {
+          await dispatch(refreshTokenAction({ navigate }));
+          return;
+        }
+
+        return rejectWithValue("Something went wrong while downloading Excel");
       }
     }
   );
+
+//PDF File Report Download For Transaction Details By Bank (API Func)
+export const GetTransactionDetailsByBankPDFTypeReportAuditor = createAsyncThunk(
+  "Report/GetTransactionDetailsByBankPDFTypeReportAuditor",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const getTransactionData = createPostAPI(
+        reportApi,
+        PDFReportTrasactionDetailsByBank.RequestMethod
+      );
+
+      const response = await getTransactionData(Data, true);
+
+      // 🟢 PDF file response
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/pdf",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "TransactionDetailsByBank.pdf");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "PDF downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading PDF");
+      }
+    } catch (error) {
+      console.log("PDF Download Error:", error);
+      if (error?.responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+
+      if (error?.responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        return;
+      }
+
+      return rejectWithValue("Something went wrong while downloading PDF");
+    }
+  }
+);

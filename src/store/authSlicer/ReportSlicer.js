@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { GetTransactionDetailsByBankExcelTypeReportAuditor } from "../ReportActions/ReportActions";
+import {
+  GetTransactionDetailsByBankExcelTypeReportAuditor,
+  GetTransactionDetailsByBankPDFTypeReportAuditor,
+} from "../ReportActions/ReportActions";
 
 const ReportSlice = createSlice({
   name: "Report",
@@ -9,6 +12,7 @@ const ReportSlice = createSlice({
     error: null,
     refreshTokenResponse: null,
     excelReportTransactionByBankReport: null,
+    pdfReportTransactionByBankReport: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -37,6 +41,29 @@ const ReportSlice = createSlice({
         (state, { payload }) => {
           state.Loader = false;
           state.excelReportTransactionByBankReport = null;
+          state.responseMessage = payload;
+        }
+      )
+
+      .addCase(
+        GetTransactionDetailsByBankPDFTypeReportAuditor.pending,
+        (state) => {
+          state.Loader = true;
+        }
+      )
+      .addCase(
+        GetTransactionDetailsByBankPDFTypeReportAuditor.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.pdfReportTransactionByBankReport = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        GetTransactionDetailsByBankPDFTypeReportAuditor.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.pdfReportTransactionByBankReport = null;
           state.responseMessage = payload;
         }
       );

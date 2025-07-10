@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { GetTransactionDetailsByBankAuditor } from "../../../store/AuditorActions/AuditorActions";
 import { useTableScrollBottomByClassName } from "../../../components/common/useTableScrollBottom";
 import { formatDate } from "../../../components/common/utils";
+import { GetTransactionDetailsByBankExcelTypeReportAuditor } from "../../../store/ReportActions/ReportActions";
 const AuditTrialByBank = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -130,7 +131,19 @@ const AuditTrialByBank = () => {
 
   //Export to PDF Trigger Function
   const exportToExcel = () => {
-    //Excel Export Transaction By Bank API call
+    let Data = {
+      TXNID: Number(formData.txnId),
+      corporateName: formData.corporateName,
+      BranchName: formData.branchName,
+      TransactionByBankUser: formData.txnByBranchUser,
+      TransactionByTreasuryUser: formData.txnByTreasuryUser,
+      StartDate: startDate !== null ? startDate : "",
+      EndDate: endDate !== null ? endDate : "",
+    };
+
+    dispatch(
+      GetTransactionDetailsByBankExcelTypeReportAuditor({ navigate, Data })
+    );
   };
 
   //Export to Excel Trigger Function
@@ -160,8 +173,8 @@ const AuditTrialByBank = () => {
       BranchName: formData.branchName,
       TransactionByBankUser: formData.txnByBranchUser,
       TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate !== "" ? startDate : "",
-      EndDate: endDate !== "" ? endDate : "",
+      StartDate: startDate !== null ? startDate : "",
+      EndDate: endDate !== null ? endDate : "",
       Length: 10,
       sRow: 0,
     };
@@ -330,8 +343,8 @@ const AuditTrialByBank = () => {
           BranchName: formData.branchName,
           TransactionByBankUser: formData.txnByBranchUser,
           TransactionByTreasuryUser: formData.txnByTreasuryUser,
-          StartDate: startDate !== "" ? startDate : "",
-          EndDate: endDate !== "" ? endDate : "",
+          StartDate: startDate !== null ? startDate : "",
+          EndDate: endDate !== null ? endDate : "",
           sRow: sRow,
           Length: 10,
         };
