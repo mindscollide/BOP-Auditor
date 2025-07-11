@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   loginInApi,
+  logoutApi,
   refreshTokenAction,
 } from "../../container/Pages/Login/logInAction";
 
@@ -52,6 +53,20 @@ const authSlice = createSlice({
       .addCase(refreshTokenAction.rejected, (state, { payload }) => {
         state.Loader = false;
         state.refreshTokenResponse = null;
+        state.responseMessage = payload;
+      })
+
+      .addCase(logoutApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(logoutApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.logout = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(logoutApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.logout = null;
         state.responseMessage = payload;
       });
   },

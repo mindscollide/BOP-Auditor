@@ -30,3 +30,7 @@ export const PDFReportTrasactionDetailsByCorporate = {
   RequestMethod:
     "ServiceManager.DownloadTransactionByCorporateAuditorReportPDF",
 };
+
+export const LogOut = {
+  RequestMethod: "ServiceManager.LogOut",
+};

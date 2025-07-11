@@ -1,6 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import createPostAPI from "../../../Common/GenericPostMethod";
-import { loginRequestMethod, refreshTokenRM } from "../../../Common/API_Config";
+import {
+  loginRequestMethod,
+  LogOut,
+  refreshTokenRM,
+} from "../../../Common/API_Config";
 import { roleBasedNavigation } from "../../../Common/Utils";
 import { authApi } from "../../../Common/API_EndPoints";
 
@@ -160,6 +164,65 @@ export const refreshTokenAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+//Logout API
+export const logoutApi = createAsyncThunk(
+  "auth/logoutApi",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const getBlotterData = createPostAPI(authApi, LogOut.RequestMethod);
+      const response = await getBlotterData(Data);
+
+      const resCode = response?.data?.responseCode;
+      const resResult = response?.data?.responseResult;
+      const resMessage = resResult?.responseMessage;
+      const isExecuted = resResult?.isExecuted;
+
+      if (resCode === 401) {
+        localStorage.clear();
+        navigate("/");
+        return rejectWithValue("Unauthorized");
+      }
+
+      if (resCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(logoutApi({ navigate, Data }));
+        return;
+      }
+
+      if (resCode === 200) {
+        if (isExecuted) {
+          switch (resMessage) {
+            case "ERM_AuthService_AuthManager_LogOut_01":
+              // Logout successful
+              localStorage.clear();
+              navigate("/");
+              return {
+                response: resResult,
+                message: "Successfully logged out",
+              };
+
+            case "ERM_AuthService_AuthManager_LogOut_02":
+              return rejectWithValue("Data UnAvailable");
+
+            case "ERM_AuthService_AuthManager_LogOut_03":
+              return rejectWithValue("Exception");
+
+            default:
+              return rejectWithValue("Unknown Logout Response");
+          }
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      console.log("Logout error:", error);
       return rejectWithValue("Something went wrong");
     }
   }
