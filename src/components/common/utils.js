@@ -13,5 +13,8 @@ export const emailValidation = (text) => {
 export const formatDate = (dateObj) => {
   if (!dateObj) return null;
   const jsDate = dateObj.toDate();
-  return jsDate.toISOString().split("T")[0]; // YYYY-MM-DD
+  const year = jsDate.getFullYear();
+  const month = String(jsDate.getMonth() + 1).padStart(2, "0");
+  const day = String(jsDate.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 };
