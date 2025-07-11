@@ -73,26 +73,17 @@ const AuditTrialByBank = () => {
         const newRecords = AuditorTransactionBankData.transactionForBank || [];
         console.log(AuditorTransactionBankData, "AuditorTransactionBankData");
 
-        // Define your own search condition
-        const isSearchMode =
-          formData.txnId ||
-          formData.corporateName ||
-          formData.branchName ||
-          formData.txnByBranchUser ||
-          formData.txnByTreasuryUser ||
-          startDate ||
-          endDate;
-
-        if (isSearchMode || sRow === 0) {
-          setTransactionByBankTblData(newRecords); // replace
-          setSRow(newRecords.length);
-        } else {
-          setTransactionByBankTblData((prev) => [...prev, ...newRecords]); // append
+        if (isLoading) {
+          setIsLoading(false);
+          setTotalRecord(AuditorTransactionBankData.totalCount);
+          setTransactionByBankTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
           setSRow((prev) => prev + newRecords.length);
+        } else {
+          setIsLoading(false);
+          setTransactionByBankTblData(newRecords); // other wise append the new records only
+          setSRow(newRecords.length);
+          setTotalRecord(AuditorTransactionBankData.totalCount);
         }
-
-        setTotalRecord(AuditorTransactionBankData.totalCount);
-        setIsLoading(false);
       }
     } catch (error) {
       console.log(error, "errorerror");
@@ -172,6 +163,7 @@ const AuditTrialByBank = () => {
   //Handle Start Date Change
   const handleStartDateChange = (dateObject) => {
     setStartDate(formatDate(dateObject));
+    console.log(formatDate(dateObject), "DateCheck");
   };
 
   //Handle End Date Change
@@ -192,7 +184,8 @@ const AuditTrialByBank = () => {
       Length: 10,
       sRow: 0,
     };
-    console.log(Data, "DataDataDataData");
+    console.log(Data, "DateCheck");
+    console.log(startDate, "DateCheck");
     dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
   };
 
@@ -218,6 +211,8 @@ const AuditTrialByBank = () => {
       setEndDate(null);
       setTransactionByBankTblData([]);
       setSRow(0);
+      setIsLoading(false);
+      setTotalRecord(0);
       let Data = {
         TXNID: 0,
         corporateName: "",
@@ -349,7 +344,7 @@ const AuditTrialByBank = () => {
   //Scroller Custom Hook
   useTableScrollBottomByClassName(
     () => {
-      if (!isLoading && transactionByBankTblData.length < totalRecord) {
+      if (transactionByBankTblData.length !== totalRecord) {
         setIsLoading(true);
         const Data = {
           TXNID: Number(formData.txnId),
@@ -368,6 +363,9 @@ const AuditTrialByBank = () => {
     0,
     "BankUserList-table"
   );
+
+  console.log(totalRecord, "totalRecordtotalRecord");
+  console.log(transactionByBankTblData.length, "totalRecordtotalRecord");
 
   return (
     <>
