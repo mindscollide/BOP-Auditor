@@ -77,26 +77,17 @@ const AuditTrialByCorporate = () => {
           AuditorTransactionCorporateData,
           "AuditorTransactionBankData"
         );
-
-        // Define your own search condition
-        const isSearchMode =
-          formData.txnId ||
-          formData.corporateUser ||
-          formData.corporateName ||
-          formData.txnByTreasuryUser ||
-          startDate ||
-          endDate;
-
-        if (isSearchMode || sRow === 0) {
-          setTransactionByBankTblData(newRecords); // replace
-          setSRow(newRecords.length);
-        } else {
-          setTransactionByBankTblData((prev) => [...prev, ...newRecords]); // append
+        if (isLoading) {
+          setIsLoading(false);
+          setTotalRecord(AuditorTransactionCorporateData.totalCount);
+          setTransactionByBankTblData((prev) => [...prev, ...newRecords]);
           setSRow((prev) => prev + newRecords.length);
+        } else {
+          setIsLoading(false);
+          setTransactionByBankTblData(newRecords);
+          setSRow(newRecords.length);
+          setTotalRecord(AuditorTransactionCorporateData.totalCount);
         }
-
-        setTotalRecord(AuditorTransactionCorporateData.totalCount);
-        setIsLoading(false);
       }
     } catch (error) {
       console.log(error, "errorerror");
@@ -195,8 +186,8 @@ const AuditTrialByCorporate = () => {
       CorporateUser: formData.corporateUser,
       CorporateName: formData.corporateName,
       TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate,
-      EndDate: endDate,
+      StartDate: startDate !== null ? startDate : "",
+      EndDate: endDate !== null ? endDate : "",
       Length: 10,
       sRow: 0,
     };
@@ -224,6 +215,8 @@ const AuditTrialByCorporate = () => {
       setEndDate(null);
       setTransactionByBankTblData([]);
       setSRow(0);
+      setIsLoading(false);
+      setTotalRecord(0);
       let Data = {
         TXNID: 0,
         CorporateUser: "",
@@ -347,7 +340,7 @@ const AuditTrialByCorporate = () => {
   //Scroller Custom Hook
   useTableScrollBottomByClassName(
     () => {
-      if (!isLoading && transactionByBankTblData.length < totalRecord) {
+      if (transactionByBankTblData.length !== totalRecord) {
         setIsLoading(true);
         let Data = {
           TXNID: Number(formData.txnId) !== "" ? Number(formData.txnId) : 0,
