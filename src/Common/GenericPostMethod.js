@@ -10,20 +10,19 @@ import axios from "axios";
 const createPostAPI =
   (url, requestMethod) => async (bodyData, isDoc, fileName, ext) => {
     try {
-      console.log(bodyData, isDoc, fileName, ext, "createPostAPIcreatePostAPI");
-      const headers = setCustomHeaders(isDoc, fileName, ext); // Pass parameters if needed
+      const headers = setCustomHeaders(isDoc, fileName, ext);
 
       const form = new FormData();
       form.append("RequestMethod", requestMethod);
 
-      if (bodyData && !isDoc) {
+      // ✅ Always append RequestData as JSON string if it's an object
+      if (bodyData && typeof bodyData === "object") {
         form.append("RequestData", JSON.stringify(bodyData));
       }
-      if (isDoc) {
-        // If the bodyData is a file, append it to the FormData
-        if (bodyData) {
-          form.append("File", bodyData);
-        }
+
+      // ✅ Only add a file if bodyData contains an actual File
+      if (isDoc && bodyData?.file instanceof File) {
+        form.append("File", bodyData.file);
       }
 
       const axiosConfig = {
@@ -33,16 +32,12 @@ const createPostAPI =
         headers,
       };
 
-      // Conditionally add responseType if a file exists
-      if (bodyData?.isDoc) {
-        axiosConfig.responseType = "blob";
+      // ✅ Add responseType for Excel or file downloads
+      if (isDoc) {
+        axiosConfig.responseType = "arraybuffer";
       }
 
       const response = await axios(axiosConfig);
-      // if(response.data.responseCode === 401) {
-      //   navigate("/");
-      //   throw new Error("Unauthorized access, please login again");
-      // }
       return response;
     } catch (error) {
       console.error(`Error calling ${url}:`, error);

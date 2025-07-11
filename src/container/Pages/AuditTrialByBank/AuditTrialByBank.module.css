@@ -120,3 +120,35 @@
   font-family: "Poppins", sans-serif;
   align-items: center !important;
 }
+
+.Export_optionsBox {
+  padding: 5px;
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid #e1e1e1;
+  position: absolute;
+  top: 100%;
+  right: 8%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.closed {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.export-button {
+  background: none !important;
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./AuditTrialByBank.module.css";
 import {
   Button,
@@ -16,17 +16,21 @@ import { useNavigate } from "react-router-dom";
 import { GetTransactionDetailsByBankAuditor } from "../../../store/AuditorActions/AuditorActions";
 import { useTableScrollBottomByClassName } from "../../../components/common/useTableScrollBottom";
 import { formatDate } from "../../../components/common/utils";
+import {
+  GetTransactionDetailsByBankExcelTypeReportAuditor,
+  GetTransactionDetailsByBankPDFTypeReportAuditor,
+} from "../../../store/ReportActions/ReportActions";
 const AuditTrialByBank = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const exportRef = useRef(null);
+
   // Extracting the Transaction by Bank Details Data from Reducer
   const AuditorTransactionBankData = useSelector(
     (state) => state.AuditorReducer.transactionDetailsByBankData
   );
 
-  console.log(AuditorTransactionBankData, "AuditorTransactionBankData");
   //Local States
-  const [showExportOptions, setShowExportOptions] = useState(false);
   const [open, setOpen] = useState(false);
   const [sRow, setSRow] = useState(0);
   const [totalRecord, setTotalRecord] = useState(0);
@@ -41,13 +45,7 @@ const AuditTrialByBank = () => {
     txnByBranchUser: "",
     txnByTreasuryUser: "",
   });
-  console.log(formData.txnId, "pool");
-  console.log(formData.corporateName, "pool");
-  console.log(formData.branchName, "pool");
-  console.log(formData.txnByBranchUser, "pool");
-  console.log(formData.txnByTreasuryUser, "pool");
-  console.log(startDate, "pool");
-  console.log(endDate, "pool");
+
   //Calling GetTransactionDetailsByBankAPI
   useEffect(() => {
     try {
@@ -102,20 +100,28 @@ const AuditTrialByBank = () => {
     }
   }, [AuditorTransactionBankData]);
 
-  console.log(transactionByBankTblData, "AuditorTransactionBankData");
-
-  //Toggle for Export Button
+  //Toggle Functino to view Export Icons
   const toggleExportOptions = () => {
-    setShowExportOptions(!showExportOptions);
+    setOpen((prev) => !prev);
   };
 
-  //Excel PDF PopOver Open Func
-  const handleOpenChange = (newOpen) => {
-    setOpen(newOpen);
-  };
+  // Automatically export icons closed UseEffect using Useref Hook
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (exportRef.current && !exportRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   //Excel And PDF Icon Click Func
   const handleExport = (format) => {
+    console.log(typeof format, "formatformatformat");
     if (format === "excel") {
       exportToExcel();
     } else if (format === "pdf") {
@@ -124,10 +130,38 @@ const AuditTrialByBank = () => {
   };
 
   //Export to PDF Trigger Function
-  const exportToExcel = () => {};
+  const exportToExcel = () => {
+    let Data = {
+      TXNID: Number(formData.txnId),
+      corporateName: formData.corporateName,
+      BranchName: formData.branchName,
+      TransactionByBankUser: formData.txnByBranchUser,
+      TransactionByTreasuryUser: formData.txnByTreasuryUser,
+      StartDate: startDate !== null ? startDate : "",
+      EndDate: endDate !== null ? endDate : "",
+    };
+
+    dispatch(
+      GetTransactionDetailsByBankExcelTypeReportAuditor({ navigate, Data })
+    );
+  };
 
   //Export to Excel Trigger Function
-  const exportToPDF = () => {};
+  const exportToPDF = () => {
+    let Data = {
+      TXNID: Number(formData.txnId),
+      corporateName: formData.corporateName,
+      BranchName: formData.branchName,
+      TransactionByBankUser: formData.txnByBranchUser,
+      TransactionByTreasuryUser: formData.txnByTreasuryUser,
+      StartDate: startDate !== null ? startDate : "",
+      EndDate: endDate !== null ? endDate : "",
+    };
+
+    dispatch(
+      GetTransactionDetailsByBankPDFTypeReportAuditor({ navigate, Data })
+    );
+  };
 
   //Common OnChange for textFields
   const handleTextChange = (e) => {
@@ -153,8 +187,8 @@ const AuditTrialByBank = () => {
       BranchName: formData.branchName,
       TransactionByBankUser: formData.txnByBranchUser,
       TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate !== "" ? startDate : "",
-      EndDate: endDate !== "" ? endDate : "",
+      StartDate: startDate !== null ? startDate : "",
+      EndDate: endDate !== null ? endDate : "",
       Length: 10,
       sRow: 0,
     };
@@ -323,8 +357,8 @@ const AuditTrialByBank = () => {
           BranchName: formData.branchName,
           TransactionByBankUser: formData.txnByBranchUser,
           TransactionByTreasuryUser: formData.txnByTreasuryUser,
-          StartDate: startDate !== "" ? startDate : "",
-          EndDate: endDate !== "" ? endDate : "",
+          StartDate: startDate !== null ? startDate : "",
+          EndDate: endDate !== null ? endDate : "",
           sRow: sRow,
           Length: 10,
         };
@@ -435,28 +469,7 @@ const AuditTrialByBank = () => {
               className={styles["ResetButtonStyles"]}
               onClick={handleResetBtn}
             />
-
-            <Popover
-              content={
-                <div className={styles["export-options"]}>
-                  <Button
-                    icon={<img src={excelIcon} alt="Excel Icon" />}
-                    onClick={() => handleExport("excel")}
-                    className={styles["export-button"]}
-                  />
-                  <Button
-                    icon={<img src={pdfIcon} alt="PDF Icon" />}
-                    onClick={() => handleExport("pdf")}
-                    className={styles["export-button"]}
-                  />
-                </div>
-              }
-              trigger="click"
-              open={open}
-              onOpenChange={handleOpenChange}
-              placement="bottomRight"
-              arrow={false}
-            >
+            <div className="position-relative" ref={exportRef}>
               <Button
                 icon={<i className="icon-download"></i>}
                 className={styles["Export_Button"]}
@@ -464,7 +477,23 @@ const AuditTrialByBank = () => {
                 iconClass={styles["resetIconClass"]}
                 onClick={toggleExportOptions}
               />
-            </Popover>
+              <span
+                className={`${styles["Export_optionsBox"]} ${
+                  open ? styles["open"] : styles["closed"]
+                }`}
+              >
+                <Button
+                  icon={<img src={excelIcon} alt="Excel Icon" />}
+                  onClick={() => handleExport("excel")}
+                  className={styles["export-button"]}
+                />
+                <Button
+                  icon={<img src={pdfIcon} alt="PDF Icon" />}
+                  onClick={() => handleExport("pdf")}
+                  className={styles["export-button"]}
+                />
+              </span>
+            </div>
           </Col>
         </Row>
         <Row className="mt-5">

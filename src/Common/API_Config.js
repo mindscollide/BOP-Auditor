@@ -13,3 +13,20 @@ export const AuditTrialByBank = {
 export const AuditTrialByCorporate = {
   RequestMethod: "ServiceManager.GetTransactionDetailsByCorporateData",
 };
+
+export const ExcelReportTrasactionDetailsByBank = {
+  RequestMethod: "ServiceManager.DownloadTransactionByBankAuditorReport",
+};
+
+export const PDFReportTrasactionDetailsByBank = {
+  RequestMethod: "ServiceManager.DownloadTransactionByBankAuditorReportPDF",
+};
+
+export const ExcelReportTrasactionDetailsByCorporate = {
+  RequestMethod: "ServiceManager.DownloadTransactionByCorporateAuditorReport",
+};
+
+export const PDFReportTrasactionDetailsByCorporate = {
+  RequestMethod:
+    "ServiceManager.DownloadTransactionByCorporateAuditorReportPDF",
+};

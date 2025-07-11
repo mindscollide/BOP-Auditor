@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./AuditTrialByCorporate.module.css";
 import { Col, Row } from "react-bootstrap";
 import DatePicker from "react-multi-date-picker";
@@ -16,23 +16,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GetTransactionDetailsByCorporateAuditor } from "../../../store/AuditorActions/AuditorActions";
 import { useTableScrollBottomByClassName } from "../../../components/common/useTableScrollBottom";
+import {
+  GetTransactionDetailsByCorporateExcelTypeReportAuditor,
+  GetTransactionDetailsByCorporatePDFTypeReportAuditor,
+} from "../../../store/ReportActions/ReportActions";
 const AuditTrialByCorporate = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const exportRef = useRef(null);
 
-  //Reducer Data for GetTransaction Details for Corporate
   // Extracting the Transaction by Bank Details Data from Reducer
   const AuditorTransactionCorporateData = useSelector(
     (state) => state.AuditorReducer.transactionDetailsByCorporateData
   );
 
-  console.log(
-    AuditorTransactionCorporateData,
-    "AuditorTransactionCorporateData"
-  );
-
   //Local States
-  const [showExportOptions, setShowExportOptions] = useState(false);
   const [open, setOpen] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -116,14 +114,41 @@ const AuditTrialByCorporate = () => {
   };
 
   //Export to PDF Trigger Function
-  const exportToExcel = () => {};
+  const exportToExcel = () => {
+    let Data = {
+      TXNID: Number(formData.txnId),
+      CorporateUser:
+        formData.corporateUser !== "" ? formData.corporateUser : "",
+      CorporateName:
+        formData.corporateName !== "" ? formData.corporateName : "",
+      TransactionByTreasuryUser:
+        formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
+      StartDate: startDate !== null ? startDate : "",
+      EndDate: endDate !== null ? endDate : "",
+    };
+
+    dispatch(
+      GetTransactionDetailsByCorporateExcelTypeReportAuditor({ navigate, Data })
+    );
+  };
 
   //Export to Excel Trigger Function
-  const exportToPDF = () => {};
+  const exportToPDF = () => {
+    let Data = {
+      TXNID: Number(formData.txnId),
+      CorporateUser:
+        formData.corporateUser !== "" ? formData.corporateUser : "",
+      CorporateName:
+        formData.corporateName !== "" ? formData.corporateName : "",
+      TransactionByTreasuryUser:
+        formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
+      StartDate: startDate !== null ? startDate : "",
+      EndDate: endDate !== null ? endDate : "",
+    };
 
-  //Excel PDF PopOver Open Func
-  const handleOpenChange = (newOpen) => {
-    setOpen(newOpen);
+    dispatch(
+      GetTransactionDetailsByCorporatePDFTypeReportAuditor({ navigate, Data })
+    );
   };
 
   //Handle Start Date Change
@@ -136,10 +161,24 @@ const AuditTrialByCorporate = () => {
     setEndDate(formatDate(dateObject));
   };
 
-  //Toggle for Export Button
+  //Toggle Fucntion to view Export Icons
   const toggleExportOptions = () => {
-    setShowExportOptions(!showExportOptions);
+    setOpen((prev) => !prev);
   };
+
+  // Automatically export icons closed UseEffect using Useref Hook
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (exportRef.current && !exportRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   //Common OnChange for textFields
   const handleTextChange = (e) => {
@@ -217,8 +256,8 @@ const AuditTrialByCorporate = () => {
     },
     {
       title: "Corporate User",
-      dataIndex: "corporateuser",
-      key: "corporateuser",
+      dataIndex: "corporateUser",
+      key: "corporateUser",
       width: 190,
       render: (text) => <span>{text}</span>,
     },
@@ -422,27 +461,7 @@ const AuditTrialByCorporate = () => {
               onClick={handleResetBtn}
             />
 
-            <Popover
-              content={
-                <div className={styles["export-options"]}>
-                  <Button
-                    icon={<img src={excelIcon} alt="Excel Icon" />}
-                    onClick={() => handleExport("excel")}
-                    className={styles["export-button"]}
-                  />
-                  <Button
-                    icon={<img src={pdfIcon} alt="PDF Icon" />}
-                    onClick={() => handleExport("pdf")}
-                    className={styles["export-button"]}
-                  />
-                </div>
-              }
-              trigger="click"
-              open={open}
-              onOpenChange={handleOpenChange}
-              placement="bottomRight"
-              arrow={false}
-            >
+            <div className="position-relative" ref={exportRef}>
               <Button
                 icon={<i className="icon-download"></i>}
                 className={styles["Export_Button"]}
@@ -450,7 +469,23 @@ const AuditTrialByCorporate = () => {
                 iconClass={styles["resetIconClass"]}
                 onClick={toggleExportOptions}
               />
-            </Popover>
+              <span
+                className={`${styles["Export_optionsBox"]} ${
+                  open ? styles["open"] : styles["closed"]
+                }`}
+              >
+                <Button
+                  icon={<img src={excelIcon} alt="Excel Icon" />}
+                  onClick={() => handleExport("excel")}
+                  className={styles["export-button"]}
+                />
+                <Button
+                  icon={<img src={pdfIcon} alt="PDF Icon" />}
+                  onClick={() => handleExport("pdf")}
+                  className={styles["export-button"]}
+                />
+              </span>
+            </div>
           </Col>
         </Row>
         <Row className="mt-5">
