@@ -194,14 +194,14 @@ const BopLogin = () => {
                 className={"mt-3"}
               />
 
-              <p className="mt-2">
+              {/* <p className="mt-2">
                 <Link
                   to={"/forgotpassword"}
                   className={styles["forgotPasswordLink"]}
                 >
                   Forgot Password?
                 </Link>
-              </p>
+              </p> */}
             </section>
           </Form>
         </Col>
