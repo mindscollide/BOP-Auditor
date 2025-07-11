@@ -55,11 +55,10 @@ const BopLogin = () => {
    * Handles the submission of the login form.
    * Validates the credentials and dispatches the login action if valid.
    */
-  const handleSubmit = (e) => {
+  const handleSubmit = () => {
     const {
       email,
       password,
-      hasEmailisValid,
       hasErrorOnEmail,
       hasErrorOnPassword,
       hasErrorOnUserName, // Typo corrected in state initialization to hasErrorOnUserName

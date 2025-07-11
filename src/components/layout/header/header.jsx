@@ -13,12 +13,11 @@ const Header = () => {
   const navigate = useNavigate();
   const [SettingModalState, setSettingModalState] = useState(false);
 
-  const onClickSetting = () => {
-    setSettingModalState(true);
-  };
+  // const onClickSetting = () => {
+  //   setSettingModalState(true);
+  // };
 
   const handleLogout = () => {
-    //Call Logout API
     dispatch(logoutApi({ navigate }));
   };
 
@@ -37,7 +36,7 @@ const Header = () => {
               <i className="icon-arrow-down dropdown-style"></i>
             </Dropdown.Toggle>
             <Dropdown.Menu className="dropdown_menu-Header2">
-              <Dropdown.Item
+              {/* <Dropdown.Item
                 className="dropdown_menu-Item"
                 onClick={onClickSetting}
               >
@@ -45,8 +44,7 @@ const Header = () => {
                   <i className="icon-settings me-1 header-icon-style"></i>
                   <label className="dropdown-select-labels">Setting</label>
                 </Nav.Link>
-              </Dropdown.Item>
-
+              </Dropdown.Item> */}
               <Dropdown.Item
                 className="dropdown_menu-Item"
                 onClick={handleLogout}

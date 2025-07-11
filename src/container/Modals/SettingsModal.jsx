@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Checkbox, Switch } from "antd";
 import "./SettingsModal.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal } from "../../components/elements";
 import { Col, Row } from "react-bootstrap";
+import {
+  GetUserSettingsAuditorAPI,
+  SaveUserSettingsAuditorAPI,
+} from "../../store/SlicerAction/SlicerAction";
 const SettingsModal = ({ SettingModalState, setSettingModalState }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  //Extracting the Get User Settings data from UseSelector
+  const GetUserSettings = useSelector(
+    (state) => state.SettingReducer.getUserSettingsData
+  );
+
+  console.log(GetUserSettings, "GetUserSettingsGetUserSettings");
   const [settingUser, setSettingUser] = useState(true);
   const [passcodeSetting, setPasscodeSetting] = useState(false);
   const [settingsRecord, setSettingRecords] = useState({
@@ -17,34 +27,34 @@ const SettingsModal = ({ SettingModalState, setSettingModalState }) => {
   });
 
   // Make An API Call for Settings
-  //   useEffect(() => {
-  //     dispatch(GetUserSettingsAPI(navigate));
-  //   }, []);
+  useEffect(() => {
+    dispatch(GetUserSettingsAuditorAPI({ navigate }));
+  }, []);
 
   //Extract Settings Data
-  //   useEffect(() => {
-  //     if (GetUserSettings !== null) {
-  //       try {
-  //         const { userSettingsList } = GetUserSettings;
-  //         if (userSettingsList.length > 0) {
-  //           const newSettings = {};
+  useEffect(() => {
+    if (GetUserSettings !== null) {
+      try {
+        const { userSettingsList } = GetUserSettings;
+        if (userSettingsList.length > 0) {
+          const newSettings = {};
 
-  //           userSettingsList.forEach((settingData) => {
-  //             newSettings[settingData.configKey] = JSON.parse(
-  //               settingData.configValue
-  //             );
-  //           });
+          userSettingsList.forEach((settingData) => {
+            newSettings[settingData.configKey] = JSON.parse(
+              settingData.configValue
+            );
+          });
 
-  //           setSettingRecords((prevSettings) => ({
-  //             ...prevSettings,
-  //             ...newSettings,
-  //           }));
-  //         }
-  //       } catch (error) {
-  //         console.error("Error setting user settings:", error);
-  //       }
-  //     }
-  //   }, [GetUserSettings]);
+          setSettingRecords((prevSettings) => ({
+            ...prevSettings,
+            ...newSettings,
+          }));
+        }
+      } catch (error) {
+        console.error("Error setting user settings:", error);
+      }
+    }
+  }, [GetUserSettings]);
 
   const onCloseButton = () => {
     setSettingModalState(false);
@@ -103,11 +113,8 @@ const SettingsModal = ({ SettingModalState, setSettingModalState }) => {
           },
         ],
       };
-
       // Make An API Call for Update Settings
-      //   dispatch(
-      //     UpdateUserSettingsAPI(navigate, updateData, setSettingModalState)
-      //   );
+      dispatch(SaveUserSettingsAuditorAPI({ navigate, updateData }));
     } catch (error) {
       console.log(error, "errorerror");
     }

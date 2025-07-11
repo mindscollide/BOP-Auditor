@@ -34,3 +34,11 @@ export const PDFReportTrasactionDetailsByCorporate = {
 export const LogOut = {
   RequestMethod: "ServiceManager.LogOut",
 };
+
+export const GetUserSettings = {
+  RequestMethod: "ServiceManager.GetUserSettings",
+};
+
+export const UpdateUserSettings = {
+  RequestMethod: "ServiceManager.UpdateUserSettings",
+};
