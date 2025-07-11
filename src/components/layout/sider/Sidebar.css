@@ -46,7 +46,7 @@
   width: 100% !important;
   padding: 6px 0px !important;
   color: #fff !important;
-  border-radius: 0px !important; 
+  border-radius: 0px !important;
   border-bottom: 1px solid #fff !important;
 }
 
@@ -182,4 +182,12 @@ li.ant-menu-item.ant-menu-item-selected.ant-menu-item-only-child.menu-items-side
   > .ant-menu.ant-menu-inline
   .ant-menu-sub.ant-menu-inline {
   background: transparent !important;
+}
+
+:where(.css-1v5z42l).ant-menu-dark.ant-menu-inline
+  .ant-menu-sub.ant-menu-inline,
+:where(.css-1v5z42l).ant-menu-dark
+  > .ant-menu.ant-menu-inline
+  .ant-menu-sub.ant-menu-inline {
+  background: rgb(77, 73, 70) !important;
 }
