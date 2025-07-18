@@ -175,10 +175,18 @@ const AuditTrialByCorporate = () => {
   const handleTextChange = (e) => {
     const { name, value } = e.target;
 
-    console.log({ name, value }, "DataDataDataData");
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    const cleanedValue = value.replace(/\t/g, "").trim();
 
+    if (name === "txnId") {
+      const numericValue = cleanedValue.replace(/\D/g, "");
+      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+      return;
+    }
+
+    // For all other fields, strip tabs and trim, then limit to 50 characters
+    const limitedValue = cleanedValue.slice(0, 50);
+    setFormData((prev) => ({ ...prev, [name]: limitedValue }));
+  };
   //Handle Search Button
   const handleSearchBtn = () => {
     let Data = {
@@ -384,7 +392,7 @@ const AuditTrialByCorporate = () => {
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              name="corporateuser"
+              name="corporateUser"
               placeholder="Corporate User"
               applyClass="TextFieldAuditors"
               value={formData.corporateUser}
@@ -402,7 +410,7 @@ const AuditTrialByCorporate = () => {
           </Col>
           <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
-              name="txnAcceptedByTreasuryUser"
+              name="txnByTreasuryUser"
               placeholder="Transaction Accepted by Treasury User"
               applyClass="TextFieldAuditors"
               value={formData.txnByTreasuryUser}
