@@ -28,23 +28,23 @@ const Sidebar = () => {
     navigate("/BOP/audittrailCorporate");
   };
 
-  const navigateToTradeCount = () => {
-    localStorage.setItem("defaultOpenKey ", "sub1");
-    localStorage.setItem("defaultSelectedKey", "7");
-    navigate("/BOP/TradeCount");
-  };
+  // const navigateToTradeCount = () => {
+  //   localStorage.setItem("defaultOpenKey ", "sub1");
+  //   localStorage.setItem("defaultSelectedKey", "7");
+  //   navigate("/BOP/TradeCount");
+  // };
 
-  const navigateToActivityByBank = () => {
-    localStorage.setItem("defaultOpenKey ", "sub1");
-    localStorage.setItem("defaultSelectedKey", "8");
-    navigate("/BOP/ActivityByBank");
-  };
+  // const navigateToActivityByBank = () => {
+  //   localStorage.setItem("defaultOpenKey ", "sub1");
+  //   localStorage.setItem("defaultSelectedKey", "8");
+  //   navigate("/BOP/ActivityByBank");
+  // };
 
-  const navigateToActivityByCorporate = () => {
-    localStorage.setItem("defaultOpenKey ", "sub1");
-    localStorage.setItem("defaultSelectedKey", "9");
-    navigate("/BOP/ActivityByCorporate");
-  };
+  // const navigateToActivityByCorporate = () => {
+  //   localStorage.setItem("defaultOpenKey ", "sub1");
+  //   localStorage.setItem("defaultSelectedKey", "9");
+  //   navigate("/BOP/ActivityByCorporate");
+  // };
 
   let defaultKeySidebar = localStorage.getItem("defaultSelectedKey");
 
@@ -61,7 +61,7 @@ const Sidebar = () => {
           <SubMenu
             key="sub1"
             icon={<i className="icon-file"></i>}
-            title="Audit Trail"
+            title="Reports"
             className="submenu-sidebar-icons"
           >
             <Menu.Item
@@ -73,7 +73,7 @@ const Sidebar = () => {
               key="5"
               onClick={navigateToBankUser}
             >
-              Audit Trail by Bank
+              Transaction by Bank
             </Menu.Item>
             <Menu.Item
               className={
@@ -84,9 +84,9 @@ const Sidebar = () => {
               key="6"
               onClick={navigateToCorporateUser}
             >
-              Audit Trail by Corporate
+              Transaction by Corporate
             </Menu.Item>
-            <Menu.Item
+            {/* <Menu.Item
               className={
                 defaultKeySidebar !== "7"
                   ? "menu-items-sidebar noDefault"
@@ -118,7 +118,7 @@ const Sidebar = () => {
               onClick={navigateToActivityByCorporate}
             >
               Activity by Corporate
-            </Menu.Item>
+            </Menu.Item> */}
           </SubMenu>
         </Menu>
       </Col>
