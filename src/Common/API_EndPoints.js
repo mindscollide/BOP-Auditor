@@ -1,21 +1,8 @@
-const baseURL = "http://192.168.18.241";
+const baseURL = import.meta.env.VITE_BASE_URL;
 
-const authPort = ":13000/ERM_Auth";
-
-const ReportPort = ":13006/ExcelReport";
-
-const AuditorPort = ":13002/Auditor";
-
-const settingsPort = ":13008/Setting";
-
-const authApi = `${baseURL}${authPort}`;
-// const authApi = "https://localhost:44323/ERM_Auth";
-
-const reportApi = `${baseURL}${ReportPort}`;
-
-const auditorApi = `${baseURL}${AuditorPort}`;
-//const auditorApi = "https://localhost:44322/Auditor";
-
-const settingsApi = `${baseURL}${settingsPort}`;
+const authApi = `${baseURL}${import.meta.env.VITE_AUTH_PORT}`;
+const reportApi = `${baseURL}${import.meta.env.VITE_REPORT_PORT}`;
+const auditorApi = `${baseURL}${import.meta.env.VITE_AUDITOR_PORT}`;
+const settingsApi = `${baseURL}${import.meta.env.VITE_SETTINGS_PORT}`;
 
 export { authApi, reportApi, auditorApi, settingsApi };
