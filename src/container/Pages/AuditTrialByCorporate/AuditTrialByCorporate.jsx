@@ -11,7 +11,7 @@ import {
   CustomTable,
   TextField,
 } from "../../../components/elements";
-import { formatDate } from "../../../components/common/utils";
+import { formatDate, formatPkAmount } from "../../../components/common/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GetTransactionDetailsByCorporateAuditor } from "../../../store/AuditorActions/AuditorActions";
@@ -309,14 +309,14 @@ const AuditTrialByCorporate = () => {
       dataIndex: "amount1",
       key: "amount1",
       width: 130,
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
       title: "Rate",
       dataIndex: "rate",
       key: "rate",
       width: 90,
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
       title: "CCY2",
@@ -330,7 +330,7 @@ const AuditTrialByCorporate = () => {
       dataIndex: "amount2",
       key: "amount2",
       width: 130,
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
       title: "Status",

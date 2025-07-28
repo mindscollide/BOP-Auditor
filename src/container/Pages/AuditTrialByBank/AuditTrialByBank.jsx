@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GetTransactionDetailsByBankAuditor } from "../../../store/AuditorActions/AuditorActions";
 import { useTableScrollBottomByClassName } from "../../../components/common/useTableScrollBottom";
-import { formatDate } from "../../../components/common/utils";
+import { formatDate, formatPkAmount } from "../../../components/common/utils";
 import {
   GetTransactionDetailsByBankExcelTypeReportAuditor,
   GetTransactionDetailsByBankPDFTypeReportAuditor,
@@ -316,14 +316,14 @@ const AuditTrialByBank = () => {
       dataIndex: "amount1",
       key: "amount1",
       width: 130,
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
       title: "Rate",
       dataIndex: "rate",
       key: "rate",
       width: 90,
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
       title: "CCY2",
@@ -337,7 +337,7 @@ const AuditTrialByBank = () => {
       dataIndex: "amount2",
       key: "amount2",
       width: 130,
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
       title: "Status",
