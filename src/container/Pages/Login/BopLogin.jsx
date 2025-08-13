@@ -81,6 +81,7 @@ const BopLogin = () => {
         Password: password,
         DeviceID: "1",
         Device: "Browser",
+        RoleID: 6,
       };
 
       // Dispatch the login API action for non-corporate user
@@ -103,14 +104,13 @@ const BopLogin = () => {
           sm={12}
           md={12}
           lg={12}
-          className="d-flex justify-content-center mt-5 "
-        >
+          className='d-flex justify-content-center mt-5 '>
           <img
             src={BOPLogo}
             style={{ maxWidth: "100%" }}
-            width="300"
-            className="img-fluid"
-            alt="BOP Logo"
+            width='300'
+            className='img-fluid'
+            alt='BOP Logo'
           />
         </Col>
         <Col sm={12} md={12} lg={12}>
@@ -122,51 +122,49 @@ const BopLogin = () => {
                     <IconElement iconClass={"icon-user"} />
                   </InputGroup.Text>
                   <Form.Control
-                    name="email"
-                    autoComplete="off"
+                    name='email'
+                    autoComplete='off'
                     className={styles["form-comtrol-textfield"]}
-                    placeholder="User Name"
+                    placeholder='User Name'
                     required
                     value={crendentials.email}
                     onChange={handleChangeFields}
-                    type="text"
+                    type='text'
                     // pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-                    aria-label="email"
+                    aria-label='email'
                     maxLength={100}
-                    aria-describedby="basic-addon1"
+                    aria-describedby='basic-addon1'
                   />
                 </InputGroup>
 
                 {crendentials.email === "" && (
-                  <p className="color-red fs-sm d-flex justify-content-start m-0">
+                  <p className='color-red fs-sm d-flex justify-content-start m-0'>
                     {userNameError}
                   </p>
                 )}
               </>
 
-              <InputGroup className="mt-3">
+              <InputGroup className='mt-3'>
                 <InputGroup.Text
-                  id="basic-addon1"
-                  className={styles["Icon-Field-class"]}
-                >
+                  id='basic-addon1'
+                  className={styles["Icon-Field-class"]}>
                   <IconElement iconClass={"icon-lock"} />
                 </InputGroup.Text>
                 <Form.Control
-                  name="password"
-                  autoComplete="off"
+                  name='password'
+                  autoComplete='off'
                   className={styles["form-comtrol-textfield-password"]}
-                  placeholder="Password"
+                  placeholder='Password'
                   required
                   value={crendentials.password}
                   onChange={handleChangeFields}
                   type={showPassowrd ? "text" : "password"}
-                  aria-label="password"
-                  aria-describedby="basic-addon2"
+                  aria-label='password'
+                  aria-describedby='basic-addon2'
                 />
                 <InputGroup.Text
-                  id="basic-addon2"
-                  className={styles["eyeIcon-Field-class-BOP-login"]}
-                >
+                  id='basic-addon2'
+                  className={styles["eyeIcon-Field-class-BOP-login"]}>
                   {showPassowrd ? (
                     <IconElement
                       iconClass={"icon-eye-slash"}
@@ -181,7 +179,7 @@ const BopLogin = () => {
                 </InputGroup.Text>
               </InputGroup>
               {crendentials.password === "" && (
-                <p className="color-red fs-sm d-flex justify-content-start m-0">
+                <p className='color-red fs-sm d-flex justify-content-start m-0'>
                   {passwordError}
                 </p>
               )}
