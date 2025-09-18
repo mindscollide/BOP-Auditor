@@ -383,7 +383,7 @@ const AuditTrialByBank = () => {
       <Row>
         <Col lg={12} md={12} sm={12}>
           <span className={styles["AuditTrialBankMainHeading"]}>
-            Audit Trial by Bank
+            Audit Trail by Bank
           </span>
         </Col>
       </Row>
@@ -511,7 +511,7 @@ const AuditTrialByBank = () => {
               column={AuditTrialByBank}
               rows={transactionByBankTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: 350 }}
+              scroll={{ x: "max-content", y: "45vh" }}
               className={"BankUserList-table"}
             />
           </Col>
