@@ -20,6 +20,8 @@ import {
   GetTransactionDetailsByCorporateExcelTypeReportAuditor,
   GetTransactionDetailsByCorporatePDFTypeReportAuditor,
 } from "../../../store/ReportActions/ReportActions";
+import { convertDateTimeIntoLocal, getDateTimeString } from "../../../utils/Timer";
+import moment from "moment";
 const AuditTrialByCorporate = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -274,14 +276,33 @@ const AuditTrialByCorporate = () => {
       dataIndex: "date",
       key: "date",
       width: 120,
-      render: (text) => <span>{text}</span>,
+      render: (text, record) => {
+        let dateStr = getDateTimeString(record.date, record.time);
+        return (
+          <>
+            <span>
+              {dateStr &&
+                moment(convertDateTimeIntoLocal(dateStr)).format("YYYY-MM-DD")}
+            </span>
+          </>
+        );
+      },
     },
     {
       title: "Time",
       dataIndex: "time",
       key: "time",
       width: 100,
-      render: (text) => <span>{text}</span>,
+      render: (text, record) => {
+        let dateStr = getDateTimeString(record.date, record.time);
+
+        return (
+          <span>
+            {dateStr &&
+              moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
+          </span>
+        );
+      },
     },
     {
       title: "Type",
@@ -305,9 +326,11 @@ const AuditTrialByCorporate = () => {
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Amount",
-      dataIndex: "amount1",
-      key: "amount1",
+      title: "TXN Amount",
+      dataIndex: "amount2",
+      key: "amount2",
+      align: "center",
+
       width: 130,
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
@@ -315,6 +338,8 @@ const AuditTrialByCorporate = () => {
       title: "Rate",
       dataIndex: "rate",
       key: "rate",
+      align: "center",
+
       width: 90,
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
@@ -322,13 +347,16 @@ const AuditTrialByCorporate = () => {
       title: "CCY2",
       dataIndex: "ccY2",
       key: "ccY2",
+      align: "center",
+
       width: 80,
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Amount",
-      dataIndex: "amount2",
-      key: "amount2",
+      title: "Total Amount",
+      dataIndex: "amount1",
+      key: "amount1",
+      align: "center",
       width: 130,
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },

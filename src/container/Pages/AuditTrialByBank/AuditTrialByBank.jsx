@@ -20,6 +20,11 @@ import {
   GetTransactionDetailsByBankExcelTypeReportAuditor,
   GetTransactionDetailsByBankPDFTypeReportAuditor,
 } from "../../../store/ReportActions/ReportActions";
+import {
+  convertDateTimeIntoLocal,
+  getDateTimeString,
+} from "../../../utils/Timer";
+import moment from "moment";
 const AuditTrialByBank = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -281,14 +286,33 @@ const AuditTrialByBank = () => {
       dataIndex: "date",
       key: "date",
       width: 120,
-      render: (text) => <span>{text}</span>,
+      render: (text, record) => {
+        let dateStr = getDateTimeString(record.date, record.time);
+        return (
+          <>
+            <span>
+              {dateStr &&
+                moment(convertDateTimeIntoLocal(dateStr)).format("YYYY-MM-DD")}
+            </span>
+          </>
+        );
+      },
     },
     {
       title: "Time",
       dataIndex: "time",
       key: "time",
       width: 100,
-      render: (text) => <span>{text}</span>,
+      render: (text, record) => {
+        let dateStr = getDateTimeString(record.date, record.time);
+
+        return (
+          <span>
+            {dateStr &&
+              moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
+          </span>
+        );
+      },
     },
     {
       title: "Type",
@@ -309,13 +333,16 @@ const AuditTrialByBank = () => {
       dataIndex: "ccY1",
       key: "ccY1",
       width: 80,
+      align: "center",
+
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Amount",
-      dataIndex: "amount1",
+      title: "TXN Amount",
+      dataIndex: "amount2",
       key: "amount1",
       width: 130,
+      align: "center",
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
@@ -323,6 +350,7 @@ const AuditTrialByBank = () => {
       dataIndex: "rate",
       key: "rate",
       width: 90,
+      align: "center",
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
@@ -330,13 +358,15 @@ const AuditTrialByBank = () => {
       dataIndex: "ccY2",
       key: "ccY2",
       width: 80,
+      align: "center",
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Amount",
-      dataIndex: "amount2",
+      title: "Total Amount",
+      dataIndex: "amount1",
       key: "amount2",
       width: 130,
+      align: "center",
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
@@ -387,75 +417,75 @@ const AuditTrialByBank = () => {
           </span>
         </Col>
       </Row>
-      <CustomPaper variant="outlined">
+      <CustomPaper variant='outlined'>
         <Row>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              name="txnId"
-              placeholder="TXN ID"
+              name='txnId'
+              placeholder='TXN ID'
               value={formData.txnId}
               onChange={handleTextChange}
-              applyClass="TextFieldAuditors"
+              applyClass='TextFieldAuditors'
             />
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              name="corporateName"
-              placeholder="Corporate Name"
+              name='corporateName'
+              placeholder='Corporate Name'
               value={formData.corporateName}
               onChange={handleTextChange}
-              applyClass="TextFieldAuditors"
+              applyClass='TextFieldAuditors'
             />
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              name="branchName"
-              placeholder="Branch Name"
+              name='branchName'
+              placeholder='Branch Name'
               value={formData.branchName}
               onChange={handleTextChange}
-              applyClass="TextFieldAuditors"
+              applyClass='TextFieldAuditors'
             />
           </Col>
           <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
-              name="txnByBranchUser"
-              placeholder="Transaction By Branch User"
+              name='txnByBranchUser'
+              placeholder='Transaction By Branch User'
               value={formData.txnByBranchUser}
               onChange={handleTextChange}
-              applyClass="TextFieldAuditors"
+              applyClass='TextFieldAuditors'
             />
           </Col>
           <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
-              name="txnByTreasuryUser"
-              placeholder="Transaction Accepted by Treasury User"
+              name='txnByTreasuryUser'
+              placeholder='Transaction Accepted by Treasury User'
               value={formData.txnByTreasuryUser}
               onChange={handleTextChange}
-              applyClass="TextFieldAuditors"
+              applyClass='TextFieldAuditors'
             />
           </Col>
         </Row>
-        <Row className="mt-3">
-          <Col lg={3} md={3} sm={12} className="d-flex align-items-center ">
+        <Row className='mt-3'>
+          <Col lg={3} md={3} sm={12} className='d-flex align-items-center '>
             <DatePicker
-              name="dateFrom"
+              name='dateFrom'
               value={startDate}
               onChange={handleStartDateChange}
-              placeholder="Start Date"
+              placeholder='Start Date'
               inputClass={styles["Tradecount-Datepicker-left"]}
-              labelClass="d-none"
+              labelClass='d-none'
               showOtherDays
             />
 
             <label className={styles["Tradecount-date-to"]}>to</label>
 
             <DatePicker
-              name="dateTo"
+              name='dateTo'
               value={endDate}
               onChange={handleEndDateChange}
-              placeholder="End Date"
+              placeholder='End Date'
               inputClass={styles["Tradecount-Datepicker-right"]}
-              labelClass="d-none"
+              labelClass='d-none'
               showOtherDays
             />
           </Col>
@@ -464,40 +494,38 @@ const AuditTrialByBank = () => {
             md={6}
             sm={6}
             xs={12}
-            className="d-flex justify-content-start gap-2"
-          >
+            className='d-flex justify-content-start gap-2'>
             <Button
-              icon={<i className="icon-search icon-check-space"></i>}
+              icon={<i className='icon-search icon-check-space'></i>}
               value={"Search"}
               className={styles["SearchButtonStyles"]}
               onClick={handleSearchBtn}
             />
             <Button
-              icon={<i className="icon-refresh"></i>}
+              icon={<i className='icon-refresh'></i>}
               value={"Reset"}
               className={styles["ResetButtonStyles"]}
               onClick={handleResetBtn}
             />
-            <div className="position-relative" ref={exportRef}>
+            <div className='position-relative' ref={exportRef}>
               <Button
-                icon={<i className="icon-download"></i>}
+                icon={<i className='icon-download'></i>}
                 className={styles["Export_Button"]}
-                value="Export"
+                value='Export'
                 iconClass={styles["resetIconClass"]}
                 onClick={toggleExportOptions}
               />
               <span
                 className={`${styles["Export_optionsBox"]} ${
                   open ? styles["open"] : styles["closed"]
-                }`}
-              >
+                }`}>
                 <Button
-                  icon={<img src={excelIcon} alt="Excel Icon" />}
+                  icon={<img src={excelIcon} alt='Excel Icon' />}
                   onClick={() => handleExport("excel")}
                   className={styles["export-button"]}
                 />
                 <Button
-                  icon={<img src={pdfIcon} alt="PDF Icon" />}
+                  icon={<img src={pdfIcon} alt='PDF Icon' />}
                   onClick={() => handleExport("pdf")}
                   className={styles["export-button"]}
                 />
@@ -505,7 +533,7 @@ const AuditTrialByBank = () => {
             </div>
           </Col>
         </Row>
-        <Row className="mt-5">
+        <Row className='mt-5'>
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={AuditTrialByBank}
