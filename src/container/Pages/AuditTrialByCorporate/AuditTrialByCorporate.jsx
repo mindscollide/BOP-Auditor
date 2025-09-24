@@ -20,7 +20,10 @@ import {
   GetTransactionDetailsByCorporateExcelTypeReportAuditor,
   GetTransactionDetailsByCorporatePDFTypeReportAuditor,
 } from "../../../store/ReportActions/ReportActions";
-import { convertDateTimeIntoLocal, getDateTimeString } from "../../../utils/Timer";
+import {
+  convertDateTimeIntoLocal,
+  getDateTimeString,
+} from "../../../utils/Timer";
 import moment from "moment";
 const AuditTrialByCorporate = () => {
   const dispatch = useDispatch();
@@ -523,7 +526,7 @@ const AuditTrialByCorporate = () => {
               column={AuditTrialByCorporate}
               rows={transactionByBankTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: 350 }}
+              scroll={{ x: "max-content", y: "45vh" }}
               className={"BankUserList-table"}
             />
           </Col>
