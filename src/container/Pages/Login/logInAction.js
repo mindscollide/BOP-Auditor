@@ -229,3 +229,57 @@ export const logoutApi = createAsyncThunk(
     }
   }
 );
+
+// ✅ Plain async function (can be called anywhere)
+export const refreshTokenFn = async () => {
+  try {
+    let Data = {
+      RefreshToken: localStorage.getItem("refreshToken"),
+      Token: localStorage.getItem("token"),
+    };
+
+    let refreshToken = createPostAPI(authApi, refreshTokenRM.RequestMethod);
+
+    const response = await refreshToken(Data);
+
+    if (response.data.responseCode === 205) {
+      localStorage.clear();
+      window.location.href = "/";
+      throw new Error("Invalid refresh token");
+    } else if (response.data.responseCode === 200) {
+      const { isExecuted, responseMessage, token, refreshToken } =
+        response.data.responseResult;
+
+      if (isExecuted) {
+        if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "ERM_AuthService_AuthManager_RefreshToken_01".toLowerCase()
+            )
+        ) {
+          localStorage.setItem("token", token);
+          localStorage.setItem("refreshToken", refreshToken);
+          return { token, refreshToken };
+        } else if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "ERM_AuthService_AuthManager_RefreshToken_02".toLowerCase()
+            )
+        ) {
+          window.location.href = "/";
+          throw new Error("Refresh token expired");
+        } else {
+          throw new Error("Something went wrong");
+        }
+      } else {
+        window.location.href = "/";
+        throw new Error("Execution failed");
+      }
+    }
+  } catch (error) {
+    console.error("Refresh token error:", error);
+    throw error;
+  }
+};

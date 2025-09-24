@@ -44,18 +44,6 @@ export const GetTransactionDetailsByBankExcelTypeReportAuditor =
           );
         }
       } catch (error) {
-        console.log("Excel Download Error:", error);
-        if (error?.responseCode === 401) {
-          navigate("/");
-          return rejectWithValue("Unauthorized access, please login again");
-        }
-        console.log(error, "errorerrorerrorerror");
-        console.log(error?.responseCode, "errorerrorerrorerror");
-        if (error?.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-        }
-
         return rejectWithValue("Something went wrong while downloading Excel");
       }
     }
@@ -92,17 +80,6 @@ export const GetTransactionDetailsByBankPDFTypeReportAuditor = createAsyncThunk(
         return rejectWithValue("Something went wrong while downloading PDF");
       }
     } catch (error) {
-      console.log("PDF Download Error:", error);
-      if (error?.responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
-
-      if (error?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        return;
-      }
-
       return rejectWithValue("Something went wrong while downloading PDF");
     }
   }
@@ -121,6 +98,7 @@ export const GetTransactionDetailsByCorporateExcelTypeReportAuditor =
 
         const response = await getTransactionData(Data, true);
         console.log(response, "errorerrorerrorerror");
+        const contentType = response.headers?.["content-type"];
 
         // 🚨 Ensure response is valid before trying to read Excel blob
         if (response?.status === 200) {
@@ -143,18 +121,6 @@ export const GetTransactionDetailsByCorporateExcelTypeReportAuditor =
           );
         }
       } catch (error) {
-        console.log("Excel Download Error:", error);
-        if (error?.responseCode === 401) {
-          navigate("/");
-          return rejectWithValue("Unauthorized access, please login again");
-        }
-        console.log(error, "errorerrorerrorerror");
-        console.log(error?.responseCode, "errorerrorerrorerror");
-        if (error?.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-        }
-
         return rejectWithValue("Something went wrong while downloading Excel");
       }
     }
@@ -192,17 +158,6 @@ export const GetTransactionDetailsByCorporatePDFTypeReportAuditor =
           return rejectWithValue("Something went wrong while downloading PDF");
         }
       } catch (error) {
-        console.log("PDF Download Error:", error);
-        if (error?.responseCode === 401) {
-          navigate("/");
-          return rejectWithValue("Unauthorized access, please login again");
-        }
-
-        if (error?.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-        }
-
         return rejectWithValue("Something went wrong while downloading PDF");
       }
     }

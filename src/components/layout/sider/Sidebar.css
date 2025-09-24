@@ -95,14 +95,11 @@
   color: #fff !important;
 }
 
-.menu-items-sidebar:hover,
-.menu-items-sidebar:active,
-.menu-items-sidebar:focus,
-.menu-items-sidebar:focus-visible,
-.menu-items-sidebar:focus-within {
+.menu-items-sidebar_active {
   background-color: #096fed !important;
   color: #fff !important;
   border-radius: 0px !important;
+  font-weight: 400 !important;
 }
 
 :where(.css-dev-only-do-not-override-1e3x2xa).ant-menu-light
