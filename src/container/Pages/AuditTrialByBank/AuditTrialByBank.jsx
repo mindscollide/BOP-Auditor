@@ -275,7 +275,7 @@ const AuditTrialByBank = () => {
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Treasury User",
+      title: "Treasury Sales User",
       dataIndex: "treasuryUser",
       key: "treasuryUser",
       width: 150,
@@ -458,7 +458,7 @@ const AuditTrialByBank = () => {
           <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
               name="txnByTreasuryUser"
-              placeholder="Transaction Accepted by Treasury User"
+              placeholder="Transaction Accepted by Treasury Sales"
               value={formData.txnByTreasuryUser}
               onChange={handleTextChange}
               applyClass="TextFieldAuditors"
