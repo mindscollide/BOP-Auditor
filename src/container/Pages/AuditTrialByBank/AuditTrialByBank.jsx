@@ -413,7 +413,7 @@ const AuditTrialByBank = () => {
       <Row>
         <Col lg={12} md={12} sm={12}>
           <span className={styles["AuditTrialBankMainHeading"]}>
-            Audit Trail by Bank
+            Audit Trail by Bank.
           </span>
         </Col>
       </Row>
