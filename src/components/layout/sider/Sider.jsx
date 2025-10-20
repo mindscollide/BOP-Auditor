@@ -143,6 +143,18 @@ const Sidebar = () => {
               >
                 Transaction by Corporate
               </Link>
+
+              <Link
+                to="/BOP/userManagement"
+                className={
+                  location.pathname.includes("userManagement")
+                    ? "sidebar-menu-item_Active"
+                    : "sidebar-menu-item"
+                }
+                onClick={() => handleItemClick("userManagement")}
+              >
+                User Management Report
+              </Link>
             </div>
           )}
         </Nav.Item>

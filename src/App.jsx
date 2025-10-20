@@ -15,6 +15,7 @@ import ActivityByCorporate from "./container/Pages/ActivityByCorporate/ActivityB
 import BopLogin from "./container/Pages/Login/BopLogin";
 import { Loader } from "./components/elements";
 import PrivateRoute from "./routes/PrivateRoute";
+import UserManagementReport from "./container/Pages/UserManagementReport/UserManagementReport";
 
 function App() {
   const [routes, setRoutes] = useState([]);
@@ -36,6 +37,10 @@ function App() {
         {
           path: "audittrailCorporate",
           element: <PrivateRoute element={<AuditTrialByCorporate />} />,
+        },
+        {
+          path: "userManagement",
+          element: <PrivateRoute element={<UserManagementReport />} />,
         },
         {
           path: "TradeCount",
