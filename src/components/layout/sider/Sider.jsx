@@ -155,6 +155,18 @@ const Sidebar = () => {
               >
                 User Management Report
               </Link>
+
+              <Link
+                to="/BOP/rateInputReport"
+                className={
+                  location.pathname.includes("rateInputReport")
+                    ? "sidebar-menu-item_Active"
+                    : "sidebar-menu-item"
+                }
+                onClick={() => handleItemClick("rateInputReport")}
+              >
+                Rate Input Report
+              </Link>
             </div>
           )}
         </Nav.Item>

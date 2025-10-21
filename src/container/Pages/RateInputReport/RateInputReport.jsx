@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import styles from "./AuditTrialByBank.module.css";
+import styles from "./RateInputReport.module.css";
 import {
   Button,
   CustomPaper,
@@ -15,17 +15,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GetTransactionDetailsByBankAuditor } from "../../../store/AuditorActions/AuditorActions";
 import { useTableScrollBottomByClassName } from "../../../components/common/useTableScrollBottom";
-import { formatDate, formatPkAmount } from "../../../components/common/utils";
+import {
+  formatDate,
+
+  // formatPkAmount
+} from "../../../components/common/utils";
 import {
   GetTransactionDetailsByBankExcelTypeReportAuditor,
   GetTransactionDetailsByBankPDFTypeReportAuditor,
 } from "../../../store/ReportActions/ReportActions";
-import {
-  convertDateTimeIntoLocal,
-  getDateTimeString,
-} from "../../../utils/Timer";
-import moment from "moment";
-const AuditTrialByBank = () => {
+// import {
+//   convertDateTimeIntoLocal,
+//   getDateTimeString,
+// } from "../../../utils/Timer";
+// import moment from "moment";
+const RateInputReport = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const exportRef = useRef(null);
@@ -40,15 +44,15 @@ const AuditTrialByBank = () => {
   const [sRow, setSRow] = useState(0);
   const [totalRecord, setTotalRecord] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [transactionByBankTblData, setTransactionByBankTblData] = useState([]);
+  const [rateReportTblData, setRateReportTblData] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [formData, setFormData] = useState({
-    txnId: "",
-    corporateName: "",
-    branchName: "",
-    txnByBranchUser: "",
-    txnByTreasuryUser: "",
+    employeeName: "",
+    employeeId: "",
+    // branchName: "",
+    // txnByBranchUser: "",
+    // txnByTreasuryUser: "",
   });
 
   //Calling GetTransactionDetailsByBankAPI
@@ -65,7 +69,7 @@ const AuditTrialByBank = () => {
         Length: 10,
         sRow: 0,
       };
-      dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+      // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
     } catch (error) {
       console.log(error, "errorerror");
     }
@@ -81,11 +85,11 @@ const AuditTrialByBank = () => {
         if (isLoading) {
           setIsLoading(false);
           setTotalRecord(AuditorTransactionBankData.totalCount);
-          setTransactionByBankTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
+          setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
           setSRow((prev) => prev + newRecords.length);
         } else {
           setIsLoading(false);
-          setTransactionByBankTblData(newRecords); // other wise append the new records only
+          setRateReportTblData(newRecords); // other wise append the new records only
           setSRow(newRecords.length);
           setTotalRecord(AuditorTransactionBankData.totalCount);
         }
@@ -165,7 +169,7 @@ const AuditTrialByBank = () => {
 
     const cleanedValue = value.replace(/\t/g, "").trim();
 
-    if (name === "txnId") {
+    if (name === "employeeId") {
       const numericValue = cleanedValue.replace(/\D/g, "");
       setFormData((prev) => ({ ...prev, [name]: numericValue }));
       return;
@@ -202,30 +206,24 @@ const AuditTrialByBank = () => {
     };
     console.log(Data, "DateCheck");
     console.log(startDate, "DateCheck");
-    dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+    // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
   };
 
   //Handle Reset Button
   const handleResetBtn = () => {
     if (
-      formData.txnId !== "" ||
-      formData.corporateName !== "" ||
-      formData.branchName !== "" ||
-      formData.txnByBranchUser !== "" ||
-      formData.txnByTreasuryUser !== "" ||
+      formData.employeeId !== "" ||
+      formData.employeeName !== "" ||
       startDate !== null ||
       endDate !== null
     ) {
       setFormData({
-        txnId: "",
-        corporateName: "",
-        branchName: "",
-        txnByBranchUser: "",
-        txnByTreasuryUser: "",
+        employeeId: "",
+        employeeName: "",
       });
       setStartDate(null);
       setEndDate(null);
-      setTransactionByBankTblData([]);
+      setRateReportTblData([]);
       setSRow(0);
       setIsLoading(false);
       setTotalRecord(0);
@@ -240,234 +238,67 @@ const AuditTrialByBank = () => {
         Length: 10,
         sRow: 0,
       };
-      dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+      // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
     }
   };
 
   // Columns for Audit Trial By Bank
-  const AuditTrialByBank = [
+  const RateReportColumns = [
     {
-      title: "TXN ID",
-      dataIndex: "txnid",
-      key: "txnid",
-      width: 100,
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Corporate Name",
-      dataIndex: "corporateName",
-      key: "corporateName",
-      width: 180,
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Branch Name",
-      dataIndex: "branchName",
-      key: "branchName",
-      width: 190,
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Branch User",
-      dataIndex: "branchUser",
-      key: "branchUser",
-      width: 160,
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Treasury Sales User",
-      dataIndex: "treasuryUser",
-      key: "treasuryUser",
-      width: 150,
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
+      title: "Employee ID",
+      // dataIndex: "txnid",
+      // key: "txnid",
       width: 120,
-      render: (text, record) => {
-        let dateStr = getDateTimeString(record.date, record.time);
-        return (
-          <>
-            <span>
-              {dateStr &&
-                moment(convertDateTimeIntoLocal(dateStr)).format("YYYY-MM-DD")}
-            </span>
-          </>
-        );
-      },
-    },
-    {
-      title: "Time",
-      dataIndex: "time",
-      key: "time",
-      width: 100,
-      render: (text, record) => {
-        let dateStr = getDateTimeString(record.date, record.time);
-
-        return (
-          <span>
-            {dateStr &&
-              moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss A")}
-          </span>
-        );
-      },
-    },
-    {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-      width: 100,
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Nature",
-      dataIndex: "nature",
-      key: "nature",
-      width: 220,
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "CCY1",
-      dataIndex: "ccY1",
-      key: "ccY1",
-      width: 80,
-      align: "center",
-
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "TXN Amount",
-      dataIndex: "amount2",
-      key: "amount1",
-      width: 130,
-      align: "center",
-      render: (text) => <span>{formatPkAmount(text)}</span>,
-    },
-    {
-      title: "Rate",
-      dataIndex: "rate",
-      key: "rate",
-      width: 90,
-      align: "center",
-      render: (text) => <span>{formatPkAmount(text)}</span>,
-    },
-    {
-      title: "CCY2",
-      dataIndex: "ccY2",
-      key: "ccY2",
-      width: 80,
-      align: "center",
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Total Amount",
-      dataIndex: "amount1",
-      key: "amount2",
-      width: 130,
-      align: "center",
-      render: (text) => <span>{formatPkAmount(text)}</span>,
-    },
-    {
-      title: "LC #",
-      // dataIndex: "amount1",
-      // key: "amount2",
-      width: 130,
-      align: "center",
-      render: (text) => <span>{formatPkAmount(text)}</span>,
-    },
-    {
-      title: "Account #",
-      // dataIndex: "amount1",
-      // key: "amount2",
-      width: 130,
-      align: "center",
       // render: (text) => <span>{text}</span>,
     },
     {
-      title: "Initiated By",
-      dataIndex: "initiatedBy",
-      key: "initiatedBy",
-      width: 130,
-      align: "center",
+      title: "Employee Name",
+      // dataIndex: "corporateName",
+      // key: "corporateName",
+      width: 180,
+      // render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Email ID",
+      // dataIndex: "branchName",
+      // key: "branchName",
+      width: 200,
       render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Accepted By",
-      dataIndex: "acceptedBy",
-      key: "acceptedBy",
-      width: 130,
-      align: "center",
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "TXN Accepted Time",
-      dataIndex: "txnAcceptedTime",
-      key: "amount2",
-      align: "center",
-      width: 150,
-      render: (text, record) => {
-        let dateStr =
-          record.txnAcceptedTime !== ""
-            ? getDateTimeString(record.date, record.txnAcceptedTime)
-            : null;
-
-        return (
-          <span>
-            {dateStr &&
-              moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss A")}
-          </span>
-        );
-      },
-    },
-    {
-      title: "Cancelled By",
-      dataIndex: "cancelledBy",
-      key: "cancelledBy",
-      width: 130,
-      align: "center",
-      render: (text) => <span>{text}</span>,
-    },
-
-    {
-      title: "Cancelled Time",
-      dataIndex: "cancelledBy",
-      key: "cancelledBy",
-      align: "center",
-      width: 120,
-      render: (text, record) => {
-        console.log(record, "cancelledBy");
-        let dateStr =
-          record.cancelledBy !== ""
-            ? getDateTimeString(record.date, record.cancelledBy)
-            : null;
-
-        return (
-          <span>
-            {dateStr &&
-              moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss A")}
-          </span>
-        );
-      },
     },
     {
       title: "Status",
-      dataIndex: "status",
-      key: "status",
-      width: 110,
-      render: (text) => (
-        <span style={{ color: text === "Accepted" ? "green" : "red" }}>
-          {text}
-        </span>
-      ),
+      // dataIndex: "branchUser",
+      // key: "branchUser",
+      width: 100,
+      // render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Time Stamps",
+      // dataIndex: "treasuryUser",
+      // key: "treasuryUser",
+      width: 180,
+      // render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Bid",
+      // dataIndex: "date",
+      // key: "date",
+      width: 70,
+      // render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Ask",
+      // dataIndex: "time",
+      // key: "time",
+      width: 70,
+      // render: (text) => <span>{text}</span>,
     },
   ];
 
   //Scroller Custom Hook
   useTableScrollBottomByClassName(
     () => {
-      if (transactionByBankTblData.length !== totalRecord) {
+      if (rateReportTblData.length !== totalRecord) {
         setIsLoading(true);
         const Data = {
           TXNID: Number(formData.txnId),
@@ -480,7 +311,7 @@ const AuditTrialByBank = () => {
           sRow: sRow,
           Length: 10,
         };
-        dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+        // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
       }
     },
     0,
@@ -488,66 +319,19 @@ const AuditTrialByBank = () => {
   );
 
   console.log(totalRecord, "totalRecordtotalRecord");
-  console.log(transactionByBankTblData.length, "totalRecordtotalRecord");
+  console.log(rateReportTblData.length, "totalRecordtotalRecord");
 
   return (
     <>
       <Row>
         <Col lg={12} md={12} sm={12}>
           <span className={styles["AuditTrialBankMainHeading"]}>
-            Audit Trail by Bank
+            Rate Input Report
           </span>
         </Col>
       </Row>
       <CustomPaper variant="outlined">
         <Row>
-          <Col lg={2} md={2} sm={2} xs={12}>
-            <TextField
-              name="txnId"
-              placeholder="TXN ID"
-              value={formData.txnId}
-              onChange={handleTextChange}
-              applyClass="TextFieldAuditors"
-            />
-          </Col>
-          <Col lg={2} md={2} sm={2} xs={12}>
-            <TextField
-              name="corporateName"
-              placeholder="Corporate Name"
-              value={formData.corporateName}
-              onChange={handleTextChange}
-              applyClass="TextFieldAuditors"
-            />
-          </Col>
-          <Col lg={2} md={2} sm={2} xs={12}>
-            <TextField
-              name="branchName"
-              placeholder="Branch Name"
-              value={formData.branchName}
-              onChange={handleTextChange}
-              applyClass="TextFieldAuditors"
-            />
-          </Col>
-          <Col lg={3} md={3} sm={3} xs={12}>
-            <TextField
-              name="txnByBranchUser"
-              placeholder="Transaction By Branch User"
-              value={formData.txnByBranchUser}
-              onChange={handleTextChange}
-              applyClass="TextFieldAuditors"
-            />
-          </Col>
-          <Col lg={3} md={3} sm={3} xs={12}>
-            <TextField
-              name="txnByTreasuryUser"
-              placeholder="Transaction Accepted by Treasury Sales"
-              value={formData.txnByTreasuryUser}
-              onChange={handleTextChange}
-              applyClass="TextFieldAuditors"
-            />
-          </Col>
-        </Row>
-        <Row className="mt-3">
           <Col lg={3} md={3} sm={12} className="d-flex align-items-center ">
             <DatePicker
               name="dateFrom"
@@ -571,10 +355,28 @@ const AuditTrialByBank = () => {
               showOtherDays
             />
           </Col>
+          <Col lg={2} md={2} sm={2} xs={12}>
+            <TextField
+              name="employeeName"
+              placeholder="Employee Name"
+              value={formData.employeeName}
+              onChange={handleTextChange}
+              applyClass="TextFieldAuditors"
+            />
+          </Col>
+          <Col lg={2} md={2} sm={2} xs={12}>
+            <TextField
+              name="employeeId"
+              placeholder="Employee ID"
+              value={formData.employeeId}
+              onChange={handleTextChange}
+              applyClass="TextFieldAuditors"
+            />
+          </Col>
           <Col
-            lg={6}
-            md={6}
-            sm={6}
+            lg={5}
+            md={5}
+            sm={5}
             xs={12}
             className="d-flex justify-content-start gap-2"
           >
@@ -617,11 +419,12 @@ const AuditTrialByBank = () => {
             </div>
           </Col>
         </Row>
+        <Row className="mt-3"></Row>
         <Row className="mt-5">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
-              column={AuditTrialByBank}
-              rows={transactionByBankTblData}
+              column={RateReportColumns}
+              rows={rateReportTblData}
               pagination={false}
               scroll={{ x: "max-content", y: "45vh" }}
               className={"BankUserList-table"}
@@ -633,4 +436,4 @@ const AuditTrialByBank = () => {
   );
 };
 
-export default AuditTrialByBank;
+export default RateInputReport;

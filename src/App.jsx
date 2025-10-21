@@ -16,6 +16,7 @@ import BopLogin from "./container/Pages/Login/BopLogin";
 import { Loader } from "./components/elements";
 import PrivateRoute from "./routes/PrivateRoute";
 import UserManagementReport from "./container/Pages/UserManagementReport/UserManagementReport";
+import MainInputReport from "./container/Pages/RateInputReport";
 
 function App() {
   const [routes, setRoutes] = useState([]);
@@ -41,6 +42,10 @@ function App() {
         {
           path: "userManagement",
           element: <PrivateRoute element={<UserManagementReport />} />,
+        },
+        {
+          path: "rateInputReport",
+          element: <PrivateRoute element={<MainInputReport />} />,
         },
         {
           path: "TradeCount",

@@ -1,4 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  // useEffect,
+  useRef,
+  useState,
+} from "react";
 import styles from "./UserManagementReport.module.css";
 import { Col, Row } from "react-bootstrap";
 import DatePicker from "react-multi-date-picker";
@@ -11,7 +15,7 @@ import {
   CustomTable,
   TextField,
 } from "../../../components/elements";
-import { formatDate, formatPkAmount } from "../../../components/common/utils";
+// import { formatDate, formatPkAmount } from "../../../components/common/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GetTransactionDetailsByCorporateAuditor } from "../../../store/AuditorActions/AuditorActions";
@@ -20,11 +24,12 @@ import {
   GetTransactionDetailsByCorporateExcelTypeReportAuditor,
   GetTransactionDetailsByCorporatePDFTypeReportAuditor,
 } from "../../../store/ReportActions/ReportActions";
-import {
-  convertDateTimeIntoLocal,
-  getDateTimeString,
-} from "../../../utils/Timer";
-import moment from "moment";
+// import {
+//   convertDateTimeIntoLocal,
+//   getDateTimeString,
+// } from "../../../utils/Timer";
+// import moment from "moment";
+import SelectDropdown from "../../../components/common/selectDropdown/SelectDropdown";
 const UserManagementReport = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,12 +42,46 @@ const UserManagementReport = () => {
 
   //Local States
   const [open, setOpen] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
   const [sRow, setSRow] = useState(0);
   const [totalRecord, setTotalRecord] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [transactionByBankTblData, setTransactionByBankTblData] = useState([]);
+  // const [isLoading, setIsLoading] = useState(false);
+  const [userManagementTblData, setUserManagementTblData] = useState([]);
+
+  // const [branchCorporateOptions, setBranchCorporateOptions] = useState([
+  //   { label: "Branch", value: 0 },
+  //   { label: "Corporate", value: 1 },
+  // ]);
+
+  const branchCorporateOptions = [
+    { label: "Branch", value: 0 },
+    { label: "Corporate", value: 1 },
+  ];
+  const [selectedBranchCorporateOption, setSelectedBranchCorporateOption] =
+    useState({ label: "Branch", value: 0 });
+
+  //TEMPORARY
+  const branchOptions = [
+    { label: "Branch", value: 0 },
+    { label: "FX Trading", value: 1 },
+    { label: "Treasury Sales", value: 2 },
+  ];
+
+  const [selectedBranchOption, setSelectedBranchOption] = useState({
+    label: "Branch",
+    value: 0,
+  });
+
+  const handleSelectBranchCorporate = (e, name) => {
+    if (name === "branchCorporateOptions") {
+      console.log(e, "selected Option");
+      setSelectedBranchCorporateOption(e);
+    }
+    if (name === "branchOptions") {
+      console.log(e, "selected Option");
+      setSelectedBranchOption(e);
+    }
+  };
+
   // const [formData, setFormData] = useState({
   //   txnId: "",
   //   corporateUser: "",
@@ -50,13 +89,13 @@ const UserManagementReport = () => {
   //   txnByTreasuryUser: "",
   // });
   const [formData, setFormData] = useState({
-    counterPart: "",
+    counterParty: "",
     branchCorporateDropdown: "",
     employeeID: "",
     email: "",
     branchDropdown: "",
     branchInput: "",
-    createBy: "",
+    createdBy: "",
     approvedBy: "",
     deactivatedBy: "",
   });
@@ -157,16 +196,6 @@ const UserManagementReport = () => {
   //   );
   // };
 
-  //Handle Start Date Change
-  const handleStartDateChange = (dateObject) => {
-    setStartDate(formatDate(dateObject));
-  };
-
-  //Handle End Date Change
-  const handleEndDateChange = (dateObject) => {
-    setEndDate(formatDate(dateObject));
-  };
-
   //Toggle Fucntion to view Export Icons
   const toggleExportOptions = () => {
     setOpen((prev) => !prev);
@@ -189,10 +218,12 @@ const UserManagementReport = () => {
   //Common OnChange for textFields
   const handleTextChange = (e) => {
     const { name, value } = e.target;
+    console.log({ name, value }, "value");
 
     const cleanedValue = value.replace(/\t/g, "").trim();
 
-    if (name === "txnId") {
+    if (name === "employeeID") {
+      console.log("standing here");
       const numericValue = cleanedValue.replace(/\D/g, "");
       setFormData((prev) => ({ ...prev, [name]: numericValue }));
       return;
@@ -209,8 +240,6 @@ const UserManagementReport = () => {
       CorporateUser: formData.corporateUser,
       CorporateName: formData.corporateName,
       TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
       Length: 10,
       sRow: 0,
     };
@@ -220,25 +249,30 @@ const UserManagementReport = () => {
 
   //Handle Reset Button
   const handleResetBtn = () => {
+    setSelectedBranchCorporateOption({ label: "Branch", value: 0 });
+    setSelectedBranchOption({ label: "Branch", value: 0 });
     if (
-      formData.txnId !== "" ||
-      formData.corporateName !== "" ||
-      formData.corporateUser !== "" ||
-      formData.txnByTreasuryUser !== "" ||
-      startDate !== null ||
-      endDate !== null
+      formData.counterParty !== "" ||
+      formData.employeeID !== "" ||
+      formData.email !== "" ||
+      formData.branchInput !== "" ||
+      formData.createdBy !== "" ||
+      formData.approvedBy !== "" ||
+      formData.deactivatedBy !== ""
     ) {
       setFormData({
-        txnId: "",
-        corporateUser: "",
-        corporateName: "",
-        txnByTreasuryUser: "",
+        counterParty: "",
+        employeeID: "",
+        email: "",
+        branchInput: "",
+        createdBy: "",
+        approvedBy: "",
+        deactivatedBy: "",
       });
-      setStartDate(null);
-      setEndDate(null);
-      setTransactionByBankTblData([]);
+
+      setUserManagementTblData([]);
       setSRow(0);
-      setIsLoading(false);
+      // setIsLoading(false);
       setTotalRecord(0);
       let Data = {
         TXNID: 0,
@@ -250,147 +284,165 @@ const UserManagementReport = () => {
         Length: 10,
         sRow: 0,
       };
-      dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
+      // dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
     }
   };
 
-  // Columns for Audit Trial By Bank
-  const AuditTrialByCorporate = [
+  // Columns for User Management table
+  const UserManagementTable = [
     {
-      title: "TXN ID",
-      dataIndex: "txnid",
-      key: "txnid",
+      title: "Employee ID",
+      // dataIndex: "txnid",
+      // key: "txnid",
       width: 100,
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Corporate Name",
-      dataIndex: "corporateName",
-      key: "corporateName",
+      title: "Employee Name",
+      // dataIndex: "corporateName",
+      // key: "corporateName",
       width: 180,
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Corporate User",
-      dataIndex: "corporateUser",
-      key: "corporateUser",
+      title: "Email",
+      // dataIndex: "corporateUser",
+      // key: "corporateUser",
       width: 190,
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Treasury Sales User",
-      dataIndex: "treasuryUser",
-      key: "treasuryUser",
-      width: 150,
+      title: "Role",
+      // dataIndex: "treasuryUser",
+      // key: "treasuryUser",
+      width: 100,
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
+      title: "Branch",
+      // dataIndex: "treasuryUser",
+      // key: "treasuryUser",
+      width: 100,
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Contact",
+      // dataIndex: "date",
+      // key: "date",
       width: 120,
-      render: (text, record) => {
-        let dateStr = getDateTimeString(record.date, record.time);
-        return (
-          <>
-            <span>
-              {dateStr &&
-                moment(convertDateTimeIntoLocal(dateStr)).format("YYYY-MM-DD")}
-            </span>
-          </>
-        );
-      },
-    },
-    {
-      title: "Time",
-      dataIndex: "time",
-      key: "time",
-      width: 100,
-      render: (text, record) => {
-        let dateStr = getDateTimeString(record.date, record.time);
-
-        return (
-          <span>
-            {dateStr &&
-              moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
-          </span>
-        );
-      },
-    },
-    {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-      width: 100,
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Nature",
-      dataIndex: "nature",
-      key: "nature",
+      title: "Last Password Change",
+      // dataIndex: "time",
+      // key: "time",
+      width: 160,
+
+      // render: (text, record) => {
+      //   let dateStr = getDateTimeString(record.date, record.time);
+
+      //   return (
+      //     <span>
+      //       {dateStr &&
+      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
+      //     </span>
+      //   );
+      // },
+    },
+    {
+      title: "Creation Date Time",
+      // dataIndex: "type",
+      // key: "type",
+      width: 160,
+      // render: (text, record) => {
+      //   let dateStr = getDateTimeString(record.date, record.time);
+
+      //   return (
+      //     <span>
+      //       {dateStr &&
+      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
+      //     </span>
+      //   );
+      // },
+    },
+    {
+      title: "Created By (Name/ Email)",
+      // dataIndex: "nature",
+      // key: "nature",
+      width: 220,
+      render: (text) => <span>{text}</span>,
+    },
+
+    {
+      title: "Approved Date Time",
+      // dataIndex: "type",
+      // key: "type",
+      width: 160,
+      // render: (text, record) => {
+      //   let dateStr = getDateTimeString(record.date, record.time);
+
+      //   return (
+      //     <span>
+      //       {dateStr &&
+      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
+      //     </span>
+      //   );
+      // },
+    },
+    {
+      title: "Approved By (Name/ Email)",
+      // dataIndex: "ccY1",
+      // key: "ccY1",
+      width: 220,
+      render: (text) => <span>{text}</span>,
+    },
+
+    {
+      title: "Deactivated By (Name/ Email)",
+      // dataIndex: "ccY1",
+      // key: "ccY1",
       width: 220,
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "CCY1",
-      dataIndex: "ccY1",
-      key: "ccY1",
-      width: 80,
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "TXN Amount",
-      dataIndex: "amount2",
-      key: "amount2",
-      align: "center",
+      title: "Deactivated Date Time",
+      // dataIndex: "type",
+      // key: "type",
+      width: 160,
+      // render: (text, record) => {
+      //   let dateStr = getDateTimeString(record.date, record.time);
 
-      width: 130,
-      render: (text) => <span>{formatPkAmount(text)}</span>,
+      //   return (
+      //     <span>
+      //       {dateStr &&
+      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
+      //     </span>
+      //   );
+      // },
     },
     {
-      title: "Rate",
-      dataIndex: "rate",
-      key: "rate",
-      align: "center",
+      title: "Role Modified on",
+      // dataIndex: "type",
+      // key: "type",
+      width: 160,
+      // render: (text, record) => {
+      //   let dateStr = getDateTimeString(record.date, record.time);
 
-      width: 90,
-      render: (text) => <span>{formatPkAmount(text)}</span>,
-    },
-    {
-      title: "CCY2",
-      dataIndex: "ccY2",
-      key: "ccY2",
-      align: "center",
-
-      width: 80,
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Total Amount",
-      dataIndex: "amount1",
-      key: "amount1",
-      align: "center",
-      width: 130,
-      render: (text) => <span>{formatPkAmount(text)}</span>,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      width: 110,
-      render: (text) => (
-        <span style={{ color: text === "Accepted" ? "green" : "red" }}>
-          {text}
-        </span>
-      ),
+      //   return (
+      //     <span>
+      //       {dateStr &&
+      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
+      //     </span>
+      //   );
+      // },
     },
   ];
 
   //Scroller Custom Hook
   useTableScrollBottomByClassName(
     () => {
-      if (transactionByBankTblData.length !== totalRecord) {
-        setIsLoading(true);
+      if (userManagementTblData.length !== totalRecord) {
+        // setIsLoading(true);
         let Data = {
           TXNID: Number(formData.txnId) !== "" ? Number(formData.txnId) : 0,
           CorporateUser:
@@ -399,8 +451,6 @@ const UserManagementReport = () => {
             formData.corporateName !== "" ? formData.corporateName : "",
           TransactionByTreasuryUser:
             formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
-          StartDate: startDate !== "" ? startDate : "",
-          EndDate: endDate !== "" ? endDate : "",
           Length: 10,
           sRow: sRow,
         };
@@ -427,69 +477,94 @@ const UserManagementReport = () => {
               name="counterParty"
               placeholder="Counter Party"
               applyClass="TextFieldAuditors"
-              value={formData.txnId}
-              onChange={handleTextChange}
-            />
-          </Col>
-
-          <Col lg={2} md={2} sm={2} xs={12}>
-            <TextField
-              name="corporateUser"
-              placeholder="Corporate User"
-              applyClass="TextFieldAuditors"
-              value={formData.corporateUser}
+              value={formData.counterParty}
               onChange={handleTextChange}
             />
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
+            <SelectDropdown
+              classNamePrefix="selectTransactionNatureList"
+              options={branchCorporateOptions}
+              value={selectedBranchCorporateOption}
+              isSearchable
+              onChange={(e) =>
+                handleSelectBranchCorporate(e, "branchCorporateOptions")
+              }
+            />
+          </Col>
+          <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              name="corporateName"
-              placeholder="Corporate Name"
+              name="employeeID"
+              placeholder="Employee ID"
               applyClass="TextFieldAuditors"
-              value={formData.corporateName}
+              value={formData.employeeID}
+              onChange={handleTextChange}
+              maxLength={50}
+            />
+          </Col>
+          <Col lg={2} md={2} sm={2} xs={12}>
+            <TextField
+              name="email"
+              placeholder="Email"
+              applyClass="TextFieldAuditors"
+              value={formData.email}
               onChange={handleTextChange}
             />
           </Col>
-          <Col lg={3} md={3} sm={3} xs={12}>
-            <TextField
-              name="txnByTreasuryUser"
-              placeholder="Transaction Accepted by Treasury Sales"
-              applyClass="TextFieldAuditors"
-              value={formData.txnByTreasuryUser}
-              onChange={handleTextChange}
+          <Col lg={2} md={2} sm={2} xs={12}>
+            <SelectDropdown
+              options={branchOptions}
+              classNamePrefix="selectTransactionNatureList"
+              value={selectedBranchOption}
+              isSearchable
+              onChange={(e) => handleSelectBranchCorporate(e, "branchOptions")}
+              menuPortalTarget={document.body}
             />
           </Col>
-          <Col lg={3} md={3} sm={12} className="d-flex align-items-center ">
-            <DatePicker
-              name="dateFrom"
-              placeholder="Start Date"
-              value={startDate}
-              onChange={handleStartDateChange}
-              inputClass={styles["Tradecount-Datepicker-left"]}
-              labelClass="d-none"
-              showOtherDays
-            />
-
-            <label className={styles["Tradecount-date-to"]}>to</label>
-
-            <DatePicker
-              name="dateTo"
-              value={endDate}
-              onChange={handleEndDateChange}
-              placeholder="End Date"
-              inputClass={styles["Tradecount-Datepicker-right"]}
-              labelClass="d-none"
-              showOtherDays
+          <Col lg={2} md={2} sm={2} xs={12}>
+            <TextField
+              name="branchInput"
+              placeholder="Branch"
+              applyClass="TextFieldAuditors"
+              value={formData.branchInput}
+              onChange={handleTextChange}
             />
           </Col>
         </Row>
-        <Row className="mt-4">
+        <Row className="mt-3">
+          <Col lg={2} md={2} sm={2} xs={12}>
+            <TextField
+              name="createdBy"
+              placeholder="Created by (Name/Email)"
+              applyClass="TextFieldAuditors"
+              value={formData.createdBy}
+              onChange={handleTextChange}
+            />
+          </Col>
+          <Col lg={2} md={2} sm={2} xs={12}>
+            <TextField
+              name="approvedBy"
+              placeholder="Approved by (Name/Email)"
+              applyClass="TextFieldAuditors"
+              value={formData.approvedBy}
+              onChange={handleTextChange}
+            />
+          </Col>
+          <Col lg={2} md={2} sm={2} xs={12}>
+            <TextField
+              name="deactivatedBy"
+              placeholder="Deactivated by (Name/Email)"
+              applyClass="TextFieldAuditors"
+              value={formData.deactivatedBy}
+              onChange={handleTextChange}
+            />
+          </Col>
           <Col
-            lg={12}
+            lg={6}
             md={12}
             sm={12}
             xs={12}
-            className="d-flex justify-content-center gap-2"
+            className="d-flex gap-2 mt-lg-0 mt-3"
           >
             <Button
               icon={<i className="icon-search icon-check-space"></i>}
@@ -531,11 +606,12 @@ const UserManagementReport = () => {
             </div>
           </Col>
         </Row>
+
         <Row className="mt-5">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
-              column={AuditTrialByCorporate}
-              rows={transactionByBankTblData}
+              column={UserManagementTable}
+              rows={userManagementTblData}
               pagination={false}
               scroll={{ x: "max-content", y: "45vh" }}
               className={"BankUserList-table"}

@@ -257,14 +257,14 @@ const AuditTrialByCorporate = () => {
       title: "Corporate Name",
       dataIndex: "corporateName",
       key: "corporateName",
-      width: 180,
+      width: 150,
       render: (text) => <span>{text}</span>,
     },
     {
       title: "Corporate User",
       dataIndex: "corporateUser",
       key: "corporateUser",
-      width: 190,
+      width: 150,
       render: (text) => <span>{text}</span>,
     },
     {
@@ -278,7 +278,7 @@ const AuditTrialByCorporate = () => {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      width: 120,
+      width: 100,
       render: (text, record) => {
         let dateStr = getDateTimeString(record.date, record.time);
         return (
@@ -302,7 +302,7 @@ const AuditTrialByCorporate = () => {
         return (
           <span>
             {dateStr &&
-              moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
+              moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss A")}
           </span>
         );
       },
@@ -318,14 +318,16 @@ const AuditTrialByCorporate = () => {
       title: "Nature",
       dataIndex: "nature",
       key: "nature",
-      width: 220,
+      width: 160,
       render: (text) => <span>{text}</span>,
     },
     {
       title: "CCY1",
       dataIndex: "ccY1",
       key: "ccY1",
-      width: 80,
+      align: "center",
+
+      width: 50,
       render: (text) => <span>{text}</span>,
     },
     {
@@ -333,8 +335,7 @@ const AuditTrialByCorporate = () => {
       dataIndex: "amount2",
       key: "amount2",
       align: "center",
-
-      width: 130,
+      width: 100,
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
@@ -351,7 +352,6 @@ const AuditTrialByCorporate = () => {
       dataIndex: "ccY2",
       key: "ccY2",
       align: "center",
-
       width: 80,
       render: (text) => <span>{text}</span>,
     },
@@ -362,6 +362,84 @@ const AuditTrialByCorporate = () => {
       align: "center",
       width: 130,
       render: (text) => <span>{formatPkAmount(text)}</span>,
+    },
+    {
+      title: "LC #",
+      // dataIndex: "ccY2",
+      // key: "ccY2",
+      align: "center",
+
+      width: 80,
+      // render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Account #",
+      // dataIndex: "ccY2",
+      // key: "ccY2",
+      align: "center",
+      width: 80,
+      // render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Inititated By",
+      dataIndex: "initiatedBy",
+      key: "initiatedBy",
+      align: "center",
+      width: 100,
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Accepted By",
+      dataIndex: "acceptedBy",
+      key: "acceptedBy",
+      align: "center",
+      width: 100,
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "TXN Accepted Time",
+      dataIndex: "txnAcceptedTime",
+      key: "txnAcceptedTime",
+      align: "center",
+      width: 150,
+      render: (text, record) => {
+        let dateStr = getDateTimeString(record.date, record.txnAcceptedTime);
+
+        return (
+          <span>
+            {dateStr &&
+              moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss A")}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Cancelled By",
+      dataIndex: "cancelledBy",
+      key: "cancelledBy",
+      align: "center",
+      width: 100,
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Cancelled Time",
+      dataIndex: "cancelledTime",
+      key: "cancelledTime",
+      align: "center",
+      width: 120,
+      render: (text, record) => {
+        let dateStr =
+          record.cancelledTime !== ""
+            ? getDateTimeString(record.date, record.cancelledTime)
+            : null;
+
+        return (
+          <span>
+            {dateStr &&
+              moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss A")}
+          </span>
+        );
+      },
     },
     {
       title: "Status",
