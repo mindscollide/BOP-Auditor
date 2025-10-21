@@ -557,6 +557,9 @@ const AuditTrialByBank = () => {
               inputClass={styles["Tradecount-Datepicker-left"]}
               labelClass="d-none"
               showOtherDays
+              editable={false}
+              maxDate={endDate}
+              minDate={null}
             />
 
             <label className={styles["Tradecount-date-to"]}>to</label>
@@ -569,6 +572,9 @@ const AuditTrialByBank = () => {
               inputClass={styles["Tradecount-Datepicker-right"]}
               labelClass="d-none"
               showOtherDays
+              minDate={startDate}
+              maxDate={null}
+              editable={false}
             />
           </Col>
           <Col
