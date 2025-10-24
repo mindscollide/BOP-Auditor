@@ -365,20 +365,19 @@ const AuditTrialByCorporate = () => {
     },
     {
       title: "LC #",
-      // dataIndex: "ccY2",
-      // key: "ccY2",
+      dataIndex: "lcNumber",
+      key: "lcNumber",
       align: "center",
-
       width: 80,
-      // render: (text) => <span>{text}</span>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Account #",
-      // dataIndex: "ccY2",
-      // key: "ccY2",
+      dataIndex: "accountNumber",
+      key: "accountNumber",
       align: "center",
       width: 80,
-      // render: (text) => <span>{text}</span>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Inititated By",
