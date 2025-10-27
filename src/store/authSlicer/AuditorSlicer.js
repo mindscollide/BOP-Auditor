@@ -51,7 +51,6 @@ const AuditorSlice = createSlice({
       .addCase(
         GetTransactionDetailsByCorporateAuditor.fulfilled,
         (state, { payload }) => {
-          console.log(payload.response, "payloadpayloadpayload");
           state.Loader = false;
           state.transactionDetailsByCorporateData = payload.response;
           state.error = null;

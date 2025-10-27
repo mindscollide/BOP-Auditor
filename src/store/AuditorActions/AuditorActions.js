@@ -39,10 +39,6 @@ export const GetTransactionDetailsByBankAuditor = createAsyncThunk(
               "Blotter_BlotterServiceManager_GetTransactionDetailsByBankData_01"
             )
           ) {
-            console.log(
-              response.data.responseResult,
-              "responseResultresponseResult"
-            );
             return {
               response: response.data.responseResult,
               message: "Data Available",
@@ -110,10 +106,6 @@ export const GetTransactionDetailsByCorporateAuditor = createAsyncThunk(
               "Blotter_BlotterServiceManager_GetTransactionDetailsByCorporateData_01"
             )
           ) {
-            console.log(
-              response.data.responseResult,
-              "responseResultresponseResult"
-            );
             return {
               response: response.data.responseResult,
               message: "Data Available",

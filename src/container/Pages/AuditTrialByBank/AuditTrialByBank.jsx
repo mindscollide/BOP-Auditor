@@ -76,8 +76,6 @@ const AuditTrialByBank = () => {
     try {
       if (AuditorTransactionBankData && AuditorTransactionBankData !== null) {
         const newRecords = AuditorTransactionBankData.transactionForBank || [];
-        console.log(AuditorTransactionBankData, "AuditorTransactionBankData");
-
         if (isLoading) {
           setIsLoading(false);
           setTotalRecord(AuditorTransactionBankData.totalCount);
@@ -89,6 +87,15 @@ const AuditTrialByBank = () => {
           setSRow(newRecords.length);
           setTotalRecord(AuditorTransactionBankData.totalCount);
         }
+      } else if (AuditorTransactionBankData === null) {
+        // if (!hasReachedBottom) {
+        //   setHasReachedBottom(false);
+        //   setTableData([]);
+        //   setRecordLength(0);
+        setIsLoading(false);
+        setTotalRecord(0);
+        setSRow(0);
+        setTransactionByBankTblData([]);
       }
     } catch (error) {
       console.log(error, "errorerror");
@@ -163,7 +170,8 @@ const AuditTrialByBank = () => {
   const handleTextChange = (e) => {
     const { name, value } = e.target;
 
-    const cleanedValue = value.replace(/\t/g, "").trim();
+    // const cleanedValue = value.replace(/\t/g, "");
+    const cleanedValue = value.replace(/^[\t ]+/, "");
 
     if (name === "txnId") {
       const numericValue = cleanedValue.replace(/\D/g, "");
@@ -172,8 +180,7 @@ const AuditTrialByBank = () => {
     }
 
     // For all other fields, strip tabs and trim, then limit to 50 characters
-    const limitedValue = cleanedValue.slice(0, 50);
-    setFormData((prev) => ({ ...prev, [name]: limitedValue }));
+    setFormData((prev) => ({ ...prev, [name]: cleanedValue }));
   };
 
   //Handle Start Date Change
@@ -207,41 +214,31 @@ const AuditTrialByBank = () => {
 
   //Handle Reset Button
   const handleResetBtn = () => {
-    if (
-      formData.txnId !== "" ||
-      formData.corporateName !== "" ||
-      formData.branchName !== "" ||
-      formData.txnByBranchUser !== "" ||
-      formData.txnByTreasuryUser !== "" ||
-      startDate !== null ||
-      endDate !== null
-    ) {
-      setFormData({
-        txnId: "",
-        corporateName: "",
-        branchName: "",
-        txnByBranchUser: "",
-        txnByTreasuryUser: "",
-      });
-      setStartDate(null);
-      setEndDate(null);
-      setTransactionByBankTblData([]);
-      setSRow(0);
-      setIsLoading(false);
-      setTotalRecord(0);
-      let Data = {
-        TXNID: 0,
-        corporateName: "",
-        BranchName: "",
-        TransactionByBankUser: "",
-        TransactionByTreasuryUser: "",
-        StartDate: "",
-        EndDate: "",
-        Length: 10,
-        sRow: 0,
-      };
-      dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
-    }
+    setFormData({
+      txnId: "",
+      corporateName: "",
+      branchName: "",
+      txnByBranchUser: "",
+      txnByTreasuryUser: "",
+    });
+    setStartDate(null);
+    setEndDate(null);
+    setTransactionByBankTblData([]);
+    setSRow(0);
+    setIsLoading(false);
+    setTotalRecord(0);
+    let Data = {
+      TXNID: 0,
+      corporateName: "",
+      BranchName: "",
+      TransactionByBankUser: "",
+      TransactionByTreasuryUser: "",
+      StartDate: "",
+      EndDate: "",
+      Length: 10,
+      sRow: 0,
+    };
+    dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
   };
 
   // Columns for Audit Trial By Bank
@@ -256,6 +253,7 @@ const AuditTrialByBank = () => {
     {
       title: "Corporate Name",
       dataIndex: "corporateName",
+      ellipsis: true,
       key: "corporateName",
       width: 180,
       render: (text) => <span>{text}</span>,
@@ -264,12 +262,14 @@ const AuditTrialByBank = () => {
       title: "Branch Name",
       dataIndex: "branchName",
       key: "branchName",
+      ellipsis: true,
       width: 190,
       render: (text) => <span>{text}</span>,
     },
     {
       title: "Branch User",
       dataIndex: "branchUser",
+      ellipsis: true,
       key: "branchUser",
       width: 160,
       render: (text) => <span>{text}</span>,
@@ -277,6 +277,7 @@ const AuditTrialByBank = () => {
     {
       title: "Treasury Sales User",
       dataIndex: "treasuryUser",
+      ellipsis: true,
       key: "treasuryUser",
       width: 150,
       render: (text) => <span>{text}</span>,
@@ -325,6 +326,7 @@ const AuditTrialByBank = () => {
       title: "Nature",
       dataIndex: "nature",
       key: "nature",
+      ellipsis: true,
       width: 220,
       render: (text) => <span>{text}</span>,
     },
@@ -390,6 +392,7 @@ const AuditTrialByBank = () => {
       dataIndex: "initiatedBy",
       key: "initiatedBy",
       width: 130,
+      ellipsis: true,
       align: "center",
       render: (text) => <span>{text}</span>,
     },
@@ -399,6 +402,7 @@ const AuditTrialByBank = () => {
       key: "acceptedBy",
       width: 130,
       align: "center",
+      ellipsis: true,
       render: (text) => <span>{text}</span>,
     },
     {
@@ -426,6 +430,7 @@ const AuditTrialByBank = () => {
       dataIndex: "cancelledBy",
       key: "cancelledBy",
       width: 130,
+      ellipsis: true,
       align: "center",
       render: (text) => <span>{text}</span>,
     },
@@ -437,10 +442,9 @@ const AuditTrialByBank = () => {
       align: "center",
       width: 120,
       render: (text, record) => {
-        console.log(record, "cancelledBy");
         let dateStr =
-          record.cancelledBy !== ""
-            ? getDateTimeString(record.date, record.cancelledBy)
+          record.cancelledTime !== ""
+            ? getDateTimeString(record.date, record.cancelledTime)
             : null;
 
         return (
@@ -487,9 +491,6 @@ const AuditTrialByBank = () => {
     "BankUserList-table"
   );
 
-  console.log(totalRecord, "totalRecordtotalRecord");
-  console.log(transactionByBankTblData.length, "totalRecordtotalRecord");
-
   return (
     <>
       <Row>
@@ -507,6 +508,7 @@ const AuditTrialByBank = () => {
               placeholder="TXN ID"
               value={formData.txnId}
               onChange={handleTextChange}
+              maxLength={50}
               applyClass="TextFieldAuditors"
             />
           </Col>
@@ -515,6 +517,7 @@ const AuditTrialByBank = () => {
               name="corporateName"
               placeholder="Corporate Name"
               value={formData.corporateName}
+              maxLength={50}
               onChange={handleTextChange}
               applyClass="TextFieldAuditors"
             />
@@ -523,6 +526,7 @@ const AuditTrialByBank = () => {
             <TextField
               name="branchName"
               placeholder="Branch Name"
+              maxLength={50}
               value={formData.branchName}
               onChange={handleTextChange}
               applyClass="TextFieldAuditors"
@@ -532,6 +536,7 @@ const AuditTrialByBank = () => {
             <TextField
               name="txnByBranchUser"
               placeholder="Transaction By Branch User"
+              maxLength={50}
               value={formData.txnByBranchUser}
               onChange={handleTextChange}
               applyClass="TextFieldAuditors"
@@ -539,6 +544,7 @@ const AuditTrialByBank = () => {
           </Col>
           <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
+              maxLength={50}
               name="txnByTreasuryUser"
               placeholder="Transaction Accepted by Treasury Sales"
               value={formData.txnByTreasuryUser}

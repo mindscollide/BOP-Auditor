@@ -15,7 +15,7 @@ import ActivityByCorporate from "./container/Pages/ActivityByCorporate/ActivityB
 import BopLogin from "./container/Pages/Login/BopLogin";
 import { Loader } from "./components/elements";
 import PrivateRoute from "./routes/PrivateRoute";
-import UserManagementReport from "./container/Pages/UserManagementReport/UserManagementReport";
+import UserManagementReport from "./container/Pages/UserManagementReport";
 import MainInputReport from "./container/Pages/RateInputReport";
 
 function App() {

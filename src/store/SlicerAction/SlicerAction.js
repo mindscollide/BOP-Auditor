@@ -35,10 +35,6 @@ export const GetUserSettingsAuditorAPI = createAsyncThunk(
           if (
             msg.includes("Setting_SettingServiceManager_GetUserSettings_01")
           ) {
-            console.log(
-              response.data.responseResult,
-              "responseResultresponseResult"
-            );
             return {
               response: response.data.responseResult,
               message: "Data Available",
@@ -101,10 +97,6 @@ export const SaveUserSettingsAuditorAPI = createAsyncThunk(
           if (
             msg.includes("Setting_SettingServiceManager_UpdateUserSettings_01")
           ) {
-            console.log(
-              response.data.responseResult,
-              "responseResultresponseResult"
-            );
             return {
               response: response.data.responseResult,
               message: "API executed successfully.",

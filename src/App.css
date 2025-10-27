@@ -2573,3 +2573,7 @@ i.close-add-user {
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   min-height: calc(1.5em + 0.75rem + 2px);
 }
+
+.dropdownBranchSpotTreasury__menu-portal {
+  z-index: 99 !important;
+}

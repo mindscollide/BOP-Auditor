@@ -93,6 +93,11 @@ const AuditTrialByCorporate = () => {
           setSRow(newRecords.length);
           setTotalRecord(AuditorTransactionCorporateData.totalCount);
         }
+      } else if (AuditorTransactionCorporateData === null) {
+        setIsLoading(false);
+        setTotalRecord(0);
+        setSRow(0);
+        setTransactionByBankTblData([]);
       }
     } catch (error) {
       console.log(error, "errorerror");
@@ -180,7 +185,7 @@ const AuditTrialByCorporate = () => {
   const handleTextChange = (e) => {
     const { name, value } = e.target;
 
-    const cleanedValue = value.replace(/\t/g, "").trim();
+    const cleanedValue = value.replace(/^[\t ]+/, "");
 
     if (name === "txnId") {
       const numericValue = cleanedValue.replace(/\D/g, "");
@@ -189,8 +194,7 @@ const AuditTrialByCorporate = () => {
     }
 
     // For all other fields, strip tabs and trim, then limit to 50 characters
-    const limitedValue = cleanedValue.slice(0, 50);
-    setFormData((prev) => ({ ...prev, [name]: limitedValue }));
+    setFormData((prev) => ({ ...prev, [name]: cleanedValue }));
   };
   //Handle Search Button
   const handleSearchBtn = () => {
@@ -210,38 +214,29 @@ const AuditTrialByCorporate = () => {
 
   //Handle Reset Button
   const handleResetBtn = () => {
-    if (
-      formData.txnId !== "" ||
-      formData.corporateName !== "" ||
-      formData.corporateUser !== "" ||
-      formData.txnByTreasuryUser !== "" ||
-      startDate !== null ||
-      endDate !== null
-    ) {
-      setFormData({
-        txnId: "",
-        corporateUser: "",
-        corporateName: "",
-        txnByTreasuryUser: "",
-      });
-      setStartDate(null);
-      setEndDate(null);
-      setTransactionByBankTblData([]);
-      setSRow(0);
-      setIsLoading(false);
-      setTotalRecord(0);
-      let Data = {
-        TXNID: 0,
-        CorporateUser: "",
-        CorporateName: "",
-        TransactionByTreasuryUser: "",
-        StartDate: "",
-        EndDate: "",
-        Length: 10,
-        sRow: 0,
-      };
-      dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
-    }
+    setFormData({
+      txnId: "",
+      corporateUser: "",
+      corporateName: "",
+      txnByTreasuryUser: "",
+    });
+    setStartDate(null);
+    setEndDate(null);
+    setTransactionByBankTblData([]);
+    setSRow(0);
+    setIsLoading(false);
+    setTotalRecord(0);
+    let Data = {
+      TXNID: 0,
+      CorporateUser: "",
+      CorporateName: "",
+      TransactionByTreasuryUser: "",
+      StartDate: "",
+      EndDate: "",
+      Length: 10,
+      sRow: 0,
+    };
+    dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
   };
 
   // Columns for Audit Trial By Bank
@@ -257,12 +252,14 @@ const AuditTrialByCorporate = () => {
       title: "Corporate Name",
       dataIndex: "corporateName",
       key: "corporateName",
+      ellipsis: true,
       width: 150,
       render: (text) => <span>{text}</span>,
     },
     {
       title: "Corporate User",
       dataIndex: "corporateUser",
+      ellipsis: true,
       key: "corporateUser",
       width: 150,
       render: (text) => <span>{text}</span>,
@@ -271,6 +268,7 @@ const AuditTrialByCorporate = () => {
       title: "Treasury Sales User",
       dataIndex: "treasuryUser",
       key: "treasuryUser",
+      ellipsis: true,
       width: 150,
       render: (text) => <span>{text}</span>,
     },
@@ -383,6 +381,7 @@ const AuditTrialByCorporate = () => {
       title: "Inititated By",
       dataIndex: "initiatedBy",
       key: "initiatedBy",
+      ellipsis: true,
       align: "center",
       width: 100,
       render: (text) => <span>{text}</span>,
@@ -391,6 +390,7 @@ const AuditTrialByCorporate = () => {
       title: "Accepted By",
       dataIndex: "acceptedBy",
       key: "acceptedBy",
+      ellipsis: true,
       align: "center",
       width: 100,
       render: (text) => <span>{text}</span>,
@@ -417,6 +417,8 @@ const AuditTrialByCorporate = () => {
       dataIndex: "cancelledBy",
       key: "cancelledBy",
       align: "center",
+      ellipsis: true,
+
       width: 100,
       render: (text) => <span>{text}</span>,
     },
@@ -494,12 +496,14 @@ const AuditTrialByCorporate = () => {
               name="txnId"
               placeholder="TXN ID"
               applyClass="TextFieldAuditors"
+              maxLength={50}
               value={formData.txnId}
               onChange={handleTextChange}
             />
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
+              maxLength={50}
               name="corporateUser"
               placeholder="Corporate User"
               applyClass="TextFieldAuditors"
@@ -510,6 +514,7 @@ const AuditTrialByCorporate = () => {
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
               name="corporateName"
+              maxLength={50}
               placeholder="Corporate Name"
               applyClass="TextFieldAuditors"
               value={formData.corporateName}
@@ -518,6 +523,7 @@ const AuditTrialByCorporate = () => {
           </Col>
           <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
+              maxLength={50}
               name="txnByTreasuryUser"
               placeholder="Transaction Accepted by Treasury Sales"
               applyClass="TextFieldAuditors"
