@@ -52,52 +52,87 @@ const Corporate = () => {
   //   { label: "Corporate", value: 1 },
   // ]);
 
-  const branchCorporateOptions = [
-    { label: "Branch", value: 0 },
-    { label: "Corporate", value: 1 },
+  //TEMPORARY OPTIONS
+  const createdByOptions = [
+    { label: "ali@gulamAhmed", value: 0 },
+    { label: "taha@ppl.com", value: 1 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 2 },
+    { label: "Yunus@mindscollide.com", value: 3 },
+    { label: "ali@treasmark.com", value: 4 },
+    { label: "ali@gulamAhmed", value: 15 },
+    { label: "taha@ppl.com", value: 5 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 6 },
+    { label: "Yunus@mindscollide.com", value: 7 },
+    { label: "ali@treasmark.com", value: 8 },
+    { label: "ali@treasmark.com", value: 9 },
+    { label: "ali@gulamAhmed", value: 10 },
+    { label: "taha@ppl.com", value: 11 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 12 },
+    { label: "Yunus@mindscollide.com", value: 13 },
+    { label: "ali@treasmark.com", value: 14 },
   ];
-  const [selectedBranchCorporateOption, setSelectedBranchCorporateOption] =
-    useState({ label: "Branch", value: 0 });
+  const [selectApprovedByOptions, setSelectApprovedByOptions] = useState(null);
 
-  //TEMPORARY
-  const branchOptions = [
-    { label: "Branch", value: 0 },
-    { label: "FX Trading", value: 1 },
-    { label: "Treasury Sales", value: 2 },
+  //TEMPORARY OPTIONS
+  const approvedByOptions = [
+    { label: "ali@gulamAhmed", value: 0 },
+    { label: "taha@ppl.com", value: 1 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 2 },
+    { label: "Yunus@mindscollide.com", value: 3 },
+    { label: "ali@treasmark.com", value: 4 },
+    { label: "ali@gulamAhmed", value: 15 },
+    { label: "taha@ppl.com", value: 5 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 6 },
+    { label: "Yunus@mindscollide.com", value: 7 },
+    { label: "ali@treasmark.com", value: 8 },
+    { label: "ali@treasmark.com", value: 9 },
+    { label: "ali@gulamAhmed", value: 10 },
+    { label: "taha@ppl.com", value: 11 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 12 },
+    { label: "Yunus@mindscollide.com", value: 13 },
+    { label: "ali@treasmark.com", value: 14 },
   ];
+  const [selectCreatedByOptions, setSelectCreatedByOptions] = useState(null);
 
-  const [selectedBranchOption, setSelectedBranchOption] = useState({
-    label: "Branch",
-    value: 0,
-  });
+  //TEMPORARY OPTIONS
+  const deactivatedByOptions = [
+    { label: "ali@gulamAhmed", value: 0 },
+    { label: "taha@ppl.com", value: 1 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 2 },
+    { label: "Yunus@mindscollide.com", value: 3 },
+    { label: "ali@treasmark.com", value: 4 },
+    { label: "ali@gulamAhmed", value: 15 },
+    { label: "taha@ppl.com", value: 5 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 6 },
+    { label: "Yunus@mindscollide.com", value: 7 },
+    { label: "ali@treasmark.com", value: 8 },
+    { label: "ali@treasmark.com", value: 9 },
+    { label: "ali@gulamAhmed", value: 10 },
+    { label: "taha@ppl.com", value: 11 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 12 },
+    { label: "Yunus@mindscollide.com", value: 13 },
+    { label: "ali@treasmark.com", value: 14 },
+  ];
+  const [selectDeactivatedByOptions, setSelectDeactivatedByOptions] =
+    useState(null);
 
-  const handleSelectBranchCorporate = (e, name) => {
-    if (name === "branchCorporateOptions") {
-      console.log(e, "selected Option");
-      setSelectedBranchCorporateOption(e);
+  const handleSelectOption = (e, name) => {
+    if (name === "createdBy") {
+      setSelectCreatedByOptions(e);
     }
-    if (name === "branchOptions") {
-      console.log(e, "selected Option");
-      setSelectedBranchOption(e);
+    if (name === "approvedBy") {
+      setSelectApprovedByOptions(e);
+    }
+    if (name === "deactivatedBy") {
+      setSelectDeactivatedByOptions(e);
     }
   };
 
-  // const [formData, setFormData] = useState({
-  //   txnId: "",
-  //   corporateUser: "",
-  //   corporateName: "",
-  //   txnByTreasuryUser: "",
-  // });
   const [formData, setFormData] = useState({
-    counterParty: "",
-    branchCorporateDropdown: "",
     employeeID: "",
     email: "",
-    branchDropdown: "",
-    branchInput: "",
-    createdBy: "",
-    approvedBy: "",
-    deactivatedBy: "",
+    employeeName: "",
+    corporateName: "",
   });
   //Calling
   // useEffect(() => {
@@ -236,56 +271,55 @@ const Corporate = () => {
   //Handle Search Button
   const handleSearchBtn = () => {
     let Data = {
-      TXNID: Number(formData.txnId),
-      CorporateUser: formData.corporateUser,
-      CorporateName: formData.corporateName,
-      TransactionByTreasuryUser: formData.txnByTreasuryUser,
+      employeeId: formData?.employeeID,
+      email: formData?.email,
+      role: "Corporate",
+      createdBy:
+        selectCreatedByOptions?.value !== undefined
+          ? selectCreatedByOptions.value
+          : "",
+      approvedBy: selectApprovedByOptions?.value
+        ? selectApprovedByOptions.value
+        : "",
+      deactivatedBy: selectDeactivatedByOptions?.value
+        ? selectDeactivatedByOptions.value
+        : "",
+      corporateName: formData?.corporateName,
       Length: 10,
       sRow: 0,
     };
     console.log(Data, "DataDataDataData");
-    dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
+    // dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
   };
 
   //Handle Reset Button
   const handleResetBtn = () => {
-    setSelectedBranchCorporateOption({ label: "Branch", value: 0 });
-    setSelectedBranchOption({ label: "Branch", value: 0 });
-    if (
-      formData.counterParty !== "" ||
-      formData.employeeID !== "" ||
-      formData.email !== "" ||
-      formData.branchInput !== "" ||
-      formData.createdBy !== "" ||
-      formData.approvedBy !== "" ||
-      formData.deactivatedBy !== ""
-    ) {
-      setFormData({
-        counterParty: "",
-        employeeID: "",
-        email: "",
-        branchInput: "",
-        createdBy: "",
-        approvedBy: "",
-        deactivatedBy: "",
-      });
+    setSelectApprovedByOptions(null);
+    setSelectCreatedByOptions(null);
+    setSelectDeactivatedByOptions(null);
 
-      setUserManagementTblData([]);
-      setSRow(0);
-      // setIsLoading(false);
-      setTotalRecord(0);
-      let Data = {
-        TXNID: 0,
-        CorporateUser: "",
-        CorporateName: "",
-        TransactionByTreasuryUser: "",
-        StartDate: "",
-        EndDate: "",
-        Length: 10,
-        sRow: 0,
-      };
-      // dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
-    }
+    setFormData({
+      employeeID: "",
+      email: "",
+      employeeName: "",
+      corporateName: "",
+    });
+
+    setUserManagementTblData([]);
+    setSRow(0);
+    // setIsLoading(false);
+    setTotalRecord(0);
+    let Data = {
+      TXNID: 0,
+      CorporateUser: "",
+      CorporateName: "",
+      TransactionByTreasuryUser: "",
+      StartDate: "",
+      EndDate: "",
+      Length: 10,
+      sRow: 0,
+    };
+    // dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
   };
 
   // Columns for User Management table
@@ -298,7 +332,14 @@ const Corporate = () => {
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Employee Name",
+      title: "Corporate User",
+      // dataIndex: "corporateName",
+      // key: "corporateName",
+      width: 180,
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Corporate Name",
       // dataIndex: "corporateName",
       // key: "corporateName",
       width: 180,
@@ -312,21 +353,14 @@ const Corporate = () => {
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Role",
-      // dataIndex: "treasuryUser",
-      // key: "treasuryUser",
-      width: 100,
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Branch",
-      // dataIndex: "treasuryUser",
-      // key: "treasuryUser",
-      width: 100,
-      render: (text) => <span>{text}</span>,
-    },
-    {
       title: "Contact",
+      // dataIndex: "date",
+      // key: "date",
+      width: 120,
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Status",
       // dataIndex: "date",
       // key: "date",
       width: 120,
@@ -366,7 +400,7 @@ const Corporate = () => {
       // },
     },
     {
-      title: "Created By (Name/ Email)",
+      title: "Created By",
       // dataIndex: "nature",
       // key: "nature",
       width: 220,
@@ -390,7 +424,7 @@ const Corporate = () => {
       // },
     },
     {
-      title: "Approved By (Name/ Email)",
+      title: "Approved By",
       // dataIndex: "ccY1",
       // key: "ccY1",
       width: 220,
@@ -398,28 +432,13 @@ const Corporate = () => {
     },
 
     {
-      title: "Deactivated By (Name/ Email)",
+      title: "Deactivated By",
       // dataIndex: "ccY1",
       // key: "ccY1",
       width: 220,
       render: (text) => <span>{text}</span>,
     },
-    {
-      title: "Deactivated Date Time",
-      // dataIndex: "type",
-      // key: "type",
-      width: 160,
-      // render: (text, record) => {
-      //   let dateStr = getDateTimeString(record.date, record.time);
 
-      //   return (
-      //     <span>
-      //       {dateStr &&
-      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
-      //     </span>
-      //   );
-      // },
-    },
     {
       title: "Role Modified on",
       // dataIndex: "type",
@@ -465,37 +484,16 @@ const Corporate = () => {
     <>
       <CustomPaper variant="outlined">
         <Row>
-          <Col lg={2} md={2} sm={2} xs={12}>
-            <TextField
-              name="counterParty"
-              placeholder="Counter Party"
-              applyClass="TextFieldAuditors"
-              value={formData.counterParty}
-              onChange={handleTextChange}
-            />
-          </Col>
-          <Col lg={2} md={2} sm={2} xs={12}>
-            <SelectDropdown
-              classNamePrefix="selectTransactionNatureList"
-              options={branchCorporateOptions}
-              value={selectedBranchCorporateOption}
-              isSearchable
-              onChange={(e) =>
-                handleSelectBranchCorporate(e, "branchCorporateOptions")
-              }
-            />
-          </Col>
-          <Col lg={2} md={2} sm={2} xs={12}>
+          <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
               name="employeeID"
               placeholder="Employee ID"
               applyClass="TextFieldAuditors"
               value={formData.employeeID}
               onChange={handleTextChange}
-              maxLength={50}
             />
           </Col>
-          <Col lg={2} md={2} sm={2} xs={12}>
+          <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
               name="email"
               placeholder="Email"
@@ -504,60 +502,72 @@ const Corporate = () => {
               onChange={handleTextChange}
             />
           </Col>
-          <Col lg={2} md={2} sm={2} xs={12}>
-            <SelectDropdown
-              options={branchOptions}
-              classNamePrefix="selectTransactionNatureList"
-              value={selectedBranchOption}
-              isSearchable
-              onChange={(e) => handleSelectBranchCorporate(e, "branchOptions")}
-              menuPortalTarget={document.body}
+          <Col lg={3} md={3} sm={3} xs={12}>
+            <TextField
+              name="employeeName"
+              placeholder="Employee Name"
+              applyClass="TextFieldAuditors"
+              value={formData.employeeName}
+              onChange={handleTextChange}
+              maxLength={50}
             />
           </Col>
-          <Col lg={2} md={2} sm={2} xs={12}>
+
+          <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
-              name="branchInput"
-              placeholder="Branch"
+              name="corporateName"
+              placeholder="Corporate Name"
               applyClass="TextFieldAuditors"
-              value={formData.branchInput}
+              value={formData.corporateName}
               onChange={handleTextChange}
+              maxLength={50}
             />
           </Col>
         </Row>
         <Row className="mt-3">
-          <Col lg={2} md={2} sm={2} xs={12}>
-            <TextField
-              name="createdBy"
-              placeholder="Created by (Name/Email)"
-              applyClass="TextFieldAuditors"
-              value={formData.createdBy}
-              onChange={handleTextChange}
+          <Col lg={4} md={4} sm={4} xs={12}>
+            <SelectDropdown
+              classNamePrefix="dropdownBranchSpotTreasury"
+              placeholder={"Created By"}
+              options={createdByOptions}
+              value={selectCreatedByOptions}
+              isSearchable
+              onChange={(e) => handleSelectOption(e, "createdBy")}
             />
           </Col>
-          <Col lg={2} md={2} sm={2} xs={12}>
-            <TextField
-              name="approvedBy"
-              placeholder="Approved by (Name/Email)"
-              applyClass="TextFieldAuditors"
-              value={formData.approvedBy}
-              onChange={handleTextChange}
+          <Col lg={4} md={4} sm={4} xs={12}>
+            <SelectDropdown
+              classNamePrefix="dropdownBranchSpotTreasury"
+              placeholder="Approved by"
+              styles={{
+                maxLength: "10px",
+              }}
+              options={approvedByOptions}
+              value={selectApprovedByOptions}
+              isSearchable
+              onChange={(e) => handleSelectOption(e, "approvedBy")}
             />
           </Col>
-          <Col lg={2} md={2} sm={2} xs={12}>
-            <TextField
-              name="deactivatedBy"
-              placeholder="Deactivated by (Name/Email)"
-              applyClass="TextFieldAuditors"
-              value={formData.deactivatedBy}
-              onChange={handleTextChange}
+          <Col lg={4} md={4} sm={4} xs={12}>
+            <SelectDropdown
+              classNamePrefix="dropdownBranchSpotTreasury"
+              placeholder="Deactivated by"
+              styles={{
+                maxLength: "10px",
+              }}
+              options={deactivatedByOptions}
+              value={selectDeactivatedByOptions}
+              isSearchable
+              onChange={(e) => handleSelectOption(e, "deactivatedBy")}
             />
           </Col>
+
           <Col
-            lg={6}
+            lg={12}
             md={12}
             sm={12}
             xs={12}
-            className="d-flex gap-2 mt-lg-0 mt-3"
+            className={`mt-2 d-flex gap-2 align-items-center justify-content-center`}
           >
             <Button
               icon={<i className="icon-search icon-check-space"></i>}

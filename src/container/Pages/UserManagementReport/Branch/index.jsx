@@ -52,66 +52,105 @@ const Branch = () => {
   //   { label: "Corporate", value: 1 },
   // ]);
 
+  //TEMPORARY OPTIONS
   const createdByOptions = [
     { label: "ali@gulamAhmed", value: 0 },
     { label: "taha@ppl.com", value: 1 },
     { label: "mohammad.ahmed@gulamAhmed", value: 2 },
     { label: "Yunus@mindscollide.com", value: 3 },
     { label: "ali@treasmark.com", value: 4 },
+    { label: "ali@gulamAhmed", value: 15 },
+    { label: "taha@ppl.com", value: 5 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 6 },
+    { label: "Yunus@mindscollide.com", value: 7 },
+    { label: "ali@treasmark.com", value: 8 },
+    { label: "ali@treasmark.com", value: 9 },
+    { label: "ali@gulamAhmed", value: 10 },
+    { label: "taha@ppl.com", value: 11 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 12 },
+    { label: "Yunus@mindscollide.com", value: 13 },
+    { label: "ali@treasmark.com", value: 14 },
+  ];
+  const [selectApprovedByOptions, setSelectApprovedByOptions] = useState(null);
+
+  //TEMPORARY OPTIONS
+  const approvedByOptions = [
     { label: "ali@gulamAhmed", value: 0 },
     { label: "taha@ppl.com", value: 1 },
     { label: "mohammad.ahmed@gulamAhmed", value: 2 },
     { label: "Yunus@mindscollide.com", value: 3 },
     { label: "ali@treasmark.com", value: 4 },
-    { label: "ali@treasmark.com", value: 4 },
-    { label: "ali@gulamAhmed", value: 0 },
-    { label: "taha@ppl.com", value: 1 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 2 },
-    { label: "Yunus@mindscollide.com", value: 3 },
-    { label: "ali@treasmark.com", value: 4 },
+    { label: "ali@gulamAhmed", value: 15 },
+    { label: "taha@ppl.com", value: 5 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 6 },
+    { label: "Yunus@mindscollide.com", value: 7 },
+    { label: "ali@treasmark.com", value: 8 },
+    { label: "ali@treasmark.com", value: 9 },
+    { label: "ali@gulamAhmed", value: 10 },
+    { label: "taha@ppl.com", value: 11 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 12 },
+    { label: "Yunus@mindscollide.com", value: 13 },
+    { label: "ali@treasmark.com", value: 14 },
   ];
   const [selectCreatedByOptions, setSelectCreatedByOptions] = useState(null);
 
+  //TEMPORARY OPTIONS
+  const deactivatedByOptions = [
+    { label: "ali@gulamAhmed", value: 0 },
+    { label: "taha@ppl.com", value: 1 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 2 },
+    { label: "Yunus@mindscollide.com", value: 3 },
+    { label: "ali@treasmark.com", value: 4 },
+    { label: "ali@gulamAhmed", value: 15 },
+    { label: "taha@ppl.com", value: 5 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 6 },
+    { label: "Yunus@mindscollide.com", value: 7 },
+    { label: "ali@treasmark.com", value: 8 },
+    { label: "ali@treasmark.com", value: 9 },
+    { label: "ali@gulamAhmed", value: 10 },
+    { label: "taha@ppl.com", value: 11 },
+    { label: "mohammad.ahmed@gulamAhmed", value: 12 },
+    { label: "Yunus@mindscollide.com", value: 13 },
+    { label: "ali@treasmark.com", value: 14 },
+  ];
+  const [selectDeactivatedByOptions, setSelectDeactivatedByOptions] =
+    useState(null);
   //TEMPORARY
-  const branchOptions = [
+  const roleOptions = [
     { label: "Branch", value: 0 },
     { label: "FX Trading", value: 1 },
     { label: "Treasury Sales", value: 2 },
   ];
 
-  const [selectedBranchOption, setSelectedBranchOption] = useState({
-    label: "Branch",
-    value: 0,
-  });
+  const [selectedRoleOption, setSelectedRoleOption] = useState(null);
 
-  const handleSelectBranchCorporate = (e, name) => {
-    if (name === "branchCorporateOptions") {
-      console.log(e, "selected Option");
+  const handleSelectOption = (e, name) => {
+    if (name === "createdBy") {
       setSelectCreatedByOptions(e);
     }
-    if (name === "branchOptions") {
-      console.log(e, "selected Option");
-      setSelectedBranchOption(e);
+    if (name === "approvedBy") {
+      setSelectApprovedByOptions(e);
+    }
+    if (name === "deactivatedBy") {
+      setSelectDeactivatedByOptions(e);
+    }
+    if (name === "roleOptions") {
+      setSelectedRoleOption(e);
+      console.log(e, "roleOptions");
+      if (e.value !== 0) {
+        setFormData((prev) => ({
+          ...prev,
+          branchName: "",
+        }));
+      }
     }
   };
 
-  // const [formData, setFormData] = useState({
-  //   txnId: "",
-  //   corporateUser: "",
-  //   corporateName: "",
-  //   txnByTreasuryUser: "",
-  // });
   const [formData, setFormData] = useState({
-    // counterParty: "",
-    // branchCorporateDropdown: "",
     employeeID: "",
     email: "",
     employeeName: "",
-    // branchDropdown: "",
-    // branchInput: "",
-    // createdBy: "",
-    // approvedBy: "",
-    // deactivatedBy: "",
+    branchName: "",
   });
   //Calling
   // useEffect(() => {
@@ -250,56 +289,58 @@ const Branch = () => {
   //Handle Search Button
   const handleSearchBtn = () => {
     let Data = {
-      TXNID: Number(formData.txnId),
-      CorporateUser: formData.corporateUser,
-      CorporateName: formData.corporateName,
-      TransactionByTreasuryUser: formData.txnByTreasuryUser,
+      employeeId: formData?.employeeID,
+      email: formData?.email,
+      role:
+        selectedRoleOption?.value !== undefined ? selectedRoleOption.value : "",
+      createdBy:
+        selectCreatedByOptions?.value !== undefined
+          ? selectCreatedByOptions.value
+          : "",
+      approvedBy: selectApprovedByOptions?.value
+        ? selectApprovedByOptions.value
+        : "",
+      deactivatedBy: selectDeactivatedByOptions?.value
+        ? selectDeactivatedByOptions.value
+        : "",
+      branchName: formData?.branchName,
+      // TransactionByTreasuryUser: formData.employeeName,
       Length: 10,
       sRow: 0,
     };
     console.log(Data, "DataDataDataData");
-    dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
+    // dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
   };
 
   //Handle Reset Button
   const handleResetBtn = () => {
+    setSelectApprovedByOptions(null);
     setSelectCreatedByOptions(null);
-    setSelectedBranchOption({ label: "Branch", value: 0 });
-    if (
-      formData.counterParty !== "" ||
-      formData.employeeID !== "" ||
-      formData.email !== "" ||
-      formData.branchInput !== "" ||
-      formData.createdBy !== "" ||
-      formData.approvedBy !== "" ||
-      formData.deactivatedBy !== ""
-    ) {
-      setFormData({
-        counterParty: "",
-        employeeID: "",
-        email: "",
-        branchInput: "",
-        createdBy: "",
-        approvedBy: "",
-        deactivatedBy: "",
-      });
+    setSelectDeactivatedByOptions(null);
+    setSelectedRoleOption(null);
 
-      setUserManagementTblData([]);
-      setSRow(0);
-      // setIsLoading(false);
-      setTotalRecord(0);
-      let Data = {
-        TXNID: 0,
-        CorporateUser: "",
-        CorporateName: "",
-        TransactionByTreasuryUser: "",
-        StartDate: "",
-        EndDate: "",
-        Length: 10,
-        sRow: 0,
-      };
-      // dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
-    }
+    setFormData({
+      employeeID: "",
+      email: "",
+      employeeName: "",
+      branchName: "",
+    });
+
+    setUserManagementTblData([]);
+    setSRow(0);
+    // setIsLoading(false);
+    setTotalRecord(0);
+    let Data = {
+      TXNID: 0,
+      CorporateUser: "",
+      CorporateName: "",
+      TransactionByTreasuryUser: "",
+      StartDate: "",
+      EndDate: "",
+      Length: 10,
+      sRow: 0,
+    };
+    // dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
   };
 
   // Columns for User Management table
@@ -347,6 +388,13 @@ const Branch = () => {
       render: (text) => <span>{text}</span>,
     },
     {
+      title: "Status",
+      // dataIndex: "date",
+      // key: "date",
+      width: 120,
+      render: (text) => <span>{text}</span>,
+    },
+    {
       title: "Last Password Change",
       // dataIndex: "time",
       // key: "time",
@@ -380,7 +428,7 @@ const Branch = () => {
       // },
     },
     {
-      title: "Created By (Name/ Email)",
+      title: "Created By",
       // dataIndex: "nature",
       // key: "nature",
       width: 220,
@@ -404,7 +452,7 @@ const Branch = () => {
       // },
     },
     {
-      title: "Approved By (Name/ Email)",
+      title: "Approved By",
       // dataIndex: "ccY1",
       // key: "ccY1",
       width: 220,
@@ -412,27 +460,11 @@ const Branch = () => {
     },
 
     {
-      title: "Deactivated By (Name/ Email)",
+      title: "Deactivated By",
       // dataIndex: "ccY1",
       // key: "ccY1",
       width: 220,
       render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Deactivated Date Time",
-      // dataIndex: "type",
-      // key: "type",
-      width: 160,
-      // render: (text, record) => {
-      //   let dateStr = getDateTimeString(record.date, record.time);
-
-      //   return (
-      //     <span>
-      //       {dateStr &&
-      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
-      //     </span>
-      //   );
-      // },
     },
     {
       title: "Role Modified on",
@@ -509,26 +541,39 @@ const Branch = () => {
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
             <SelectDropdown
-              options={branchOptions}
+              placeholder={"Select Role"}
+              options={roleOptions}
               classNamePrefix="dropdownBranchSpotTreasury"
-              value={selectedBranchOption}
+              value={selectedRoleOption}
               isSearchable
-              onChange={(e) => handleSelectBranchCorporate(e, "branchOptions")}
+              onChange={(e) => handleSelectOption(e, "roleOptions")}
               menuPortalTarget={document.body}
             />
           </Col>
-          <Col lg={4} md={4} sm={4} xs={12}>
-            <SelectDropdown
-              classNamePrefix="dropdownBranchSpotTreasury"
-              placeholder={"Created By"}
-              options={createdByOptions}
-              value={selectCreatedByOptions}
-              isSearchable
-              onChange={(e) =>
-                handleSelectBranchCorporate(e, "branchCorporateOptions")
-              }
-            />
-          </Col>
+          {selectedRoleOption?.value === 0 && (
+            <Col lg={4} md={4} sm={4} xs={12}>
+              <TextField
+                name="branchName"
+                placeholder="Branch Name"
+                applyClass="TextFieldAuditors"
+                value={formData.branchName}
+                onChange={handleTextChange}
+                maxLength={50}
+              />
+            </Col>
+          )}
+          {selectedRoleOption?.value !== 0 && (
+            <Col lg={4} md={4} sm={4} xs={12}>
+              <SelectDropdown
+                classNamePrefix="dropdownBranchSpotTreasury"
+                placeholder={"Created By"}
+                options={createdByOptions}
+                value={selectCreatedByOptions}
+                isSearchable
+                onChange={(e) => handleSelectOption(e, "createdBy")}
+              />
+            </Col>
+          )}
 
           {/* <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
@@ -541,80 +586,151 @@ const Branch = () => {
           </Col> */}
         </Row>
         <Row className="mt-3">
-          <Col lg={4} md={4} sm={4} xs={12}>
-            <SelectDropdown
-              classNamePrefix="dropdownBranchSpotTreasury"
-              styles={{
-                maxLength: "10px",
-              }}
-              options={createdByOptions}
-              value={selectCreatedByOptions}
-              isSearchable
-              onChange={(e) =>
-                handleSelectBranchCorporate(e, "branchCorporateOptions")
-              }
-            />
-          </Col>
-          <Col lg={4} md={4} sm={4} xs={12}>
-            <SelectDropdown
-              classNamePrefix="dropdownBranchSpotTreasury"
-              styles={{
-                maxLength: "10px",
-              }}
-              options={createdByOptions}
-              value={selectCreatedByOptions}
-              isSearchable
-              onChange={(e) =>
-                handleSelectBranchCorporate(e, "branchCorporateOptions")
-              }
-            />
-          </Col>
-          <Col
-            lg={4}
-            md={12}
-            sm={12}
-            xs={12}
-            className="d-flex gap-2 mt-lg-0 mt-3"
-          >
-            <Button
-              icon={<i className="icon-search icon-check-space"></i>}
-              value={"Search"}
-              className={styles["SearchButtonStyles"]}
-              onClick={handleSearchBtn}
-            />
-            <Button
-              icon={<i className="icon-refresh"></i>}
-              value={"Reset"}
-              className={styles["ResetButtonStyles"]}
-              onClick={handleResetBtn}
-            />
-
-            <div className="position-relative" ref={exportRef}>
-              <Button
-                icon={<i className="icon-download"></i>}
-                className={styles["Export_Button"]}
-                value="Export"
-                iconClass={styles["resetIconClass"]}
-                onClick={toggleExportOptions}
+          {selectedRoleOption?.value === 0 && (
+            <Col lg={4} md={4} sm={4} xs={12}>
+              <SelectDropdown
+                classNamePrefix="dropdownBranchSpotTreasury"
+                placeholder={"Created By"}
+                options={createdByOptions}
+                value={selectCreatedByOptions}
+                isSearchable
+                onChange={(e) => handleSelectOption(e, "createdBy")}
               />
-              <span
-                className={`${styles["Export_optionsBox"]} ${
-                  open ? styles["open"] : styles["closed"]
-                }`}
+            </Col>
+          )}
+          <Col lg={4} md={4} sm={4} xs={12}>
+            <SelectDropdown
+              classNamePrefix="dropdownBranchSpotTreasury"
+              placeholder="Approved by"
+              styles={{
+                maxLength: "10px",
+              }}
+              options={approvedByOptions}
+              value={selectApprovedByOptions}
+              isSearchable
+              onChange={(e) => handleSelectOption(e, "approvedBy")}
+            />
+          </Col>
+          <Col lg={4} md={4} sm={4} xs={12}>
+            <SelectDropdown
+              classNamePrefix="dropdownBranchSpotTreasury"
+              placeholder="Deactivated by"
+              styles={{
+                maxLength: "10px",
+              }}
+              options={deactivatedByOptions}
+              value={selectDeactivatedByOptions}
+              isSearchable
+              onChange={(e) => handleSelectOption(e, "deactivatedBy")}
+            />
+          </Col>
+          {selectedRoleOption?.value === 0 ? (
+            <>
+              <Col
+                lg={12}
+                md={12}
+                sm={12}
+                xs={12}
+                className={`${
+                  selectedRoleOption?.value === 0
+                    ? "mt-2 justify-content-center align-items-center"
+                    : ""
+                } d-flex gap-2 `}
               >
                 <Button
-                  icon={<img src={excelIcon} alt="Excel Icon" />}
-                  // onClick={() => handleExport("excel")}
-                  className={styles["export-button"]}
+                  icon={<i className="icon-search icon-check-space"></i>}
+                  value={"Search"}
+                  className={styles["SearchButtonStyles"]}
+                  onClick={handleSearchBtn}
                 />
                 <Button
-                  icon={<img src={pdfIcon} alt="PDF Icon" />}
-                  // onClick={() => handleExport("pdf")}
-                  className={styles["export-button"]}
+                  icon={<i className="icon-refresh"></i>}
+                  value={"Reset"}
+                  className={styles["ResetButtonStyles"]}
+                  onClick={handleResetBtn}
                 />
-              </span>
-            </div>
-          </Col>
+
+                <div className="position-relative" ref={exportRef}>
+                  <Button
+                    icon={<i className="icon-download"></i>}
+                    className={styles["Export_Button"]}
+                    value="Export"
+                    iconClass={styles["resetIconClass"]}
+                    onClick={toggleExportOptions}
+                  />
+                  <span
+                    className={`${styles["Export_optionsBox"]} ${
+                      open ? styles["open"] : styles["closed"]
+                    }`}
+                  >
+                    <Button
+                      icon={<img src={excelIcon} alt="Excel Icon" />}
+                      // onClick={() => handleExport("excel")}
+                      className={styles["export-button"]}
+                    />
+                    <Button
+                      icon={<img src={pdfIcon} alt="PDF Icon" />}
+                      // onClick={() => handleExport("pdf")}
+                      className={styles["export-button"]}
+                    />
+                  </span>
+                </div>
+              </Col>
+            </>
+          ) : (
+            <>
+              <Col
+                lg={4}
+                md={12}
+                sm={12}
+                xs={12}
+                className={`${
+                  selectedRoleOption?.value === 0
+                    ? "mt-2 justify-content-center align-items-center"
+                    : ""
+                } d-flex gap-2 `}
+              >
+                <Button
+                  icon={<i className="icon-search icon-check-space"></i>}
+                  value={"Search"}
+                  className={styles["SearchButtonStyles"]}
+                  onClick={handleSearchBtn}
+                />
+                <Button
+                  icon={<i className="icon-refresh"></i>}
+                  value={"Reset"}
+                  className={styles["ResetButtonStyles"]}
+                  onClick={handleResetBtn}
+                />
+
+                <div className="position-relative" ref={exportRef}>
+                  <Button
+                    icon={<i className="icon-download"></i>}
+                    className={styles["Export_Button"]}
+                    value="Export"
+                    iconClass={styles["resetIconClass"]}
+                    onClick={toggleExportOptions}
+                  />
+                  <span
+                    className={`${styles["Export_optionsBox"]} ${
+                      open ? styles["open"] : styles["closed"]
+                    }`}
+                  >
+                    <Button
+                      icon={<img src={excelIcon} alt="Excel Icon" />}
+                      // onClick={() => handleExport("excel")}
+                      className={styles["export-button"]}
+                    />
+                    <Button
+                      icon={<img src={pdfIcon} alt="PDF Icon" />}
+                      // onClick={() => handleExport("pdf")}
+                      className={styles["export-button"]}
+                    />
+                  </span>
+                </div>
+              </Col>
+            </>
+          )}
         </Row>
 
         <Row className="mt-5">

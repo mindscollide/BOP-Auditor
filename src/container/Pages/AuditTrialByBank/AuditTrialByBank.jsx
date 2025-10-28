@@ -25,7 +25,7 @@ import {
   getDateTimeString,
 } from "../../../utils/Timer";
 import moment from "moment";
-const AuditTrialByBank = () => {
+const AuditTrialByBankCom = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const exportRef = useRef(null);
@@ -248,31 +248,28 @@ const AuditTrialByBank = () => {
       dataIndex: "txnid",
       key: "txnid",
       width: 100,
-      render: (text) => <span>{text}</span>,
     },
     {
       title: "Corporate Name",
       dataIndex: "corporateName",
       ellipsis: true,
       key: "corporateName",
-      width: 180,
-      render: (text) => <span>{text}</span>,
+      width: 150,
     },
     {
       title: "Branch Name",
       dataIndex: "branchName",
       key: "branchName",
       ellipsis: true,
-      width: 190,
-      render: (text) => <span>{text}</span>,
+      width: 150,
+      render: (text) => <span style={{ maxWidth: "100%" }}>{text}</span>,
     },
     {
       title: "Branch User",
       dataIndex: "branchUser",
       ellipsis: true,
       key: "branchUser",
-      width: 160,
-      render: (text) => <span>{text}</span>,
+      width: 150,
     },
     {
       title: "Treasury Sales User",
@@ -280,7 +277,6 @@ const AuditTrialByBank = () => {
       ellipsis: true,
       key: "treasuryUser",
       width: 150,
-      render: (text) => <span>{text}</span>,
     },
     {
       title: "Date",
@@ -320,15 +316,13 @@ const AuditTrialByBank = () => {
       dataIndex: "type",
       key: "type",
       width: 100,
-      render: (text) => <span>{text}</span>,
     },
     {
       title: "Nature",
       dataIndex: "nature",
       key: "nature",
       ellipsis: true,
-      width: 220,
-      render: (text) => <span>{text}</span>,
+      width: 150,
     },
     {
       title: "CCY1",
@@ -336,8 +330,6 @@ const AuditTrialByBank = () => {
       key: "ccY1",
       width: 80,
       align: "center",
-
-      render: (text) => <span>{text}</span>,
     },
     {
       title: "TXN Amount",
@@ -351,7 +343,8 @@ const AuditTrialByBank = () => {
       title: "Rate",
       dataIndex: "rate",
       key: "rate",
-      width: 90,
+      width: 120,
+      ellipsis: true,
       align: "center",
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
@@ -359,15 +352,15 @@ const AuditTrialByBank = () => {
       title: "CCY2",
       dataIndex: "ccY2",
       key: "ccY2",
-      width: 80,
+      width: 50,
       align: "center",
-      render: (text) => <span>{text}</span>,
     },
     {
       title: "Total Amount",
       dataIndex: "amount1",
       key: "amount2",
       width: 130,
+      ellipsis: true,
       align: "center",
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
@@ -375,35 +368,32 @@ const AuditTrialByBank = () => {
       title: "LC #",
       dataIndex: "lcNumber",
       key: "lcNumber",
-      width: 130,
+      width: 50,
       align: "center",
-      render: (text) => <span>{text}</span>,
     },
     {
       title: "Account #",
       dataIndex: "accountNumber",
       key: "accountNumber",
-      width: 130,
+      width: 120,
+      ellipsis: true,
       align: "center",
-      render: (text) => <span>{text}</span>,
     },
     {
       title: "Initiated By",
       dataIndex: "initiatedBy",
       key: "initiatedBy",
-      width: 130,
+      width: 120,
       ellipsis: true,
       align: "center",
-      render: (text) => <span>{text}</span>,
     },
     {
       title: "Accepted By",
       dataIndex: "acceptedBy",
       key: "acceptedBy",
-      width: 130,
+      width: 120,
       align: "center",
       ellipsis: true,
-      render: (text) => <span>{text}</span>,
     },
     {
       title: "TXN Accepted Time",
@@ -429,10 +419,9 @@ const AuditTrialByBank = () => {
       title: "Cancelled By",
       dataIndex: "cancelledBy",
       key: "cancelledBy",
-      width: 130,
+      width: 120,
       ellipsis: true,
       align: "center",
-      render: (text) => <span>{text}</span>,
     },
 
     {
@@ -461,7 +450,18 @@ const AuditTrialByBank = () => {
       key: "status",
       width: 110,
       render: (text) => (
-        <span style={{ color: text === "Accepted" ? "green" : "red" }}>
+        <span
+          style={{
+            color:
+              text === "Accepted"
+                ? "green"
+                : text === "Cancelled"
+                ? "#f26522"
+                : text === "Expired" || text === "Rejected"
+                ? "#f21616"
+                : "",
+          }}
+        >
           {text}
         </span>
       ),
@@ -635,7 +635,7 @@ const AuditTrialByBank = () => {
               column={AuditTrialByBank}
               rows={transactionByBankTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: "45vh" }}
+              scroll={{ y: "45vh" }}
               className={"BankUserList-table"}
             />
           </Col>
@@ -645,4 +645,4 @@ const AuditTrialByBank = () => {
   );
 };
 
-export default AuditTrialByBank;
+export default AuditTrialByBankCom;

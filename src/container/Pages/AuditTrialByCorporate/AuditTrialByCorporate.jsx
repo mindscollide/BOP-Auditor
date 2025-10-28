@@ -324,7 +324,6 @@ const AuditTrialByCorporate = () => {
       dataIndex: "ccY1",
       key: "ccY1",
       align: "center",
-
       width: 50,
       render: (text) => <span>{text}</span>,
     },
@@ -333,7 +332,7 @@ const AuditTrialByCorporate = () => {
       dataIndex: "amount2",
       key: "amount2",
       align: "center",
-      width: 100,
+      width: 120,
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
@@ -341,8 +340,8 @@ const AuditTrialByCorporate = () => {
       dataIndex: "rate",
       key: "rate",
       align: "center",
+      width: 120,
 
-      width: 90,
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {

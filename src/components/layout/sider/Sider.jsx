@@ -144,7 +144,7 @@ const Sidebar = () => {
                 Transaction by Corporate
               </Link>
 
-              {/* <Link
+              <Link
                 to="/BOP/userManagement"
                 className={
                   location.pathname.includes("userManagement")
@@ -166,7 +166,7 @@ const Sidebar = () => {
                 onClick={() => handleItemClick("rateInputReport")}
               >
                 Rate Input Report
-              </Link> */}
+              </Link>
             </div>
           )}
         </Nav.Item>
