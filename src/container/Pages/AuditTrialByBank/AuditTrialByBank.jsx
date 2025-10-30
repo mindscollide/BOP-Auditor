@@ -140,8 +140,8 @@ const AuditTrialByBankCom = () => {
       BranchName: formData.branchName,
       TransactionByBankUser: formData.txnByBranchUser,
       TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+      StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
+      EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
     };
 
     dispatch(
@@ -157,8 +157,8 @@ const AuditTrialByBankCom = () => {
       BranchName: formData.branchName,
       TransactionByBankUser: formData.txnByBranchUser,
       TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+      StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
+      EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
     };
 
     dispatch(
@@ -185,13 +185,12 @@ const AuditTrialByBankCom = () => {
 
   //Handle Start Date Change
   const handleStartDateChange = (dateObject) => {
-    setStartDate(formatDate(dateObject));
-    console.log(formatDate(dateObject), "DateCheck");
+    setStartDate(dateObject);
   };
 
   //Handle End Date Change
   const handleEndDateChange = (dateObject) => {
-    setEndDate(formatDate(dateObject));
+    setEndDate(dateObject);
   };
 
   //Handle Search Button
@@ -202,13 +201,12 @@ const AuditTrialByBankCom = () => {
       BranchName: formData.branchName,
       TransactionByBankUser: formData.txnByBranchUser,
       TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+      StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
+      EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
       Length: 10,
       sRow: 0,
     };
     console.log(Data, "DateCheck");
-    console.log(startDate, "DateCheck");
     dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
   };
 
@@ -479,8 +477,9 @@ const AuditTrialByBankCom = () => {
           BranchName: formData.branchName,
           TransactionByBankUser: formData.txnByBranchUser,
           TransactionByTreasuryUser: formData.txnByTreasuryUser,
-          StartDate: startDate !== null ? startDate : "",
-          EndDate: endDate !== null ? endDate : "",
+          StartDate:
+            formatDate(startDate) !== null ? formatDate(startDate) : "",
+          EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
           sRow: sRow,
           Length: 10,
         };

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./AuditTrialByCorporate.module.css";
 import { Col, Row } from "react-bootstrap";
 import DatePicker from "react-multi-date-picker";
-import { Popover } from "antd";
 import pdfIcon from "../../../assets/images/pdf.png";
 import excelIcon from "../../../assets/images/excel.png";
 import {
@@ -124,10 +123,9 @@ const AuditTrialByCorporate = () => {
         formData.corporateName !== "" ? formData.corporateName : "",
       TransactionByTreasuryUser:
         formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+      StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
+      EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
     };
-
     dispatch(
       GetTransactionDetailsByCorporateExcelTypeReportAuditor({ navigate, Data })
     );
@@ -143,8 +141,8 @@ const AuditTrialByCorporate = () => {
         formData.corporateName !== "" ? formData.corporateName : "",
       TransactionByTreasuryUser:
         formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+      StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
+      EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
     };
 
     dispatch(
@@ -154,12 +152,12 @@ const AuditTrialByCorporate = () => {
 
   //Handle Start Date Change
   const handleStartDateChange = (dateObject) => {
-    setStartDate(formatDate(dateObject));
+    setStartDate(dateObject);
   };
 
   //Handle End Date Change
   const handleEndDateChange = (dateObject) => {
-    setEndDate(formatDate(dateObject));
+    setEndDate(dateObject);
   };
 
   //Toggle Fucntion to view Export Icons
@@ -203,8 +201,8 @@ const AuditTrialByCorporate = () => {
       CorporateUser: formData.corporateUser,
       CorporateName: formData.corporateName,
       TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+      StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
+      EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
       Length: 10,
       sRow: 0,
     };
@@ -467,8 +465,8 @@ const AuditTrialByCorporate = () => {
             formData.corporateName !== "" ? formData.corporateName : "",
           TransactionByTreasuryUser:
             formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
-          StartDate: startDate !== "" ? startDate : "",
-          EndDate: endDate !== "" ? endDate : "",
+          StartDate: formatDate(startDate) !== "" ? formatDate(startDate) : "",
+          EndDate: formatDate(endDate) !== "" ? formatDate(endDate) : "",
           Length: 10,
           sRow: sRow,
         };

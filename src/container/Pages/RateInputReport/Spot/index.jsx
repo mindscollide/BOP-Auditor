@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./spot.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from "../../../../components/common/utils";
+import {
+  formatDate,
+  formatDateToUTC,
+} from "../../../../components/common/utils";
 import { useTableScrollBottomByClassName } from "../../../../components/common/useTableScrollBottom";
 import pdfIcon from "../../../../assets/images/pdf.png";
 
@@ -15,35 +18,9 @@ import {
   TextField,
 } from "../../../../components/elements";
 import DatePicker from "react-multi-date-picker";
-// import {
-//   Button,
-//   CustomPaper,
-//   CustomTable,
-//   TextField,
-// } from "../../../components/elements";
-// import pdfIcon from "../../../assets/images/pdf.png";
-// import excelIcon from "../../../assets/images/excel.png";
-// import { Col, Row } from "react-bootstrap";
-// import DatePicker from "react-multi-date-picker";
-// import { Popover } from "antd";
-// import { useDispatch, useSelector } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-// import { GetTransactionDetailsByBankAuditor } from "../../../store/AuditorActions/AuditorActions";
-// import { useTableScrollBottomByClassName } from "../../../components/common/useTableScrollBottom";
-// import {
-//   formatDate,
+import moment from "moment";
+import SelectDropdown from "../../../../components/common/selectDropdown/SelectDropdown";
 
-//   // formatPkAmount
-// } from "../../../components/common/utils";
-// import {
-//   GetTransactionDetailsByBankExcelTypeReportAuditor,
-//   GetTransactionDetailsByBankPDFTypeReportAuditor,
-// } from "../../../store/ReportActions/ReportActions";
-// import {
-//   convertDateTimeIntoLocal,
-//   getDateTimeString,
-// } from "../../../utils/Timer";
-// import moment from "moment";
 const Spot = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -65,10 +42,34 @@ const Spot = () => {
   const [formData, setFormData] = useState({
     employeeName: "",
     employeeId: "",
+    dateFrom: {
+      value: new Date(),
+      errorMessage: "",
+      errorStatus: false,
+    },
+    dateTo: {
+      value: new Date(),
+      errorMessage: "",
+      errorStatus: false,
+    },
     // branchName: "",
     // txnByBranchUser: "",
     // txnByTreasuryUser: "",
   });
+  // Date range options
+  const [dateRangeOptions] = useState([
+    { value: 1, label: "Today" },
+    { value: 2, label: "1 Month" },
+    { value: 3, label: "3 Months" },
+    { value: 4, label: "6 Months" },
+    { value: 5, label: "1 Year" },
+    { value: 6, label: "Custom Date" },
+  ]);
+  const [selectedDateRange, setSelectedDateRange] = useState({
+    value: 1,
+    label: "Today",
+  });
+  const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
 
   //Calling GetTransactionDetailsByBankAPI
   useEffect(() => {
@@ -194,31 +195,132 @@ const Spot = () => {
   };
 
   //Handle Start Date Change
-  const handleStartDateChange = (dateObject) => {
-    setStartDate(formatDate(dateObject));
-    console.log(formatDate(dateObject), "DateCheck");
-  };
+  // const handleStartDateChange = (dateObject) => {
+  //   setStartDate(formatDate(dateObject));
+  //   console.log(formatDate(dateObject), "DateCheck");
+  // };
 
-  //Handle End Date Change
-  const handleEndDateChange = (dateObject) => {
-    setEndDate(formatDate(dateObject));
+  // //Handle End Date Change
+  // const handleEndDateChange = (dateObject) => {
+  //   setEndDate(formatDate(dateObject));
+  // };
+
+  //new date work
+  // Function to handle date range selection
+  const handleDateRangeChange = (selectedOption) => {
+    setSelectedDateRange(selectedOption);
+
+    if (selectedOption.value === 6) {
+      setShowCustomDatePicker(true);
+      return;
+    }
+
+    setShowCustomDatePicker(false);
+
+    const today = new Date();
+    const fromDate = new Date();
+
+    switch (selectedOption.value) {
+      case 1:
+        // Set both from and to dates as today
+        fromDate.setDate(today.getDate());
+        break;
+      case 2:
+        fromDate.setMonth(today.getMonth() - 1);
+        break;
+      case 3:
+        fromDate.setMonth(today.getMonth() - 3);
+        break;
+      case 4:
+        fromDate.setMonth(today.getMonth() - 6);
+        break;
+      case 5:
+        fromDate.setMonth(today.getMonth() - 12);
+        break;
+      default:
+        fromDate.setMonth(today.getMonth() - 1);
+    }
+
+    // Format dates for display
+    const fromDateStr = moment(fromDate).format("DD-MM-YYYY");
+    const toDateStr = moment(today).format("DD-MM-YYYY");
+    // const displayLabel = `${selectedOption.label} (${fromDateStr} to ${toDateStr})`;
+
+    let displayLabel;
+    if (selectedOption.value === 1) {
+      displayLabel = `Today`;
+    } else {
+      displayLabel = `${fromDateStr} to ${toDateStr}`;
+    }
+
+    // Update the tradeCount state with new dates
+    setFormData((prev) => ({
+      ...prev,
+      dateFrom: {
+        ...prev.dateFrom,
+        value: fromDate,
+      },
+      dateTo: {
+        ...prev.dateTo,
+        value: today,
+      },
+    }));
+
+    // Update selected option with date range in label
+    setSelectedDateRange({
+      ...selectedOption,
+      label: displayLabel,
+    });
+  };
+  //Handle Date Change method
+  const handleDateChange = (fieldName, value) => {
+    console.log({ fieldName: fieldName, value: Date(value) });
+    setFormData((prev) => ({
+      ...prev,
+      [fieldName]: {
+        ...prev[fieldName],
+        value,
+        errorMessage: "",
+        errorStatus: false,
+      },
+    }));
+
+    // Example validation: Start Date should be before End Date
+    if (
+      fieldName === "dateFrom" &&
+      formData.dateTo.value &&
+      new Date(value) > new Date(formData.dateTo.value)
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        dateFrom: {
+          ...prev.dateFrom,
+          errorMessage: "Start date cannot be after end date.",
+          errorStatus: true,
+        },
+      }));
+    }
   };
 
   //Handle Search Button
   const handleSearchBtn = () => {
+    const FromDate = new Date(formData.dateFrom.value);
+    FromDate.setHours(0, 0, 0);
+    const ToDate = new Date(formData.dateTo.value);
+    ToDate.setHours(23, 59, 59);
     let Data = {
       TXNID: Number(formData.txnId),
       corporateName: formData.corporateName,
       BranchName: formData.branchName,
       TransactionByBankUser: formData.txnByBranchUser,
       TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+      FromDate: formatDateToUTC(FromDate),
+      ToDate: formatDateToUTC(ToDate),
       Length: 10,
       sRow: 0,
     };
     console.log(Data, "DateCheck");
-    console.log(startDate, "DateCheck");
+    // console.log(startDate, "DateCheck");
     // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
   };
 
@@ -338,7 +440,7 @@ const Spot = () => {
     <>
       <CustomPaper variant="outlined">
         <Row>
-          <Col lg={3} md={3} sm={12} className="d-flex align-items-center ">
+          {/* <Col lg={3} md={3} sm={12} className="d-flex align-items-center ">
             <DatePicker
               name="dateFrom"
               value={startDate}
@@ -365,6 +467,25 @@ const Spot = () => {
               minDate={startDate}
               maxDate={null}
               editable={false}
+            />
+          </Col> */}
+          <Col lg={3} md={12} sm={12}>
+            <SelectDropdown
+              styles={{
+                placeholder: (base) => ({
+                  ...base,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }),
+              }}
+              placeholder="Select Date Range"
+              classNamePrefix="dropdownBranchSpotTreasury"
+              options={dateRangeOptions}
+              value={selectedDateRange}
+              isSearchable={true}
+              onChange={handleDateRangeChange}
+              menuPortalTarget={document.body}
             />
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
@@ -431,7 +552,40 @@ const Spot = () => {
             </div>
           </Col>
         </Row>
-        <Row className="mt-3"></Row>
+        <Row className="mt-2">
+          <Col
+            lg={3}
+            md={12}
+            sm={12}
+            className={`d-flex align-items-center pe-4 ${
+              showCustomDatePicker ? "visible" : "invisible"
+            }`}
+          >
+            <DatePicker
+              name="dateFrom"
+              value={formData.dateFrom.value}
+              placeholder="Start date"
+              showOtherDays="true"
+              inputClass={styles["Tradecount-Datepicker-left"]}
+              onChange={(date) => handleDateChange("dateFrom", date)}
+              maxDate={formData.dateTo.value}
+              minDate={null}
+              editable={false}
+            />
+            <label className={styles["Tradecount-date-to"]}>to</label>
+            <DatePicker
+              name="dateTo"
+              value={formData.dateTo.value}
+              placeholder="End Date"
+              showOtherDays="true"
+              inputClass={styles["Tradecount-Datepicker-right"]}
+              onChange={(date) => handleDateChange("dateTo", date)}
+              minDate={formData.dateFrom.value}
+              maxDate={null}
+              editable={false}
+            />
+          </Col>
+        </Row>
         <Row className="mt-5">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable

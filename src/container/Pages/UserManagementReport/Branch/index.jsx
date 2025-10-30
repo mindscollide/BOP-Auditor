@@ -686,9 +686,9 @@ const Branch = () => {
                 xs={12}
                 className={`${
                   selectedRoleOption?.value === 0
-                    ? "mt-2 justify-content-center align-items-center"
+                    ? "mt-2 d-flex justify-content-center align-items-center"
                     : ""
-                } d-flex gap-2 `}
+                } d-flex gap-2 justify-content-end align-items-end`}
               >
                 <Button
                   icon={<i className="icon-search icon-check-space"></i>}
