@@ -52,9 +52,6 @@ const Spot = () => {
       errorMessage: "",
       errorStatus: false,
     },
-    // branchName: "",
-    // txnByBranchUser: "",
-    // txnByTreasuryUser: "",
   });
   // Date range options
   const [dateRangeOptions] = useState([
@@ -65,21 +62,15 @@ const Spot = () => {
     { value: 5, label: "1 Year" },
     { value: 6, label: "Custom Date" },
   ]);
-  const [selectedDateRange, setSelectedDateRange] = useState({
-    value: 1,
-    label: "Today",
-  });
+  const [selectedDateRange, setSelectedDateRange] = useState(null);
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
 
   //Calling GetTransactionDetailsByBankAPI
   useEffect(() => {
     try {
       let Data = {
-        TXNID: 0,
-        corporateName: "",
-        BranchName: "",
-        TransactionByBankUser: "",
-        TransactionByTreasuryUser: "",
+        employeeName: "",
+        employeeId: "",
         StartDate: "",
         EndDate: "",
         Length: 10,
@@ -309,11 +300,8 @@ const Spot = () => {
     const ToDate = new Date(formData.dateTo.value);
     ToDate.setHours(23, 59, 59);
     let Data = {
-      TXNID: Number(formData.txnId),
-      corporateName: formData.corporateName,
-      BranchName: formData.branchName,
-      TransactionByBankUser: formData.txnByBranchUser,
-      TransactionByTreasuryUser: formData.txnByTreasuryUser,
+      employeeName: formData.employeeName,
+      employeeId: formData.employeeId,
       FromDate: formatDateToUTC(FromDate),
       ToDate: formatDateToUTC(ToDate),
       Length: 10,
@@ -326,35 +314,39 @@ const Spot = () => {
 
   //Handle Reset Button
   const handleResetBtn = () => {
-    if (
-      formData.employeeId !== "" ||
-      formData.employeeName !== "" ||
-      startDate !== null ||
-      endDate !== null
-    ) {
-      setFormData({
-        employeeId: "",
-        employeeName: "",
-      });
-      setStartDate(null);
-      setEndDate(null);
-      setRateReportTblData([]);
-      setSRow(0);
-      setIsLoading(false);
-      setTotalRecord(0);
-      let Data = {
-        TXNID: 0,
-        corporateName: "",
-        BranchName: "",
-        TransactionByBankUser: "",
-        TransactionByTreasuryUser: "",
-        StartDate: "",
-        EndDate: "",
-        Length: 10,
-        sRow: 0,
-      };
-      // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
-    }
+    setFormData({
+      employeeName: "",
+      employeeId: "",
+      dateFrom: {
+        value: "",
+        errorMessage: "",
+        errorStatus: false,
+      },
+      dateTo: {
+        value: "",
+        errorMessage: "",
+        errorStatus: false,
+      },
+    });
+    setSelectedDateRange(null);
+    setStartDate(null);
+    setEndDate(null);
+    setRateReportTblData([]);
+    setSRow(0);
+    setIsLoading(false);
+    setTotalRecord(0);
+    let Data = {
+      TXNID: 0,
+      corporateName: "",
+      BranchName: "",
+      TransactionByBankUser: "",
+      TransactionByTreasuryUser: "",
+      StartDate: "",
+      EndDate: "",
+      Length: 10,
+      sRow: 0,
+    };
+    // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
   };
 
   // Columns for Audit Trial By Bank
