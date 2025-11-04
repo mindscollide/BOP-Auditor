@@ -1,11 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./spot.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import {
-  formatDate,
-  formatDateToUTC,
-} from "../../../../components/common/utils";
+// import { useNavigate } from "react-router-dom";
+import { formatDateToUTC } from "../../../../components/common/utils";
 import { useTableScrollBottomByClassName } from "../../../../components/common/useTableScrollBottom";
 import pdfIcon from "../../../../assets/images/pdf.png";
 
@@ -23,7 +20,7 @@ import SelectDropdown from "../../../../components/common/selectDropdown/SelectD
 
 const Spot = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const exportRef = useRef(null);
 
   // Extracting the Transaction by Bank Details Data from Reducer
@@ -43,12 +40,12 @@ const Spot = () => {
     employeeName: "",
     employeeId: "",
     dateFrom: {
-      value: new Date(),
+      value: "",
       errorMessage: "",
       errorStatus: false,
     },
     dateTo: {
-      value: new Date(),
+      value: "",
       errorMessage: "",
       errorStatus: false,
     },
@@ -295,15 +292,24 @@ const Spot = () => {
 
   //Handle Search Button
   const handleSearchBtn = () => {
-    const FromDate = new Date(formData.dateFrom.value);
-    FromDate.setHours(0, 0, 0);
-    const ToDate = new Date(formData.dateTo.value);
-    ToDate.setHours(23, 59, 59);
+    let FromDate = null;
+    let ToDate = null;
+
+    if (formData.dateFrom.value) {
+      FromDate = new Date(formData.dateFrom.value);
+      FromDate.setHours(0, 0, 0);
+    }
+
+    if (formData.dateTo.value) {
+      ToDate = new Date(formData.dateTo.value);
+      ToDate.setHours(23, 59, 59);
+    }
+
     let Data = {
-      employeeName: formData.employeeName,
-      employeeId: formData.employeeId,
-      FromDate: formatDateToUTC(FromDate),
-      ToDate: formatDateToUTC(ToDate),
+      employeeName: formData.employeeName || "",
+      employeeId: formData.employeeId || "",
+      FromDate: FromDate ? formatDateToUTC(FromDate) : "",
+      ToDate: ToDate ? formatDateToUTC(ToDate) : "",
       Length: 10,
       sRow: 0,
     };
@@ -314,6 +320,7 @@ const Spot = () => {
 
   //Handle Reset Button
   const handleResetBtn = () => {
+    setShowCustomDatePicker(false);
     setFormData({
       employeeName: "",
       employeeId: "",

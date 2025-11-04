@@ -2577,3 +2577,11 @@ i.close-add-user {
 .dropdownBranchSpotTreasury__menu-portal {
   z-index: 99 !important;
 }
+
+.dropdownBranchSpotTreasury__menu {
+  max-height: 30vh !important; /* Your desired height */
+}
+
+.dropdownBranchSpotTreasury__menu-list {
+  max-height: 30vh !important; /* Slightly less than container height */
+}
