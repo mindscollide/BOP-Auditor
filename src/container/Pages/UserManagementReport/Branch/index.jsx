@@ -640,7 +640,7 @@ const Branch = () => {
                 <Button
                   icon={<i className="icon-search icon-check-space"></i>}
                   value={"Search"}
-                  className={styles["SearchButtonStyles"]}
+                  className={styles["Usermanagement_SearchButton"]}
                   onClick={handleSearchBtn}
                 />
                 <Button
@@ -688,12 +688,12 @@ const Branch = () => {
                   selectedRoleOption?.value === 0
                     ? "mt-2 d-flex justify-content-center align-items-center"
                     : ""
-                } d-flex gap-2 justify-content-end align-items-end`}
+                } d-flex gap-2`}
               >
                 <Button
                   icon={<i className="icon-search icon-check-space"></i>}
                   value={"Search"}
-                  className={styles["SearchButtonStyles"]}
+                  className={styles["Usermanagement_SearchButton"]}
                   onClick={handleSearchBtn}
                 />
                 <Button

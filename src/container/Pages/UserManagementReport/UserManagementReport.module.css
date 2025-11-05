@@ -49,10 +49,11 @@
   border: 1px solid #ced4da;
 }
 
-.SearchButtonStyles {
+.Usermanagement_SearchButton {
   font-size: 14px;
   border-radius: 4px !important;
-  padding: 6px 12px !important;
+  padding: 6px 18px !important;
+
   height: 100% !important;
   border: none;
   background: #096fed !important;
@@ -62,7 +63,7 @@
   align-items: center !important;
 }
 
-.SearchButtonStyles:is(:hover, :focus, :focus-visible) {
+.Usermanagement_SearchButton:is(:hover, :focus, :focus-visible) {
   border: none;
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   display: flex !important;

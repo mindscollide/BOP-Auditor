@@ -343,11 +343,8 @@ const Spot = () => {
     setIsLoading(false);
     setTotalRecord(0);
     let Data = {
-      TXNID: 0,
-      corporateName: "",
-      BranchName: "",
-      TransactionByBankUser: "",
-      TransactionByTreasuryUser: "",
+      employeeName: "",
+      employeeId: "",
       StartDate: "",
       EndDate: "",
       Length: 10,
@@ -415,11 +412,8 @@ const Spot = () => {
       if (rateReportTblData.length !== totalRecord) {
         setIsLoading(true);
         const Data = {
-          TXNID: Number(formData.txnId),
-          corporateName: formData.corporateName,
-          BranchName: formData.branchName,
-          TransactionByBankUser: formData.txnByBranchUser,
-          TransactionByTreasuryUser: formData.txnByTreasuryUser,
+          employeeName: formData.employeeName,
+          employeeId: formData.employeeId,
           StartDate: startDate !== null ? startDate : "",
           EndDate: endDate !== null ? endDate : "",
           sRow: sRow,
@@ -585,7 +579,7 @@ const Spot = () => {
             />
           </Col>
         </Row>
-        <Row className="mt-5">
+        <Row className="mt-4">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={RateReportColumns}
