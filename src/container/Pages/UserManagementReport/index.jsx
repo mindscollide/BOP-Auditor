@@ -43,7 +43,7 @@ const UserManagementReport = () => {
           </span>
         </Col>
       </Row>
-      <GlobalTabs tabClass="mt-4 mb-4" tabs={tabsData} defaultActiveKey={"0"} />
+      <GlobalTabs tabClass="mt-2 mb-4" tabs={tabsData} defaultActiveKey={"0"} />
     </>
   );
 };

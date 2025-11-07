@@ -12,7 +12,10 @@ import excelIcon from "../../../../assets/images/excel.png";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useTableScrollBottomByClassName } from "../../../../components/common/useTableScrollBottom";
+import {
+  useTableScrollBottom,
+  useTableScrollBottomByClassName,
+} from "../../../../components/common/useTableScrollBottom";
 import {
   GetTransactionDetailsByCorporateExcelTypeReportAuditor,
   GetTransactionDetailsByCorporatePDFTypeReportAuditor,
@@ -31,6 +34,7 @@ import {
 } from "../../../../components/elements";
 import { GetTransactionDetailsByCorporateAuditor } from "../../../../store/AuditorActions/AuditorActions";
 import { useNotification } from "../../../../context/NotificationProvider";
+import ExportShowComponent from "../../../../components/common/ExportShowComponent/ExportShowComponent";
 const Branch = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -46,8 +50,13 @@ const Branch = () => {
   const [open, setOpen] = useState(false);
   const [sRow, setSRow] = useState(0);
   const [totalRecord, setTotalRecord] = useState(0);
+  const [recordsLength, setRecordLength] = useState(0);
+
   // const [isLoading, setIsLoading] = useState(false);
-  const [userManagementTblData, setUserManagementTblData] = useState([]);
+  // const [userManagementTblData, setUserManagementTblData] = useState([]);
+  const [tableData, setTableData] = useState([]);
+
+  const [dropdownvalue, setDropdownvalue] = useState(50);
 
   // const [branchCorporateOptions, setBranchCorporateOptions] = useState([
   //   { label: "Branch", value: 0 },
@@ -156,6 +165,70 @@ const Branch = () => {
     employeeName: "",
     branchName: "",
   });
+
+  //Custome hook for Scrolling (1)
+  const { hasReachedBottom, setHasReachedBottom } = useTableScrollBottom(() => {
+    console.log("🚀 Table reached bottom");
+    // Load more data here if needed
+    if (recordsLength !== tableData.length) {
+      let Data = {
+        employeeId: formData?.employeeID,
+        email: formData?.email,
+        role:
+          selectedRoleOption?.value !== undefined
+            ? selectedRoleOption.value
+            : "",
+        createdBy:
+          selectCreatedByOptions?.value !== undefined
+            ? selectCreatedByOptions.value
+            : "",
+        approvedBy: selectApprovedByOptions?.value
+          ? selectApprovedByOptions.value
+          : "",
+        deactivatedBy: selectDeactivatedByOptions?.value
+          ? selectDeactivatedByOptions.value
+          : "",
+        branchName: formData?.branchName,
+        // TransactionByTreasuryUser: formData.employeeName,
+        sRow: sRow,
+        Length: dropdownvalue,
+      };
+
+      // dispatch(SearchBankUsersAPI(navigate, Data));
+    }
+  });
+
+  const handlePageSizeChange = (newSize) => {
+    setDropdownvalue(newSize);
+    setSRow(0);
+    setHasReachedBottom(false);
+    setTableData([]);
+    setRecordLength(0);
+
+    let Data = {
+      employeeId: formData?.employeeID,
+      email: formData?.email,
+      role:
+        selectedRoleOption?.value !== undefined ? selectedRoleOption.value : "",
+      createdBy:
+        selectCreatedByOptions?.value !== undefined
+          ? selectCreatedByOptions.value
+          : "",
+      approvedBy: selectApprovedByOptions?.value
+        ? selectApprovedByOptions.value
+        : "",
+      deactivatedBy: selectDeactivatedByOptions?.value
+        ? selectDeactivatedByOptions.value
+        : "",
+      branchName: formData?.branchName,
+      // TransactionByTreasuryUser: formData.employeeName,
+      sRow: sRow,
+      Length: dropdownvalue,
+    };
+
+    // dispatch(SearchBankUsersAPI(navigate, Data));
+  };
+
   //Calling
   // useEffect(() => {
   //   try {
@@ -334,7 +407,7 @@ const Branch = () => {
       branchName: "",
     });
 
-    setUserManagementTblData([]);
+    setTableData([]);
     setSRow(0);
     // setIsLoading(false);
     setTotalRecord(0);
@@ -501,7 +574,7 @@ const Branch = () => {
   //Scroller Custom Hook
   useTableScrollBottomByClassName(
     () => {
-      if (userManagementTblData.length !== totalRecord) {
+      if (tableData.length !== totalRecord) {
         // setIsLoading(true);
         let Data = {
           TXNID: Number(formData.txnId) !== "" ? Number(formData.txnId) : 0,
@@ -738,12 +811,20 @@ const Branch = () => {
             </>
           )}
         </Row>
+        <Row className="mt-3">
+          <Col lg={12} md={12} sm={12}>
+            <ExportShowComponent
+              value={dropdownvalue}
+              onChange={handlePageSizeChange}
+            />
+          </Col>
+        </Row>
 
-        <Row className="mt-5">
+        <Row className="mt-1">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={UserManagementTable}
-              rows={userManagementTblData}
+              rows={tableData}
               pagination={false}
               scroll={{ x: "max-content", y: "45vh" }}
               className={"BankUserList-table"}
