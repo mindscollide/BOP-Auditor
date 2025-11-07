@@ -52,12 +52,11 @@ const Spot = () => {
   });
   // Date range options
   const [dateRangeOptions] = useState([
-    { value: 1, label: "Today" },
-    { value: 2, label: "1 Month" },
-    { value: 3, label: "3 Months" },
-    { value: 4, label: "6 Months" },
-    { value: 5, label: "1 Year" },
-    { value: 6, label: "Custom Date" },
+    { value: 1, label: "1 Month" },
+    { value: 2, label: "3 Months" },
+    { value: 3, label: "6 Months" },
+    { value: 4, label: "1 Year" },
+    { value: 5, label: "Custom Date" },
   ]);
   const [selectedDateRange, setSelectedDateRange] = useState(null);
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
@@ -198,7 +197,7 @@ const Spot = () => {
   const handleDateRangeChange = (selectedOption) => {
     setSelectedDateRange(selectedOption);
 
-    if (selectedOption.value === 6) {
+    if (selectedOption.value === 5) {
       setShowCustomDatePicker(true);
       return;
     }
@@ -210,19 +209,15 @@ const Spot = () => {
 
     switch (selectedOption.value) {
       case 1:
-        // Set both from and to dates as today
-        fromDate.setDate(today.getDate());
-        break;
-      case 2:
         fromDate.setMonth(today.getMonth() - 1);
         break;
-      case 3:
+      case 2:
         fromDate.setMonth(today.getMonth() - 3);
         break;
-      case 4:
+      case 3:
         fromDate.setMonth(today.getMonth() - 6);
         break;
-      case 5:
+      case 4:
         fromDate.setMonth(today.getMonth() - 12);
         break;
       default:
@@ -234,12 +229,7 @@ const Spot = () => {
     const toDateStr = moment(today).format("DD-MM-YYYY");
     // const displayLabel = `${selectedOption.label} (${fromDateStr} to ${toDateStr})`;
 
-    let displayLabel;
-    if (selectedOption.value === 1) {
-      displayLabel = `Today`;
-    } else {
-      displayLabel = `${fromDateStr} to ${toDateStr}`;
-    }
+    let displayLabel = `${fromDateStr} to ${toDateStr}`;
 
     // Update the tradeCount state with new dates
     setFormData((prev) => ({
@@ -488,6 +478,7 @@ const Spot = () => {
               value={formData.employeeName}
               onChange={handleTextChange}
               applyClass="TextFieldAuditors"
+              maxLength={50}
             />
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
@@ -497,6 +488,7 @@ const Spot = () => {
               value={formData.employeeId}
               onChange={handleTextChange}
               applyClass="TextFieldAuditors"
+              maxLength={15}
             />
           </Col>
           <Col

@@ -30,10 +30,12 @@ import {
   TextField,
 } from "../../../../components/elements";
 import { GetTransactionDetailsByCorporateAuditor } from "../../../../store/AuditorActions/AuditorActions";
+import { useNotification } from "../../../../context/NotificationProvider";
 const Corporate = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const exportRef = useRef(null);
+  const { showMessage } = useNotification();
 
   // Extracting the Transaction by Bank Details Data from Reducer
   const AuditorTransactionCorporateData = useSelector(
@@ -131,7 +133,7 @@ const Corporate = () => {
   const [formData, setFormData] = useState({
     employeeID: "",
     email: "",
-    employeeName: "",
+    corporateUser: "",
     corporateName: "",
   });
   //Calling
@@ -257,19 +259,23 @@ const Corporate = () => {
 
     const cleanedValue = value.replace(/\t/g, "").trim();
 
-    if (name === "employeeID") {
-      console.log("standing here");
-      const numericValue = cleanedValue.replace(/\D/g, "");
-      setFormData((prev) => ({ ...prev, [name]: numericValue }));
-      return;
-    }
+    // if (name === "employeeID") {
+    //   console.log("standing here");
+    //   const numericValue = cleanedValue.replace(/\D/g, "");
+    //   setFormData((prev) => ({ ...prev, [name]: numericValue }));
+    //   return;
+    // }
 
     // For all other fields, strip tabs and trim, then limit to 50 characters
-    const limitedValue = cleanedValue.slice(0, 50);
-    setFormData((prev) => ({ ...prev, [name]: limitedValue }));
+    setFormData((prev) => ({ ...prev, [name]: cleanedValue }));
   };
   //Handle Search Button
   const handleSearchBtn = () => {
+    // If email is not empty and invalid -> show popup
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      showMessage("Please enter a valid email address.");
+      return;
+    }
     let Data = {
       employeeId: formData?.employeeID,
       email: formData?.email,
@@ -301,7 +307,7 @@ const Corporate = () => {
     setFormData({
       employeeID: "",
       email: "",
-      employeeName: "",
+      corporateUser: "",
       corporateName: "",
     });
 
@@ -361,10 +367,16 @@ const Corporate = () => {
     },
     {
       title: "Status",
-      // dataIndex: "date",
-      // key: "date",
+      dataIndex: "status", // use your actual data field name
+      key: "status",
       width: 120,
-      render: (text) => <span>{text}</span>,
+      render: (text) => (
+        <span
+          style={{ color: text?.toLowerCase() === "active" ? "green" : "red" }}
+        >
+          {text}
+        </span>
+      ),
     },
     {
       title: "Last Password Change",
@@ -489,6 +501,7 @@ const Corporate = () => {
               name="employeeID"
               placeholder="Employee ID"
               applyClass="TextFieldAuditors"
+              maxLength={15}
               value={formData.employeeID}
               onChange={handleTextChange}
             />
@@ -498,18 +511,19 @@ const Corporate = () => {
               name="email"
               placeholder="Email"
               applyClass="TextFieldAuditors"
+              maxLength={100}
               value={formData.email}
               onChange={handleTextChange}
             />
           </Col>
           <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
-              name="employeeName"
-              placeholder="Employee Name"
+              name="corporateUser"
+              placeholder="Corporate User"
               applyClass="TextFieldAuditors"
-              value={formData.employeeName}
-              onChange={handleTextChange}
               maxLength={50}
+              value={formData.corporateUser}
+              onChange={handleTextChange}
             />
           </Col>
 
@@ -518,9 +532,9 @@ const Corporate = () => {
               name="corporateName"
               placeholder="Corporate Name"
               applyClass="TextFieldAuditors"
+              maxLength={50}
               value={formData.corporateName}
               onChange={handleTextChange}
-              maxLength={50}
             />
           </Col>
         </Row>

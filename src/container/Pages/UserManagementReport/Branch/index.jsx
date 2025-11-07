@@ -30,10 +30,12 @@ import {
   TextField,
 } from "../../../../components/elements";
 import { GetTransactionDetailsByCorporateAuditor } from "../../../../store/AuditorActions/AuditorActions";
+import { useNotification } from "../../../../context/NotificationProvider";
 const Branch = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const exportRef = useRef(null);
+  const { showMessage } = useNotification();
 
   // Extracting the Transaction by Bank Details Data from Reducer
   const AuditorTransactionCorporateData = useSelector(
@@ -120,6 +122,8 @@ const Branch = () => {
     { label: "Branch", value: 0 },
     { label: "FX Trading", value: 1 },
     { label: "Treasury Sales", value: 2 },
+    { label: "System Admin", value: 3 },
+    { label: "Security Admin", value: 4 },
   ];
 
   const [selectedRoleOption, setSelectedRoleOption] = useState(null);
@@ -275,19 +279,23 @@ const Branch = () => {
 
     const cleanedValue = value.replace(/\t/g, "").trim();
 
-    if (name === "employeeID") {
-      console.log("standing here");
-      const numericValue = cleanedValue.replace(/\D/g, "");
-      setFormData((prev) => ({ ...prev, [name]: numericValue }));
-      return;
-    }
+    // if (name === "employeeID") {
+    //   console.log("standing here");
+    //   const numericValue = cleanedValue.replace(/\D/g, "");
+    //   setFormData((prev) => ({ ...prev, [name]: numericValue }));
+    //   return;
+    // }
 
     // For all other fields, strip tabs and trim, then limit to 50 characters
-    const limitedValue = cleanedValue.slice(0, 50);
-    setFormData((prev) => ({ ...prev, [name]: limitedValue }));
+
+    setFormData((prev) => ({ ...prev, [name]: cleanedValue }));
   };
   //Handle Search Button
   const handleSearchBtn = () => {
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      showMessage("Please enter a valid email address.");
+      return;
+    }
     let Data = {
       employeeId: formData?.employeeID,
       email: formData?.email,
@@ -392,7 +400,13 @@ const Branch = () => {
       // dataIndex: "date",
       // key: "date",
       width: 120,
-      render: (text) => <span>{text}</span>,
+      render: (text) => (
+        <span
+          style={{ color: text?.toLowerCase() === "active" ? "green" : "red" }}
+        >
+          {text}
+        </span>
+      ),
     },
     {
       title: "Last Password Change",
@@ -516,6 +530,7 @@ const Branch = () => {
               name="employeeID"
               placeholder="Employee ID"
               applyClass="TextFieldAuditors"
+              maxLength={15}
               value={formData.employeeID}
               onChange={handleTextChange}
             />
@@ -525,6 +540,7 @@ const Branch = () => {
               name="email"
               placeholder="Email"
               applyClass="TextFieldAuditors"
+              maxLength={100}
               value={formData.email}
               onChange={handleTextChange}
             />
@@ -534,9 +550,9 @@ const Branch = () => {
               name="employeeName"
               placeholder="Employee Name"
               applyClass="TextFieldAuditors"
+              maxLength={50}
               value={formData.employeeName}
               onChange={handleTextChange}
-              maxLength={50}
             />
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
@@ -574,16 +590,6 @@ const Branch = () => {
               />
             </Col>
           )}
-
-          {/* <Col lg={2} md={2} sm={2} xs={12}>
-            <TextField
-              name="branchInput"
-              placeholder="Branch"
-              applyClass="TextFieldAuditors"
-              value={formData.branchInput}
-              onChange={handleTextChange}
-            />
-          </Col> */}
         </Row>
         <Row className="mt-3">
           {selectedRoleOption?.value === 0 && (
