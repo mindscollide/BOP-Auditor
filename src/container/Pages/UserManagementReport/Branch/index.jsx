@@ -1,4 +1,5 @@
 import React, {
+  useEffect,
   // useEffect,
   useRef,
   useState,
@@ -35,6 +36,7 @@ import {
 import { GetTransactionDetailsByCorporateAuditor } from "../../../../store/AuditorActions/AuditorActions";
 import { useNotification } from "../../../../context/NotificationProvider";
 import ExportShowComponent from "../../../../components/common/ExportShowComponent/ExportShowComponent";
+import { GetAllTenorsAPI } from "../../../../store/UserManagementActions/UserManagementActions";
 const Branch = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -137,6 +139,9 @@ const Branch = () => {
 
   const [selectedRoleOption, setSelectedRoleOption] = useState(null);
 
+  useEffect(() => {
+    dispatch(GetAllTenorsAPI(navigate));
+  }, []);
   const handleSelectOption = (e, name) => {
     if (name === "createdBy") {
       setSelectCreatedByOptions(e);

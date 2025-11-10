@@ -3,6 +3,7 @@ import {
   GetTransactionDetailsByBankAuditor,
   GetTransactionDetailsByCorporateAuditor,
 } from "../AuditorActions/AuditorActions";
+import { GetSpotRateInputDataAPI } from "../RateInputActions/RateInputActions";
 
 const AuditorSlice = createSlice({
   name: "Auditor",
@@ -12,6 +13,7 @@ const AuditorSlice = createSlice({
     error: null,
     transactionDetailsByBankData: null,
     transactionDetailsByCorporateData: null,
+    GetSpotRateInputData: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -66,7 +68,26 @@ const AuditorSlice = createSlice({
           state.responseMessage = action.payload;
           state.transactionDetailsByCorporateData = null;
         }
-      );
+      )
+      // Pending state (while the API call is being made GetSpotRateInputDataAPI)
+      .addCase(GetSpotRateInputDataAPI.pending, (state) => {
+        state.Loader = true;
+        state.error = null;
+      })
+      // Fulfilled state (when the API call succeeds GetSpotRateInputDataAPI)
+      .addCase(GetSpotRateInputDataAPI.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetSpotRateInputData = payload.response;
+        state.error = null;
+        state.responseMessage = payload.message;
+      })
+      // Rejected state (when the API call fails GetSpotRateInputDataAPI)
+      .addCase(GetSpotRateInputDataAPI.rejected, (state, action) => {
+        console.log(action, "actionaction");
+        state.Loader = false;
+        state.responseMessage = action.payload;
+        state.GetSpotRateInputData = null;
+      });
   },
 });
 export const { clearAuthResponseMessage } = AuditorSlice.actions;

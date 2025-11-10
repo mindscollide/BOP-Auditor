@@ -66,3 +66,26 @@ export const formatDateToUTC = (date) => {
     String(date.getUTCSeconds()).padStart(2, "0")
   );
 };
+
+// utils/dateUtils.js
+export const formatDateForPayload = (from, to) => {
+  const formatDate = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  let FromDate = from ? new Date(from) : null;
+  let ToDate = to ? new Date(to) : null;
+
+  if (FromDate) FromDate.setHours(0, 0, 0);
+  if (ToDate) ToDate.setHours(23, 59, 59);
+
+  return {
+    StartDate: formatDate(FromDate),
+    EndDate: formatDate(ToDate),
+  };
+};

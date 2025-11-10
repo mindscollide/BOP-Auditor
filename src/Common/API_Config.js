@@ -42,3 +42,11 @@ export const GetUserSettings = {
 export const UpdateUserSettings = {
   RequestMethod: "ServiceManager.UpdateUserSettings",
 };
+
+export const GetAllTenors = {
+  RequestMethod: "ServiceManager.GetAllTenors",
+};
+
+export const GetSpotRateInputData = {
+  RequestMethod: "ServiceManager.GetSpotRateInputData",
+};

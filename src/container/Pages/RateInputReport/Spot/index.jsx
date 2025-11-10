@@ -2,7 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./spot.module.css";
 import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
-import { formatDateToUTC } from "../../../../components/common/utils";
+import {
+  formatDate,
+  formatDateForPayload,
+  formatPkAmount,
+} from "../../../../components/common/utils";
 import { useTableScrollBottomByClassName } from "../../../../components/common/useTableScrollBottom";
 import pdfIcon from "../../../../assets/images/pdf.png";
 
@@ -17,16 +21,14 @@ import {
 import DatePicker from "react-multi-date-picker";
 import moment from "moment";
 import SelectDropdown from "../../../../components/common/selectDropdown/SelectDropdown";
+import { GetSpotRateInputDataAPI } from "../../../../store/RateInputActions/RateInputActions";
+import { useNavigate } from "react-router-dom";
+import { convertDateTimeIntoLocal } from "../../../../utils/Timer";
 
 const Spot = () => {
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const exportRef = useRef(null);
-
-  // Extracting the Transaction by Bank Details Data from Reducer
-  const AuditorTransactionBankData = useSelector(
-    (state) => state.AuditorReducer.transactionDetailsByBankData
-  );
 
   //Local States
   const [open, setOpen] = useState(false);
@@ -60,19 +62,27 @@ const Spot = () => {
   ]);
   const [selectedDateRange, setSelectedDateRange] = useState(null);
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
+  // Extracting the Transaction by Bank Details Data from Reducer
+  // const AuditorTransactionBankData = useSelector(
+  //   (state) => state.AuditorReducer.transactionDetailsByBankData
+  // );
 
-  //Calling GetTransactionDetailsByBankAPI
+  const GetSpotRateInputData = useSelector(
+    (state) => state.AuditorReducer.GetSpotRateInputData
+  );
+
   useEffect(() => {
     try {
       let Data = {
-        employeeName: "",
-        employeeId: "",
+        EmployeeID: 0,
+        EmployeeName: "",
         StartDate: "",
         EndDate: "",
-        Length: 10,
+        Length: 50,
         sRow: 0,
       };
-      // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+
+      dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
     } catch (error) {
       console.log(error, "errorerror");
     }
@@ -81,27 +91,32 @@ const Spot = () => {
   //Extracting the Data
   useEffect(() => {
     try {
-      if (AuditorTransactionBankData && AuditorTransactionBankData !== null) {
-        const newRecords = AuditorTransactionBankData.transactionForBank || [];
-        console.log(AuditorTransactionBankData, "AuditorTransactionBankData");
+      if (GetSpotRateInputData && GetSpotRateInputData !== null) {
+        const newRecords = GetSpotRateInputData.spotRateInput || [];
+        console.log(GetSpotRateInputData, "GetSpotRateInputData");
 
         if (isLoading) {
           setIsLoading(false);
-          setTotalRecord(AuditorTransactionBankData.totalCount);
+          setTotalRecord(GetSpotRateInputData.totalCount);
           setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
           setSRow((prev) => prev + newRecords.length);
         } else {
           setIsLoading(false);
           setRateReportTblData(newRecords); // other wise append the new records only
           setSRow(newRecords.length);
-          setTotalRecord(AuditorTransactionBankData.totalCount);
+          setTotalRecord(GetSpotRateInputData.totalCount);
         }
+      } else {
+        setRateReportTblData([]);
+        setSRow(0);
+        setIsLoading(false);
+        setTotalRecord(0);
       }
     } catch (error) {
       console.log(error, "errorerror");
       setIsLoading(false);
     }
-  }, [AuditorTransactionBankData]);
+  }, [GetSpotRateInputData]);
 
   //Toggle Functino to view Export Icons
   const toggleExportOptions = () => {
@@ -282,30 +297,22 @@ const Spot = () => {
 
   //Handle Search Button
   const handleSearchBtn = () => {
-    let FromDate = null;
-    let ToDate = null;
+    const { StartDate, EndDate } = formatDateForPayload(
+      formData.dateFrom.value,
+      formData.dateTo.value
+    );
 
-    if (formData.dateFrom.value) {
-      FromDate = new Date(formData.dateFrom.value);
-      FromDate.setHours(0, 0, 0);
-    }
-
-    if (formData.dateTo.value) {
-      ToDate = new Date(formData.dateTo.value);
-      ToDate.setHours(23, 59, 59);
-    }
-
-    let Data = {
-      employeeName: formData.employeeName || "",
-      employeeId: formData.employeeId || "",
-      FromDate: FromDate ? formatDateToUTC(FromDate) : "",
-      ToDate: ToDate ? formatDateToUTC(ToDate) : "",
-      Length: 10,
+    const Data = {
+      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeName: formData.employeeName || "",
+      StartDate,
+      EndDate,
+      Length: 50,
       sRow: 0,
     };
-    console.log(Data, "DateCheck");
-    // console.log(startDate, "DateCheck");
-    // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+
+    console.log(Data, "PayloadToSend");
+    dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
   };
 
   //Handle Reset Button
@@ -333,66 +340,76 @@ const Spot = () => {
     setIsLoading(false);
     setTotalRecord(0);
     let Data = {
-      employeeName: "",
-      employeeId: "",
+      EmployeeName: "",
+      EmployeeID: 0,
       StartDate: "",
       EndDate: "",
       Length: 10,
       sRow: 0,
     };
-    // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+    dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
   };
 
   // Columns for Audit Trial By Bank
   const RateReportColumns = [
     {
       title: "Employee ID",
-      // dataIndex: "txnid",
-      // key: "txnid",
-      width: 120,
-      // render: (text) => <span>{text}</span>,
+      dataIndex: "employeeID",
+      key: "employeeID",
+      width: 100,
     },
     {
       title: "Employee Name",
-      // dataIndex: "corporateName",
-      // key: "corporateName",
+      dataIndex: "employeeName",
+      key: "employeeName",
       width: 180,
-      // render: (text) => <span>{text}</span>,
     },
     {
       title: "Email ID",
-      // dataIndex: "branchName",
-      // key: "branchName",
+      dataIndex: "emailID",
+      key: "emailID",
       width: 200,
-      // render: (text) => <span>{text}</span>,
     },
     {
       title: "Status",
-      // dataIndex: "branchUser",
-      // key: "branchUser",
+      dataIndex: "status",
+      key: "status",
       width: 100,
-      // render: (text) => <span>{text}</span>,
+      render: (text) => (
+        <span
+          style={{ color: text?.toLowerCase() === "active" ? "green" : "red" }}
+        >
+          {text}
+        </span>
+      ),
     },
     {
       title: "Time Stamps",
-      // dataIndex: "treasuryUser",
-      // key: "treasuryUser",
+      dataIndex: "timeStamps",
+      key: "timeStamps",
       width: 180,
-      // render: (text) => <span>{text}</span>,
+      render: (text) => (
+        <span>
+          {text &&
+            moment(convertDateTimeIntoLocal(text)).format(
+              "YYYY/MM/DD hh:mm:ss A"
+            )}
+        </span>
+      ),
     },
     {
       title: "Bid",
-      // dataIndex: "date",
-      // key: "date",
+      dataIndex: "bid",
+      key: "bid",
       width: 70,
-      // render: (text) => <span>{text}</span>,
+      render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
       title: "Ask",
-      // dataIndex: "time",
-      // key: "time",
+      dataIndex: "ask",
+      key: "ask",
       width: 70,
-      // render: (text) => <span>{text}</span>,
+      render: (text) => <span>{formatPkAmount(text)}</span>,
     },
   ];
 
@@ -577,7 +594,7 @@ const Spot = () => {
               column={RateReportColumns}
               rows={rateReportTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: "45vh" }}
+              scroll={{ x: "max-content", y: "35vh" }}
               className={"BankUserList-table"}
             />
           </Col>

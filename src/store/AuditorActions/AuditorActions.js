@@ -36,7 +36,7 @@ export const GetTransactionDetailsByBankAuditor = createAsyncThunk(
 
           if (
             msg.includes(
-              "Blotter_BlotterServiceManager_GetTransactionDetailsByBankData_01"
+              "Auditor_AuditorServiceManager_GetTransactionDetailsByBankData_01"
             )
           ) {
             return {
@@ -45,13 +45,13 @@ export const GetTransactionDetailsByBankAuditor = createAsyncThunk(
             };
           } else if (
             msg.includes(
-              "Blotter_BlotterServiceManager_GetTransactionDetailsByBankData_02"
+              "Auditor_AuditorServiceManager_GetTransactionDetailsByBankData_02"
             )
           ) {
             return rejectWithValue("No Data Available");
           } else if (
             msg.includes(
-              "Blotter_BlotterServiceManager_GetTransactionDetailsByBankData_03"
+              "Auditor_AuditorServiceManager_GetTransactionDetailsByBankData_03"
             )
           ) {
             return rejectWithValue("Something went wrong");
@@ -103,7 +103,7 @@ export const GetTransactionDetailsByCorporateAuditor = createAsyncThunk(
 
           if (
             msg.includes(
-              "Blotter_BlotterServiceManager_GetTransactionDetailsByCorporateData_01"
+              "Auditor_AuditorServiceManager_GetTransactionDetailsByCorporateData_01"
             )
           ) {
             return {
@@ -112,13 +112,13 @@ export const GetTransactionDetailsByCorporateAuditor = createAsyncThunk(
             };
           } else if (
             msg.includes(
-              "Blotter_BlotterServiceManager_GetTransactionDetailsByCorporateData_02"
+              "Auditor_AuditorServiceManager_GetTransactionDetailsByCorporateData_02"
             )
           ) {
             return rejectWithValue("No Data Available");
           } else if (
             msg.includes(
-              "Blotter_BlotterServiceManager_GetTransactionDetailsByCorporateData_03"
+              "Auditor_AuditorServiceManager_GetTransactionDetailsByCorporateData_03"
             )
           ) {
             return rejectWithValue("Something went wrong");
