@@ -50,3 +50,15 @@ export const GetAllTenors = {
 export const GetSpotRateInputData = {
   RequestMethod: "ServiceManager.GetSpotRateInputData",
 };
+
+export const GetForwardRateInputData = {
+  RequestMethod: "ServiceManager.GetForwardRateInputData",
+};
+
+export const GetFEDiscountingRateInputData = {
+  RequestMethod: "ServiceManager.GetFEDiscountingRateInputData",
+};
+
+export const GetNonFEDiscountingRateInputData = {
+  RequestMethod: "ServiceManager.GetNonFEDiscountingRateInputData",
+};

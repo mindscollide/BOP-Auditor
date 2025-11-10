@@ -3,7 +3,6 @@ import styles from "./spot.module.css";
 import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
 import {
-  formatDate,
   formatDateForPayload,
   formatPkAmount,
 } from "../../../../components/common/utils";
@@ -62,10 +61,6 @@ const Spot = () => {
   ]);
   const [selectedDateRange, setSelectedDateRange] = useState(null);
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
-  // Extracting the Transaction by Bank Details Data from Reducer
-  // const AuditorTransactionBankData = useSelector(
-  //   (state) => state.AuditorReducer.transactionDetailsByBankData
-  // );
 
   const GetSpotRateInputData = useSelector(
     (state) => state.AuditorReducer.GetSpotRateInputData

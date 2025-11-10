@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./forwards.module.css";
 import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
-import { formatDateToUTC } from "../../../../components/common/utils";
+import {
+  formatDateForPayload,
+  formatPkAmount,
+} from "../../../../components/common/utils";
 import { useTableScrollBottomByClassName } from "../../../../components/common/useTableScrollBottom";
 import pdfIcon from "../../../../assets/images/pdf.png";
 
@@ -17,16 +20,15 @@ import {
 import DatePicker from "react-multi-date-picker";
 import moment from "moment";
 import SelectDropdown from "../../../../components/common/selectDropdown/SelectDropdown";
+import { GetForwardRateInputDataAPI } from "../../../../store/RateInputActions/RateInputActions";
+import { useNavigate } from "react-router-dom";
+import { convertDateTimeIntoLocal } from "../../../../utils/Timer";
+import { GetAllTenorsAPI } from "../../../../store/UserManagementActions/UserManagementActions";
 
 const Forwards = () => {
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const exportRef = useRef(null);
-
-  // Extracting the Transaction by Bank Details Data from Reducer
-  const AuditorTransactionBankData = useSelector(
-    (state) => state.AuditorReducer.transactionDetailsByBankData
-  );
 
   //Local States
   const [open, setOpen] = useState(false);
@@ -36,6 +38,8 @@ const Forwards = () => {
   const [rateReportTblData, setRateReportTblData] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [rateReportColumns, setRateReportColumns] = useState([]);
+
   const [formData, setFormData] = useState({
     employeeName: "",
     employeeId: "",
@@ -61,47 +65,257 @@ const Forwards = () => {
   const [selectedDateRange, setSelectedDateRange] = useState(null);
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
 
-  //Calling GetTransactionDetailsByBankAPI
+  // const GetForwardRateInputData = useSelector(
+  //   (state) => state.AuditorReducer.GetForwardRateInputData
+  // );
+  const GetForwardRateInputData = {
+    forwardRateInputs: [
+      {
+        employeeID: 240,
+        employeeName: "Yunus Dealer",
+        emailID: "yunus.dealer@bop.com",
+        status: "Active",
+        timeStamps: "20251107113620",
+        tenor: [
+          {
+            tenorID: 53,
+            bid: "13.0000",
+            ask: "14.0000",
+          },
+          {
+            tenorID: 47,
+            bid: "12.0000",
+            ask: "13.0000",
+          },
+        ],
+      },
+      {
+        employeeID: 241,
+        employeeName: "Ali Merchant",
+        emailID: "ali.merchant@bop.com",
+        status: "Active",
+        timeStamps: "20251108104510",
+        tenor: [
+          {
+            tenorID: 53,
+            bid: "13.0000",
+            ask: "14.0000",
+          },
+          {
+            tenorID: 47,
+            bid: "12.0000",
+            ask: "13.0000",
+          },
+        ],
+      },
+      {
+        employeeID: 242,
+        employeeName: "Sara Analyst",
+        emailID: "sara.analyst@bop.com",
+        status: "Inactive",
+        timeStamps: "20251109100545",
+        tenor: [
+          {
+            tenorID: 53,
+            bid: "13.0000",
+            ask: "14.0000",
+          },
+          {
+            tenorID: 47,
+            bid: "12.0000",
+            ask: "13.0000",
+          },
+          {
+            tenorID: 7,
+            bid: "12.0000",
+            ask: "13.0000",
+          },
+        ],
+      },
+    ],
+  };
+
+  const GetAllTenors = useSelector((state) => state.authReducer.getAllTenors);
+  console.log(GetAllTenors, "GetAllTenors");
+
   useEffect(() => {
+    dispatch(GetAllTenorsAPI(navigate));
     try {
       let Data = {
-        employeeName: "",
-        employeeId: "",
+        EmployeeID: 0,
+        EmployeeName: "",
         StartDate: "",
         EndDate: "",
-        Length: 10,
+        Length: 50,
         sRow: 0,
       };
-      // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+
+      dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
     } catch (error) {
       console.log(error, "errorerror");
     }
   }, []);
 
-  //Extracting the Data
+  // //Extracting the Data
+  // useEffect(() => {
+  //   if (
+  //     GetForwardRateInputData &&
+  //     GetForwardRateInputData !== null &&
+  //     GetAllTenors &&
+  //     GetAllTenors !== null
+  //   ) {
+  //   try {
+  //       let allTenors = { tenors: GetAllTenors.tenors };
+  //       let allForwardRatesInput = {
+  //         forwardRateInputs: GetForwardRateInputData.forwardRateInputs,
+  //       };
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }, [GetAllTenors, GetForwardRateInputData]);
   useEffect(() => {
-    try {
-      if (AuditorTransactionBankData && AuditorTransactionBankData !== null) {
-        const newRecords = AuditorTransactionBankData.transactionForBank || [];
-        console.log(AuditorTransactionBankData, "AuditorTransactionBankData");
+    if (
+      GetForwardRateInputData?.forwardRateInputs?.length &&
+      GetAllTenors?.tenors?.length
+    ) {
+      try {
+        const tenors = GetAllTenors.tenors.filter(
+          (t) => t.isForwardingApplicable === true
+        );
 
-        if (isLoading) {
-          setIsLoading(false);
-          setTotalRecord(AuditorTransactionBankData.totalCount);
-          setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
-          setSRow((prev) => prev + newRecords.length);
-        } else {
-          setIsLoading(false);
-          setRateReportTblData(newRecords); // other wise append the new records only
-          setSRow(newRecords.length);
-          setTotalRecord(AuditorTransactionBankData.totalCount);
-        }
+        // Base static columns
+        const staticColumns = [
+          {
+            title: "",
+            children: [
+              {
+                title: "Employee ID",
+                dataIndex: "employeeID",
+                key: "employeeID",
+                width: 100,
+              },
+            ],
+          },
+          {
+            title: "",
+            children: [
+              {
+                title: "Employee Name",
+                dataIndex: "employeeName",
+                key: "employeeName",
+                width: 150,
+              },
+            ],
+          },
+          {
+            title: "",
+            children: [
+              {
+                title: "Email ID",
+                dataIndex: "emailID",
+                key: "emailID",
+                width: 120,
+              },
+            ],
+          },
+          {
+            title: "",
+            children: [
+              {
+                title: "Status",
+                dataIndex: "status",
+                key: "status",
+                width: 70,
+                render: (text) => (
+                  <span
+                    style={{
+                      color: text?.toLowerCase() === "active" ? "green" : "red",
+                    }}
+                  >
+                    {text}
+                  </span>
+                ),
+              },
+            ],
+          },
+          {
+            title: "",
+            children: [
+              {
+                title: "Time Stamps",
+                dataIndex: "timeStamps",
+                key: "timeStamps",
+                width: 200,
+                render: (text) => (
+                  <span>
+                    {text &&
+                      moment(convertDateTimeIntoLocal(text)).format(
+                        "DD/MM/YYYY hh:mm:ss A"
+                      )}
+                  </span>
+                ),
+              },
+            ],
+          },
+        ];
+
+        // Dynamic tenor columns
+        const tenorColumns = tenors.map((tenor) => ({
+          title: tenor.tenorName,
+          children: [
+            {
+              title: "Bid",
+              dataIndex: `${tenor.tenorName}_Bid`,
+              key: `${tenor.tenorName}_Bid`,
+              width: 70,
+            },
+            {
+              title: "Ask",
+              dataIndex: `${tenor.tenorName}_Ask`,
+              key: `${tenor.tenorName}_Ask`,
+              width: 70,
+            },
+          ],
+        }));
+
+        // Combine all columns
+        const allColumns = [...staticColumns, ...tenorColumns];
+
+        // Map data rows
+        const tableData = GetForwardRateInputData.forwardRateInputs.map(
+          (emp, index) => {
+            const row = {
+              key: index,
+              employeeID: emp.employeeID,
+              employeeName: emp.employeeName,
+              emailID: emp.emailID,
+              status: emp.status,
+              timeStamps: emp.timeStamps,
+            };
+
+            emp.tenor.forEach((t) => {
+              const tenorName = tenors.find(
+                (x) => x.tenorID === t.tenorID
+              )?.tenorName;
+              if (tenorName) {
+                row[`${tenorName}_Bid`] = t.bid || "-";
+                row[`${tenorName}_Ask`] = t.ask || "-";
+              }
+            });
+
+            return row;
+          }
+        );
+
+        // Set dynamic data
+        setRateReportTblData(tableData);
+        setRateReportColumns(allColumns); // 👈 add this new state
+      } catch (error) {
+        console.error("Error building table:", error);
       }
-    } catch (error) {
-      console.log(error, "errorerror");
-      setIsLoading(false);
     }
-  }, [AuditorTransactionBankData]);
+  }, [GetAllTenors, GetForwardRateInputData]);
 
   //Toggle Functino to view Export Icons
   const toggleExportOptions = () => {
@@ -282,30 +496,22 @@ const Forwards = () => {
 
   //Handle Search Button
   const handleSearchBtn = () => {
-    let FromDate = null;
-    let ToDate = null;
+    const { StartDate, EndDate } = formatDateForPayload(
+      formData.dateFrom.value,
+      formData.dateTo.value
+    );
 
-    if (formData.dateFrom.value) {
-      FromDate = new Date(formData.dateFrom.value);
-      FromDate.setHours(0, 0, 0);
-    }
-
-    if (formData.dateTo.value) {
-      ToDate = new Date(formData.dateTo.value);
-      ToDate.setHours(23, 59, 59);
-    }
-
-    let Data = {
-      employeeName: formData.employeeName || "",
-      employeeId: formData.employeeId || "",
-      FromDate: FromDate ? formatDateToUTC(FromDate) : "",
-      ToDate: ToDate ? formatDateToUTC(ToDate) : "",
-      Length: 10,
+    const Data = {
+      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeName: formData.employeeName || "",
+      StartDate,
+      EndDate,
+      Length: 50,
       sRow: 0,
     };
-    console.log(Data, "DateCheck");
-    // console.log(startDate, "DateCheck");
-    // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+
+    console.log(Data, "PayloadToSend");
+    dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
   };
 
   //Handle Reset Button
@@ -333,66 +539,76 @@ const Forwards = () => {
     setIsLoading(false);
     setTotalRecord(0);
     let Data = {
-      employeeName: "",
-      employeeId: "",
+      EmployeeName: "",
+      EmployeeID: 0,
       StartDate: "",
       EndDate: "",
       Length: 10,
       sRow: 0,
     };
-    // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+    dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
   };
 
   // Columns for Audit Trial By Bank
   const RateReportColumns = [
     {
       title: "Employee ID",
-      // dataIndex: "txnid",
-      // key: "txnid",
-      width: 120,
-      // render: (text) => <span>{text}</span>,
+      dataIndex: "employeeID",
+      key: "employeeID",
+      width: 100,
     },
     {
       title: "Employee Name",
-      // dataIndex: "corporateName",
-      // key: "corporateName",
+      dataIndex: "employeeName",
+      key: "employeeName",
       width: 180,
-      // render: (text) => <span>{text}</span>,
     },
     {
       title: "Email ID",
-      // dataIndex: "branchName",
-      // key: "branchName",
+      dataIndex: "emailID",
+      key: "emailID",
       width: 200,
-      // render: (text) => <span>{text}</span>,
     },
     {
       title: "Status",
-      // dataIndex: "branchUser",
-      // key: "branchUser",
+      dataIndex: "status",
+      key: "status",
       width: 100,
-      // render: (text) => <span>{text}</span>,
+      render: (text) => (
+        <span
+          style={{ color: text?.toLowerCase() === "active" ? "green" : "red" }}
+        >
+          {text}
+        </span>
+      ),
     },
     {
       title: "Time Stamps",
-      // dataIndex: "treasuryUser",
-      // key: "treasuryUser",
+      dataIndex: "timeStamps",
+      key: "timeStamps",
       width: 180,
-      // render: (text) => <span>{text}</span>,
+      render: (text) => (
+        <span>
+          {text &&
+            moment(convertDateTimeIntoLocal(text)).format(
+              "YYYY/MM/DD hh:mm:ss A"
+            )}
+        </span>
+      ),
     },
     {
       title: "Bid",
-      // dataIndex: "date",
-      // key: "date",
+      dataIndex: "bid",
+      key: "bid",
       width: 70,
-      // render: (text) => <span>{text}</span>,
+      render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
       title: "Ask",
-      // dataIndex: "time",
-      // key: "time",
+      dataIndex: "ask",
+      key: "ask",
       width: 70,
-      // render: (text) => <span>{text}</span>,
+      render: (text) => <span>{formatPkAmount(text)}</span>,
     },
   ];
 
@@ -574,11 +790,11 @@ const Forwards = () => {
         <Row className="mt-4">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
-              column={RateReportColumns}
+              column={rateReportColumns}
               rows={rateReportTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: "45vh" }}
-              className={"BankUserList-table"}
+              scroll={{ x: "max-content", y: "35vh" }}
+              className={"RateInputForward-table"}
             />
           </Col>
         </Row>
