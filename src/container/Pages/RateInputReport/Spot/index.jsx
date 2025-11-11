@@ -27,6 +27,7 @@ import {
   DownloadSpotRateInputExcelReportAPI,
   DownloadSpotRateInputExcelReportPDFAPI,
 } from "../../../../store/ReportActions/ReportActions";
+import ExportShowComponent from "../../../../components/common/ExportShowComponent/ExportShowComponent";
 
 const Spot = () => {
   const dispatch = useDispatch();
@@ -34,13 +35,15 @@ const Spot = () => {
   const exportRef = useRef(null);
 
   //Local States
+
   const [open, setOpen] = useState(false);
-  const [sRow, setSRow] = useState(50);
   const [totalRecord, setTotalRecord] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [rateReportTblData, setRateReportTblData] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [sRow, setSRow] = useState(0);
+  const [dropdownvalue, setDropdownvalue] = useState(50);
   const [formData, setFormData] = useState({
     employeeName: "",
     employeeId: "",
@@ -55,6 +58,7 @@ const Spot = () => {
       errorStatus: false,
     },
   });
+
   // Date range options
   const [dateRangeOptions] = useState([
     { value: 1, label: "1 Month" },
@@ -70,6 +74,31 @@ const Spot = () => {
     (state) => state.AuditorReducer.GetSpotRateInputData
   );
 
+  const handlePageSizeChange = (newSize) => {
+    setDropdownvalue(newSize);
+    setSRow(0);
+    setIsLoading(false);
+    setRateReportTblData([]); // other wise append the new records only
+    setTotalRecord(0);
+
+    const { StartDate, EndDate } = formatDateForPayload(
+      formData.dateFrom.value,
+      formData.dateTo.value
+    );
+
+    const Data = {
+      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeName: formData.employeeName || "",
+      StartDate,
+      EndDate,
+      Length: newSize,
+      sRow: 0,
+    };
+
+    console.log(Data, "PayloadToSend");
+    dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
+  };
+
   useEffect(() => {
     try {
       let Data = {
@@ -77,7 +106,7 @@ const Spot = () => {
         EmployeeName: "",
         StartDate: "",
         EndDate: "",
-        Length: 50,
+        Length: dropdownvalue,
         sRow: 0,
       };
 
@@ -87,13 +116,41 @@ const Spot = () => {
     }
   }, []);
 
+  // //Extracting the Data
+  // useEffect(() => {
+  //   try {
+  //     if (GetSpotRateInputData && GetSpotRateInputData !== null) {
+  //       const newRecords = GetSpotRateInputData.spotRateInput || [];
+  //       console.log(GetSpotRateInputData, "GetSpotRateInputData");
+
+  //       if (isLoading) {
+  //         setIsLoading(false);
+  //         setTotalRecord(GetSpotRateInputData.totalCount);
+  //         setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
+  //         setSRow((prev) => prev + newRecords.length);
+  //       } else {
+  //         setIsLoading(false);
+  //         setRateReportTblData(newRecords); // other wise append the new records only
+  //         setSRow(newRecords.length);
+  //         setTotalRecord(GetSpotRateInputData.totalCount);
+  //       }
+  //     } else {
+  //       setRateReportTblData([]);
+  //       setSRow(0);
+  //       setIsLoading(false);
+  //       setTotalRecord(0);
+  //     }
+  //   } catch (error) {
+  //     console.log(error, "errorerror");
+  //     setIsLoading(false);
+  //   }
+  // }, [GetSpotRateInputData]);
+
   //Extracting the Data
   useEffect(() => {
     try {
       if (GetSpotRateInputData && GetSpotRateInputData !== null) {
         const newRecords = GetSpotRateInputData.spotRateInput || [];
-        console.log(GetSpotRateInputData, "GetSpotRateInputData");
-
         if (isLoading) {
           setIsLoading(false);
           setTotalRecord(GetSpotRateInputData.totalCount);
@@ -105,11 +162,15 @@ const Spot = () => {
           setSRow(newRecords.length);
           setTotalRecord(GetSpotRateInputData.totalCount);
         }
-      } else {
-        setRateReportTblData([]);
-        setSRow(0);
+      } else if (GetSpotRateInputData === null) {
+        // if (!hasReachedBottom) {
+        //   setHasReachedBottom(false);
+        //   setTableData([]);
+        //   setRecordLength(0);
         setIsLoading(false);
         setTotalRecord(0);
+        setSRow(0);
+        setRateReportTblData([]);
       }
     } catch (error) {
       console.log(error, "errorerror");
@@ -308,7 +369,7 @@ const Spot = () => {
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
-      Length: 50,
+      Length: dropdownvalue,
       sRow: 0,
     };
 
@@ -345,7 +406,7 @@ const Spot = () => {
       EmployeeID: 0,
       StartDate: "",
       EndDate: "",
-      Length: 10,
+      Length: dropdownvalue,
       sRow: 0,
     };
     dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
@@ -413,21 +474,37 @@ const Spot = () => {
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
   ];
+  /** const { StartDate, EndDate } = formatDateForPayload(
+      formData.dateFrom.value,
+      formData.dateTo.value
+    );
+
+    const Data = {
+      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeName: formData.employeeName || "",
+      StartDate,
+      EndDate,
+      Length: dropdownvalue,
+      sRow: 0, */
 
   //Scroller Custom Hook
   useTableScrollBottomByClassName(
     () => {
       if (rateReportTblData.length !== totalRecord) {
         setIsLoading(true);
+        const { StartDate, EndDate } = formatDateForPayload(
+          formData.dateFrom.value,
+          formData.dateTo.value
+        );
         const Data = {
-          employeeName: formData.employeeName,
-          employeeId: formData.employeeId,
-          StartDate: startDate !== null ? startDate : "",
-          EndDate: endDate !== null ? endDate : "",
+          EmployeeID: Number(formData.employeeId) || 0,
+          EmployeeName: formData.employeeName || "",
+          StartDate,
+          EndDate,
+          Length: dropdownvalue,
           sRow: sRow,
-          Length: 10,
         };
-        // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+        dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
       }
     },
     0,
@@ -589,7 +666,15 @@ const Spot = () => {
             />
           </Col>
         </Row>
-        <Row className="mt-4">
+        <Row className="">
+          <Col lg={12} md={12} sm={12}>
+            <ExportShowComponent
+              value={dropdownvalue}
+              onChange={handlePageSizeChange}
+            />
+          </Col>
+        </Row>
+        <Row className="">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={RateReportColumns}

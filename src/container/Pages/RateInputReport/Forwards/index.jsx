@@ -787,7 +787,7 @@ const Forwards = () => {
             />
           </Col>
         </Row>
-        <Row className="mt-4">
+        <Row className="">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={rateReportColumns}

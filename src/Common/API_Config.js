@@ -68,5 +68,5 @@ export const DownloadSpotRateInputExcelReport = {
 };
 
 export const DownloadSpotRateInputExcelReportPDF = {
-  RequestMethod: "ServiceManager.DownloadSpotRateInputExcelReportPDF",
+  RequestMethod: "ServiceManager.DownloadSpotRateInputReportPDF",
 };

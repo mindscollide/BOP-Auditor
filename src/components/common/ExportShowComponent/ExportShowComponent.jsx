@@ -13,7 +13,7 @@ const ExportShowComponent = ({ value, onChange }) => {
 
   return (
     <>
-      <Row className="mt-3">
+      <Row className="mt-1">
         <Col
           lg={12}
           md={12}
