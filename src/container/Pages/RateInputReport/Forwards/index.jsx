@@ -315,7 +315,7 @@ const Forwards = () => {
         console.error("Error building table:", error);
       }
     }
-  }, [GetAllTenors, GetForwardRateInputData]);
+  }, [GetAllTenors]);
 
   //Toggle Functino to view Export Icons
   const toggleExportOptions = () => {

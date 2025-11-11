@@ -62,3 +62,11 @@ export const GetFEDiscountingRateInputData = {
 export const GetNonFEDiscountingRateInputData = {
   RequestMethod: "ServiceManager.GetNonFEDiscountingRateInputData",
 };
+
+export const DownloadSpotRateInputExcelReport = {
+  RequestMethod: "ServiceManager.DownloadSpotRateInputExcelReport",
+};
+
+export const DownloadSpotRateInputExcelReportPDF = {
+  RequestMethod: "ServiceManager.DownloadSpotRateInputExcelReportPDF",
+};

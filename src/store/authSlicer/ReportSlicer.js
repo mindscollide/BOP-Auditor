@@ -4,6 +4,8 @@ import {
   GetTransactionDetailsByBankPDFTypeReportAuditor,
   GetTransactionDetailsByCorporateExcelTypeReportAuditor,
   GetTransactionDetailsByCorporatePDFTypeReportAuditor,
+  DownloadSpotRateInputExcelReportAPI,
+  DownloadSpotRateInputExcelReportPDFAPI,
 } from "../ReportActions/ReportActions";
 
 const ReportSlice = createSlice({
@@ -17,6 +19,8 @@ const ReportSlice = createSlice({
     pdfReportTransactionByBankReport: null,
     excelReportTransactionByCorporateReport: null,
     pdfReportTransactionByCorporateReport: null,
+    DownloadSpotRateInputExcelReport: null,
+    DownloadSpotRateInputExcelReportPDF: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -114,6 +118,45 @@ const ReportSlice = createSlice({
         (state, { payload }) => {
           state.Loader = false;
           state.pdfReportTransactionByCorporateReport = null;
+          state.responseMessage = payload;
+        }
+      )
+      .addCase(DownloadSpotRateInputExcelReportAPI.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        DownloadSpotRateInputExcelReportAPI.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.DownloadSpotRateInputExcelReport = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        DownloadSpotRateInputExcelReportAPI.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.DownloadSpotRateInputExcelReport = null;
+          state.responseMessage = payload;
+        }
+      )
+
+      .addCase(DownloadSpotRateInputExcelReportPDFAPI.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        DownloadSpotRateInputExcelReportPDFAPI.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.DownloadSpotRateInputExcelReportPDF = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        DownloadSpotRateInputExcelReportPDFAPI.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.DownloadSpotRateInputExcelReportPDF = null;
           state.responseMessage = payload;
         }
       );

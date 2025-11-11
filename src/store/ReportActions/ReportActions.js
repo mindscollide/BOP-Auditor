@@ -1,6 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { reportApi } from "../../Common/API_EndPoints";
 import {
+  DownloadSpotRateInputExcelReport,
+  DownloadSpotRateInputExcelReportPDF,
   ExcelReportTrasactionDetailsByBank,
   ExcelReportTrasactionDetailsByCorporate,
   PDFReportTrasactionDetailsByBank,
@@ -162,3 +164,79 @@ export const GetTransactionDetailsByCorporatePDFTypeReportAuditor =
       }
     }
   );
+
+//Download Spot Report Excell
+export const DownloadSpotRateInputExcelReportAPI = createAsyncThunk(
+  "Report/DownloadSpotRateInputExcelReport",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const DownloadSpotRateInputExcelReportData = createPostAPI(
+        reportApi,
+        DownloadSpotRateInputExcelReport.RequestMethod
+      );
+
+      const response = await DownloadSpotRateInputExcelReportData(Data, true);
+      console.log(response, "errorerrorerrorerror");
+
+      // 🚨 Ensure response is valid before trying to read Excel blob
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "SportRateInputReport.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "Excel downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading Excel");
+      }
+    } catch (error) {
+      return rejectWithValue("Something went wrong while downloading Excel");
+    }
+  }
+);
+
+//Download Spot Report PDF
+export const DownloadSpotRateInputExcelReportPDFAPI = createAsyncThunk(
+  "Report/DownloadSpotRateInputExcelReportPDF",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const DownloadSpotRateInputExcelReportPDFData = createPostAPI(
+        reportApi,
+        DownloadSpotRateInputExcelReportPDF.RequestMethod
+      );
+
+      const response = await DownloadSpotRateInputExcelReportPDFData(
+        Data,
+        true
+      );
+
+      // 🟢 PDF file response
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/pdf",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "SportRateInput.pdf");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "PDF downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading PDF");
+      }
+    } catch (error) {
+      return rejectWithValue("Something went wrong while downloading PDF");
+    }
+  }
+);

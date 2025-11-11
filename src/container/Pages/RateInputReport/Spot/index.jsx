@@ -23,6 +23,10 @@ import SelectDropdown from "../../../../components/common/selectDropdown/SelectD
 import { GetSpotRateInputDataAPI } from "../../../../store/RateInputActions/RateInputActions";
 import { useNavigate } from "react-router-dom";
 import { convertDateTimeIntoLocal } from "../../../../utils/Timer";
+import {
+  DownloadSpotRateInputExcelReportAPI,
+  DownloadSpotRateInputExcelReportPDFAPI,
+} from "../../../../store/ReportActions/ReportActions";
 
 const Spot = () => {
   const dispatch = useDispatch();
@@ -31,7 +35,7 @@ const Spot = () => {
 
   //Local States
   const [open, setOpen] = useState(false);
-  const [sRow, setSRow] = useState(0);
+  const [sRow, setSRow] = useState(50);
   const [totalRecord, setTotalRecord] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [rateReportTblData, setRateReportTblData] = useState([]);
@@ -144,34 +148,36 @@ const Spot = () => {
 
   //Export to PDF Trigger Function
   const exportToExcel = () => {
-    let Data = {
-      TXNID: Number(formData.txnId),
-      corporateName: formData.corporateName,
-      BranchName: formData.branchName,
-      TransactionByBankUser: formData.txnByBranchUser,
-      TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+    const { StartDate, EndDate } = formatDateForPayload(
+      formData.dateFrom.value,
+      formData.dateTo.value
+    );
+
+    const Data = {
+      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeName: formData.employeeName || "",
+      StartDate,
+      EndDate,
     };
 
-    dispatch();
-    // GetTransactionDetailsByBankExcelTypeReportAuditor({ navigate, Data })
+    dispatch(DownloadSpotRateInputExcelReportAPI({ navigate, Data }));
   };
 
   //Export to Excel Trigger Function
   const exportToPDF = () => {
-    let Data = {
-      TXNID: Number(formData.txnId),
-      corporateName: formData.corporateName,
-      BranchName: formData.branchName,
-      TransactionByBankUser: formData.txnByBranchUser,
-      TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+    const { StartDate, EndDate } = formatDateForPayload(
+      formData.dateFrom.value,
+      formData.dateTo.value
+    );
+
+    const Data = {
+      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeName: formData.employeeName || "",
+      StartDate,
+      EndDate,
     };
 
-    dispatch();
-    // GetTransactionDetailsByBankPDFTypeReportAuditor({ navigate, Data })
+    dispatch(DownloadSpotRateInputExcelReportPDFAPI({ navigate, Data }));
   };
 
   //Common OnChange for textFields
