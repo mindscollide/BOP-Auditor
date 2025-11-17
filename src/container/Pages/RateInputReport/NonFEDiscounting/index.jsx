@@ -204,17 +204,6 @@ const NonFEDiscounting = () => {
     setFormData((prev) => ({ ...prev, [name]: limitedValue }));
   };
 
-  //Handle Start Date Change
-  // const handleStartDateChange = (dateObject) => {
-  //   setStartDate(formatDate(dateObject));
-  //   console.log(formatDate(dateObject), "DateCheck");
-  // };
-
-  // //Handle End Date Change
-  // const handleEndDateChange = (dateObject) => {
-  //   setEndDate(formatDate(dateObject));
-  // };
-
   //new date work
   // Function to handle date range selection
   const handleDateRangeChange = (selectedOption) => {
@@ -319,16 +308,15 @@ const NonFEDiscounting = () => {
     }
 
     let Data = {
-      employeeName: formData.employeeName || "",
-      employeeId: formData.employeeId || "",
-      FromDate: FromDate ? formatDateToUTC(FromDate) : "",
-      ToDate: ToDate ? formatDateToUTC(ToDate) : "",
-      Length: 10,
+      EmployeeName: formData.employeeName || "",
+      EmployeeID: formData.employeeId || 0,
+      StartDate: FromDate ? formatDateToUTC(FromDate) : "",
+      EndDate: ToDate ? formatDateToUTC(ToDate) : "",
+      Length: 50,
       sRow: 0,
     };
     console.log(Data, "DateCheck");
-    // console.log(startDate, "DateCheck");
-    // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+    dispatch(GetNonFEDiscountingRateInputDataAPI({ navigate, Data }));
   };
 
   //Handle Reset Button
@@ -355,69 +343,17 @@ const NonFEDiscounting = () => {
     setSRow(0);
     setIsLoading(false);
     setTotalRecord(0);
+
     let Data = {
-      employeeName: "",
-      employeeId: "",
+      EmployeeName: "",
+      EmployeeID: 0,
       StartDate: "",
       EndDate: "",
-      Length: 10,
+      Length: 50,
       sRow: 0,
     };
-    // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+    dispatch(GetNonFEDiscountingRateInputDataAPI({ navigate, Data }));
   };
-
-  // Columns for Audit Trial By Bank
-  const RateReportColumns = [
-    {
-      title: "Employee ID",
-      // dataIndex: "txnid",
-      // key: "txnid",
-      width: 120,
-      // render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Employee Name",
-      // dataIndex: "corporateName",
-      // key: "corporateName",
-      width: 180,
-      // render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Email ID",
-      // dataIndex: "branchName",
-      // key: "branchName",
-      width: 200,
-      // render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Status",
-      // dataIndex: "branchUser",
-      // key: "branchUser",
-      width: 100,
-      // render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Time Stamps",
-      // dataIndex: "treasuryUser",
-      // key: "treasuryUser",
-      width: 180,
-      // render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Bid",
-      // dataIndex: "date",
-      // key: "date",
-      width: 70,
-      // render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Ask",
-      // dataIndex: "time",
-      // key: "time",
-      width: 70,
-      // render: (text) => <span>{text}</span>,
-    },
-  ];
 
   //Scroller Custom Hook
   useTableScrollBottomByClassName(
@@ -425,14 +361,14 @@ const NonFEDiscounting = () => {
       if (rateReportTblData.length !== totalRecord) {
         setIsLoading(true);
         const Data = {
-          employeeName: formData.employeeName,
-          employeeId: formData.employeeId,
+          EmployeeName: formData.employeeName || "",
+          EmployeeID: formData.employeeId || 0,
           StartDate: startDate !== null ? startDate : "",
           EndDate: endDate !== null ? endDate : "",
           sRow: sRow,
-          Length: 10,
+          Length: 50,
         };
-        // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+        dispatch(GetNonFEDiscountingRateInputDataAPI({ navigate, Data }));
       }
     },
     0,
@@ -446,35 +382,6 @@ const NonFEDiscounting = () => {
     <>
       <CustomPaper variant="outlined">
         <Row>
-          {/* <Col lg={3} md={3} sm={12} className="d-flex align-items-center ">
-            <DatePicker
-              name="dateFrom"
-              value={startDate}
-              onChange={handleStartDateChange}
-              placeholder="Start Date"
-              inputClass={styles["Tradecount-Datepicker-left"]}
-              labelClass="d-none"
-              showOtherDays
-              editable={false}
-              maxDate={endDate}
-              minDate={null}
-            />
-
-            <label className={styles["Tradecount-date-to"]}>to</label>
-
-            <DatePicker
-              name="dateTo"
-              value={endDate}
-              onChange={handleEndDateChange}
-              placeholder="End Date"
-              inputClass={styles["Tradecount-Datepicker-right"]}
-              labelClass="d-none"
-              showOtherDays
-              minDate={startDate}
-              maxDate={null}
-              editable={false}
-            />
-          </Col> */}
           <Col lg={3} md={12} sm={12}>
             <SelectDropdown
               styles={{
