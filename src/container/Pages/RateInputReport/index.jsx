@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import styles from "./RateInputReport.module.css";
 
 import SectionLoader from "../../../components/common/sectionLoader/SectionLoader";
@@ -8,45 +8,69 @@ import Spot from "./Spot";
 import Forwards from "./Forwards";
 import FEDiscounting from "./FEDiscounting";
 import NonFEDiscounting from "./NonFEDiscounting";
+import { GetAllTenorsAPI } from "../../../store/UserManagementActions/UserManagementActions";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const MainInputReport = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // const [activeTab, setActiveTab] = useState("0");
+  const [activeTab, setActiveTab] = useState("Spot"); // default tab key
+  // const [activeTabNo, setActiveTabNo] = useState(null);
+
+  console.log(activeTab, "activeTabactiveTab");
+
+  const hasFetched = React.useRef(false);
+
+  useEffect(() => {
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      dispatch(GetAllTenorsAPI(navigate));
+    }
+  }, [dispatch, navigate]);
+
   const tabsData = [
     {
       title: "Spot",
+      key: "Spot",
       content: (
         <div className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            <Spot />
+            {activeTab === "Spot" && <Spot />}
           </Suspense>
         </div>
       ),
     },
     {
       title: "Forwards",
+      key: "Forwards",
       content: (
         <div className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            <Forwards />
+            {activeTab === "Forwards" && <Forwards />}
           </Suspense>
         </div>
       ),
     },
     {
       title: "FE Discounting",
+      key: "FE Discounting",
       content: (
         <div className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            <FEDiscounting />
+            {activeTab === "FE Discounting" && <FEDiscounting />}
           </Suspense>
         </div>
       ),
     },
     {
       title: "Non-FE Discounting",
+      key: "Non-FE Discounting",
       content: (
         <div className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            <NonFEDiscounting />
+            {activeTab === "Non-FE Discounting" && <NonFEDiscounting />}
           </Suspense>
         </div>
       ),
@@ -61,7 +85,15 @@ const MainInputReport = () => {
           </span>
         </Col>
       </Row>
-      <GlobalTabs tabClass="mt-4 mb-4" tabs={tabsData} defaultActiveKey={"0"} />
+      <GlobalTabs
+        tabClass="mt-4 mb-4"
+        tabs={tabsData}
+        // onTabChange={(data) => setActiveTab(data)}
+        // activeTab={activeTab}
+        // defaultActiveKey={"0"}
+        activeKey={activeTab}
+        onTabChange={(key) => setActiveTab(key)} // 🔹 track tab change
+      />
     </>
   );
 };

@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./NonFEDiscounting.module.css";
 import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
-import { formatDateToUTC } from "../../../../components/common/utils";
+import {
+  formatDateForPayload,
+  formatDateToUTC,
+} from "../../../../components/common/utils";
 import { useTableScrollBottomByClassName } from "../../../../components/common/useTableScrollBottom";
 import pdfIcon from "../../../../assets/images/pdf.png";
 
@@ -17,17 +20,29 @@ import {
 import DatePicker from "react-multi-date-picker";
 import moment from "moment";
 import SelectDropdown from "../../../../components/common/selectDropdown/SelectDropdown";
+import { GetNonFEDiscountingRateInputDataAPI } from "../../../../store/RateInputActions/RateInputActions";
+import { useNavigate } from "react-router-dom";
+import { createTableFunc } from "../../../../Common/generateTableData";
+import {
+  DownloadNonFEDiscountingRateInputExcelReportAPI,
+  DownloadNonFEDiscountingRateInputReportPDFAPI,
+} from "../../../../store/ReportActions/ReportActions";
 
 const NonFEDiscounting = () => {
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const exportRef = useRef(null);
 
   // Extracting the Transaction by Bank Details Data from Reducer
-  const AuditorTransactionBankData = useSelector(
-    (state) => state.AuditorReducer.transactionDetailsByBankData
+  const GetNonFEDiscountingRateInputData = useSelector(
+    (state) => state.AuditorReducer.GetNonFEDiscountingRateInputData
   );
+  const GetAllTenors = useSelector((state) => state.authReducer.getAllTenors);
 
+  console.log(
+    GetNonFEDiscountingRateInputData,
+    "GetNonFEDiscountingRateInputDataGetNonFEDiscountingRateInputData"
+  );
   //Local States
   const [open, setOpen] = useState(false);
   const [sRow, setSRow] = useState(0);
@@ -36,6 +51,8 @@ const NonFEDiscounting = () => {
   const [rateReportTblData, setRateReportTblData] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [rateReportColumns, setRateReportColumns] = useState([]);
+
   const [formData, setFormData] = useState({
     employeeName: "",
     employeeId: "",
@@ -65,43 +82,45 @@ const NonFEDiscounting = () => {
   useEffect(() => {
     try {
       let Data = {
-        employeeName: "",
-        employeeId: "",
+        EmployeeID: 0,
+        EmployeeName: "",
         StartDate: "",
         EndDate: "",
-        Length: 10,
+        Length: 50,
         sRow: 0,
       };
-      // dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+
+      dispatch(GetNonFEDiscountingRateInputDataAPI({ navigate, Data }));
     } catch (error) {
       console.log(error, "errorerror");
     }
   }, []);
 
-  //Extracting the Data
+  // Extracting the Data
   useEffect(() => {
-    try {
-      if (AuditorTransactionBankData && AuditorTransactionBankData !== null) {
-        const newRecords = AuditorTransactionBankData.transactionForBank || [];
-        console.log(AuditorTransactionBankData, "AuditorTransactionBankData");
-
-        if (isLoading) {
-          setIsLoading(false);
-          setTotalRecord(AuditorTransactionBankData.totalCount);
-          setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
-          setSRow((prev) => prev + newRecords.length);
-        } else {
-          setIsLoading(false);
-          setRateReportTblData(newRecords); // other wise append the new records only
-          setSRow(newRecords.length);
-          setTotalRecord(AuditorTransactionBankData.totalCount);
+    if (
+      GetNonFEDiscountingRateInputData?.nonfeDiscountingRateInput?.length &&
+      GetAllTenors?.tenors?.length
+    ) {
+      try {
+        const tenors = GetAllTenors.tenors.filter(
+          (t) => t.isDiscountingApplicable === true
+        );
+        const { columns, tableData } = createTableFunc(
+          3,
+          tenors,
+          GetNonFEDiscountingRateInputData.nonfeDiscountingRateInput
+        );
+        if (columns.length > 0) {
+          // Set dynamic data
+          setRateReportTblData(tableData);
+          setRateReportColumns(columns); // 👈 add this new state
         }
+      } catch (error) {
+        console.error("Error building table:", error);
       }
-    } catch (error) {
-      console.log(error, "errorerror");
-      setIsLoading(false);
     }
-  }, [AuditorTransactionBankData]);
+  }, [GetAllTenors, GetNonFEDiscountingRateInputData]);
 
   //Toggle Functino to view Export Icons
   const toggleExportOptions = () => {
@@ -134,34 +153,38 @@ const NonFEDiscounting = () => {
 
   //Export to PDF Trigger Function
   const exportToExcel = () => {
-    let Data = {
-      TXNID: Number(formData.txnId),
-      corporateName: formData.corporateName,
-      BranchName: formData.branchName,
-      TransactionByBankUser: formData.txnByBranchUser,
-      TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+    const { StartDate, EndDate } = formatDateForPayload(
+      formData.dateFrom.value,
+      formData.dateTo.value
+    );
+
+    const Data = {
+      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeName: formData.employeeName || "",
+      StartDate,
+      EndDate,
     };
 
-    dispatch();
-    // GetTransactionDetailsByBankExcelTypeReportAuditor({ navigate, Data })
+    dispatch(
+      DownloadNonFEDiscountingRateInputExcelReportAPI({ navigate, Data })
+    );
   };
 
   //Export to Excel Trigger Function
   const exportToPDF = () => {
-    let Data = {
-      TXNID: Number(formData.txnId),
-      corporateName: formData.corporateName,
-      BranchName: formData.branchName,
-      TransactionByBankUser: formData.txnByBranchUser,
-      TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+    const { StartDate, EndDate } = formatDateForPayload(
+      formData.dateFrom.value,
+      formData.dateTo.value
+    );
+
+    const Data = {
+      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeName: formData.employeeName || "",
+      StartDate,
+      EndDate,
     };
 
-    dispatch();
-    // GetTransactionDetailsByBankPDFTypeReportAuditor({ navigate, Data })
+    dispatch(DownloadNonFEDiscountingRateInputReportPDFAPI({ navigate, Data }));
   };
 
   //Common OnChange for textFields
@@ -574,10 +597,10 @@ const NonFEDiscounting = () => {
         <Row className="mt-4">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
-              column={RateReportColumns}
+              column={rateReportColumns}
               rows={rateReportTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: "45vh" }}
+              scroll={{ x: "max-content", y: "30vh" }}
               className={"BankUserList-table"}
             />
           </Col>

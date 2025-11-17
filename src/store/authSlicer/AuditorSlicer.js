@@ -110,7 +110,6 @@ const AuditorSlice = createSlice({
       })
       // Rejected state (when the API call fails GetSpotRateInputDataAPI)
       .addCase(GetForwardRateInputDataAPI.rejected, (state, action) => {
-        console.log(action, "actionaction");
         state.Loader = false;
         state.responseMessage = action.payload;
         state.GetForwardRateInputData = null;

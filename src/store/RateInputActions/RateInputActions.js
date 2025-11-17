@@ -21,15 +21,6 @@ export const GetSpotRateInputDataAPI = createAsyncThunk(
       const response = await GetSpotRateInputDataRes(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
-
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-      }
-
       if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
 
@@ -88,14 +79,14 @@ export const GetForwardRateInputDataAPI = createAsyncThunk(
       const response = await GetForwardRateInputDataRes(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+      // if (responseCode === 401) {
+      //   navigate("/");
+      //   return rejectWithValue("Unauthorized access, please login again");
+      // }
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-      }
+      // if (responseCode === 417) {
+      //   await dispatch(refreshTokenAction({ navigate }));
+      // }
 
       if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -155,14 +146,14 @@ export const GetFEDiscountingRateInputDataAPI = createAsyncThunk(
       const response = await GetFEDiscountingRateInputDataRes(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+      // if (responseCode === 401) {
+      //   navigate("/");
+      //   return rejectWithValue("Unauthorized access, please login again");
+      // }
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-      }
+      // if (responseCode === 417) {
+      //   await dispatch(refreshTokenAction({ navigate }));
+      // }
 
       if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -221,15 +212,6 @@ export const GetNonFEDiscountingRateInputDataAPI = createAsyncThunk(
 
       const response = await GetNonFEDiscountingRateInputDataRes(Data);
       const { responseCode } = response.data;
-
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
-
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-      }
 
       if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;

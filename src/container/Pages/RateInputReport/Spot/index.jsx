@@ -40,8 +40,6 @@ const Spot = () => {
   const [totalRecord, setTotalRecord] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [rateReportTblData, setRateReportTblData] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
   const [sRow, setSRow] = useState(0);
   const [dropdownvalue, setDropdownvalue] = useState(50);
   const [formData, setFormData] = useState({
@@ -95,7 +93,6 @@ const Spot = () => {
       sRow: 0,
     };
 
-    console.log(Data, "PayloadToSend");
     dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
   };
 
@@ -116,36 +113,6 @@ const Spot = () => {
     }
   }, []);
 
-  // //Extracting the Data
-  // useEffect(() => {
-  //   try {
-  //     if (GetSpotRateInputData && GetSpotRateInputData !== null) {
-  //       const newRecords = GetSpotRateInputData.spotRateInput || [];
-  //       console.log(GetSpotRateInputData, "GetSpotRateInputData");
-
-  //       if (isLoading) {
-  //         setIsLoading(false);
-  //         setTotalRecord(GetSpotRateInputData.totalCount);
-  //         setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
-  //         setSRow((prev) => prev + newRecords.length);
-  //       } else {
-  //         setIsLoading(false);
-  //         setRateReportTblData(newRecords); // other wise append the new records only
-  //         setSRow(newRecords.length);
-  //         setTotalRecord(GetSpotRateInputData.totalCount);
-  //       }
-  //     } else {
-  //       setRateReportTblData([]);
-  //       setSRow(0);
-  //       setIsLoading(false);
-  //       setTotalRecord(0);
-  //     }
-  //   } catch (error) {
-  //     console.log(error, "errorerror");
-  //     setIsLoading(false);
-  //   }
-  // }, [GetSpotRateInputData]);
-
   //Extracting the Data
   useEffect(() => {
     try {
@@ -163,10 +130,6 @@ const Spot = () => {
           setTotalRecord(GetSpotRateInputData.totalCount);
         }
       } else if (GetSpotRateInputData === null) {
-        // if (!hasReachedBottom) {
-        //   setHasReachedBottom(false);
-        //   setTableData([]);
-        //   setRecordLength(0);
         setIsLoading(false);
         setTotalRecord(0);
         setSRow(0);
@@ -257,17 +220,6 @@ const Spot = () => {
     const limitedValue = cleanedValue.slice(0, 50);
     setFormData((prev) => ({ ...prev, [name]: limitedValue }));
   };
-
-  //Handle Start Date Change
-  // const handleStartDateChange = (dateObject) => {
-  //   setStartDate(formatDate(dateObject));
-  //   console.log(formatDate(dateObject), "DateCheck");
-  // };
-
-  // //Handle End Date Change
-  // const handleEndDateChange = (dateObject) => {
-  //   setEndDate(formatDate(dateObject));
-  // };
 
   //new date work
   // Function to handle date range selection
@@ -395,8 +347,6 @@ const Spot = () => {
       },
     });
     setSelectedDateRange(null);
-    setStartDate(null);
-    setEndDate(null);
     setRateReportTblData([]);
     setSRow(0);
     setIsLoading(false);
@@ -474,18 +424,6 @@ const Spot = () => {
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
   ];
-  /** const { StartDate, EndDate } = formatDateForPayload(
-      formData.dateFrom.value,
-      formData.dateTo.value
-    );
-
-    const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
-      EmployeeName: formData.employeeName || "",
-      StartDate,
-      EndDate,
-      Length: dropdownvalue,
-      sRow: 0, */
 
   //Scroller Custom Hook
   useTableScrollBottomByClassName(
@@ -680,7 +618,7 @@ const Spot = () => {
               column={RateReportColumns}
               rows={rateReportTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: "35vh" }}
+              scroll={{ x: "max-content", y: "30vh" }}
               className={"BankUserList-table"}
             />
           </Col>

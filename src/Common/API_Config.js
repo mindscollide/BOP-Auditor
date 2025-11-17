@@ -70,3 +70,27 @@ export const DownloadSpotRateInputExcelReport = {
 export const DownloadSpotRateInputExcelReportPDF = {
   RequestMethod: "ServiceManager.DownloadSpotRateInputReportPDF",
 };
+
+export const DownloadForwardRateInputExcelReport = {
+  RequestMethod: "ServiceManager.DownloadForwardRateInputExcelReport",
+};
+
+export const DownloadForwardRateInputReportPDF = {
+  RequestMethod: "ServiceManager.DownloadForwardRateInputReportPDF",
+};
+
+export const DownloadFeDiscountingRateInputExcelReport = {
+  RequestMethod: "ServiceManager.DownloadFeDiscountingRateInputExcelReport",
+};
+
+export const DownloadFeDiscountingRateInputReportPDF = {
+  RequestMethod: "ServiceManager.DownloadFeDiscountingRateInputReportPDF",
+};
+
+export const DownloadNonFEDiscountingRateInputExcelReport = {
+  RequestMethod: "ServiceManager.DownloadNonFEDiscountingRateInputExcelReport",
+};
+
+export const DownloadNonFEDiscountingRateInputReportPDF = {
+  RequestMethod: "ServiceManager.DownloadNonFEDiscountingRateInputReportPDF",
+};

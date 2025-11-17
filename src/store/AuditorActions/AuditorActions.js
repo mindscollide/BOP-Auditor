@@ -19,14 +19,14 @@ export const GetTransactionDetailsByBankAuditor = createAsyncThunk(
       const response = await getTransactionData(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+      // if (responseCode === 401) {
+      //   navigate("/");
+      //   return rejectWithValue("Unauthorized access, please login again");
+      // }
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-      }
+      // if (responseCode === 417) {
+      //   await dispatch(refreshTokenAction({ navigate }));
+      // }
 
       if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -86,14 +86,14 @@ export const GetTransactionDetailsByCorporateAuditor = createAsyncThunk(
       const response = await getTransactionData(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+      // if (responseCode === 401) {
+      //   navigate("/");
+      //   return rejectWithValue("Unauthorized access, please login again");
+      // }
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-      }
+      // if (responseCode === 417) {
+      //   await dispatch(refreshTokenAction({ navigate }));
+      // }
 
       if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
