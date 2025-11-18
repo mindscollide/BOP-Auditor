@@ -11,6 +11,7 @@ export const createTableFunc = (value, tenors, data) => {
     const staticColumns = [
       {
         title: "",
+        key: "employeeidcol",
         children: [
           {
             title: "Employee ID",
@@ -22,6 +23,7 @@ export const createTableFunc = (value, tenors, data) => {
       },
       {
         title: "",
+        key: "employeenamecol",
         children: [
           {
             title: "Employee Name",
@@ -33,6 +35,7 @@ export const createTableFunc = (value, tenors, data) => {
       },
       {
         title: "",
+        key: "employeeemailcol",
         children: [
           {
             title: "Email ID",
@@ -44,6 +47,8 @@ export const createTableFunc = (value, tenors, data) => {
       },
       {
         title: "",
+        key: "employeestatuscol",
+
         children: [
           {
             title: "Status",
@@ -84,13 +89,13 @@ export const createTableFunc = (value, tenors, data) => {
     ];
 
     // Dynamic tenor columns
-    const tenorColumns = tenors.map((tenor) => ({
+    const tenorColumns = tenors.map((tenor, index) => ({
       title: tenor.tenorName,
+      key: index,
       children: [
         {
           title: "Bid",
           dataIndex: `${tenor.tenorName}_Bid`,
-          key: `${tenor.tenorName}_Bid`,
           width: 70,
           align: "center",
           render(text) {
@@ -100,7 +105,6 @@ export const createTableFunc = (value, tenors, data) => {
         {
           title: "Ask",
           dataIndex: `${tenor.tenorName}_Ask`,
-          key: `${tenor.tenorName}_Ask`,
           width: 70,
           align: "center",
           render(text) {
@@ -114,9 +118,8 @@ export const createTableFunc = (value, tenors, data) => {
     columns = [...staticColumns, ...tenorColumns];
 
     // Map data rows
-    tableData = data.map((emp, index) => {
+    tableData = data.map((emp) => {
       const row = {
-        key: index,
         employeeID: emp.employeeID,
         employeeName: emp.employeeName,
         emailID: emp.emailID,

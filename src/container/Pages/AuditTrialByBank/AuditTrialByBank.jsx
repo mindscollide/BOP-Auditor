@@ -25,6 +25,8 @@ import {
   getDateTimeString,
 } from "../../../utils/Timer";
 import moment from "moment";
+// import ExportShowComponent from "../../../../components/common/ExportShowComponent/ExportShowComponent";
+import ExportShowComponent from "../../../components/common/ExportShowComponent/ExportShowComponent";
 const AuditTrialByBankCom = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,6 +40,7 @@ const AuditTrialByBankCom = () => {
   //Local States
   const [open, setOpen] = useState(false);
   const [sRow, setSRow] = useState(0);
+  const [dropdownvalue, setDropdownvalue] = useState(50);
   const [totalRecord, setTotalRecord] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [transactionByBankTblData, setTransactionByBankTblData] = useState([]);
@@ -51,6 +54,30 @@ const AuditTrialByBankCom = () => {
     txnByTreasuryUser: "",
   });
 
+  const handlePageSizeChange = (newSize) => {
+    setDropdownvalue(newSize);
+    setSRow(0);
+    setIsLoading(false);
+    setTransactionByBankTblData([]); // other wise append the new records only
+    setTotalRecord(0);
+
+    // const { StartDate, EndDate } = formatDateForPayload(
+    //   formData.dateFrom.value,
+    //   formData.dateTo.value
+    // );
+
+    const Data = {
+      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeName: formData.employeeName || "",
+      StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
+      EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
+      Length: newSize,
+      sRow: 0,
+    };
+
+    dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
+  };
+
   //Calling GetTransactionDetailsByBankAPI
   useEffect(() => {
     try {
@@ -62,7 +89,7 @@ const AuditTrialByBankCom = () => {
         TransactionByTreasuryUser: "",
         StartDate: "",
         EndDate: "",
-        Length: 10,
+        Length: dropdownvalue,
         sRow: 0,
       };
       dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
@@ -203,7 +230,7 @@ const AuditTrialByBankCom = () => {
       TransactionByTreasuryUser: formData.txnByTreasuryUser,
       StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
       EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
-      Length: 10,
+      Length: dropdownvalue,
       sRow: 0,
     };
     console.log(Data, "DateCheck");
@@ -233,7 +260,7 @@ const AuditTrialByBankCom = () => {
       TransactionByTreasuryUser: "",
       StartDate: "",
       EndDate: "",
-      Length: 10,
+      Length: dropdownvalue,
       sRow: 0,
     };
     dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
@@ -481,7 +508,7 @@ const AuditTrialByBankCom = () => {
             formatDate(startDate) !== null ? formatDate(startDate) : "",
           EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
           sRow: sRow,
-          Length: 10,
+          Length: dropdownvalue,
         };
         dispatch(GetTransactionDetailsByBankAuditor({ navigate, Data }));
       }
@@ -629,12 +656,20 @@ const AuditTrialByBankCom = () => {
           </Col>
         </Row>
         <Row className="mt-5">
+          <Col lg={12} md={12} sm={12}>
+            <ExportShowComponent
+              value={dropdownvalue}
+              onChange={handlePageSizeChange}
+            />
+          </Col>
+        </Row>
+        <Row className="">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={AuditTrialByBank}
               rows={transactionByBankTblData}
               pagination={false}
-              scroll={{ y: "45vh" }}
+              scroll={{ y: "40vh" }}
               className={"BankUserList-table"}
             />
           </Col>

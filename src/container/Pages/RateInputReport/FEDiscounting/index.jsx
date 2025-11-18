@@ -27,6 +27,7 @@ import {
   DownloadFeDiscountingRateInputExcelReportAPI,
   DownloadFeDiscountingRateInputReportPDFAPI,
 } from "../../../../store/ReportActions/ReportActions";
+import ExportShowComponent from "../../../../components/common/ExportShowComponent/ExportShowComponent";
 
 const FEDiscounting = () => {
   const dispatch = useDispatch();
@@ -42,7 +43,9 @@ const FEDiscounting = () => {
   const [open, setOpen] = useState(false);
   const [sRow, setSRow] = useState(0);
   const [totalRecord, setTotalRecord] = useState(0);
-  // const [isLoading, setIsLoading] = useState(false);
+  const [dropdownvalue, setDropdownvalue] = useState(50);
+
+  const [isLoading, setIsLoading] = useState(false);
   const [rateReportTblData, setRateReportTblData] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -73,6 +76,30 @@ const FEDiscounting = () => {
   const [selectedDateRange, setSelectedDateRange] = useState(null);
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
 
+  const handlePageSizeChange = (newSize) => {
+    setDropdownvalue(newSize);
+    setSRow(0);
+    setIsLoading(false);
+    setRateReportTblData([]); // other wise append the new records only
+    setTotalRecord(0);
+
+    const { StartDate, EndDate } = formatDateForPayload(
+      formData.dateFrom.value,
+      formData.dateTo.value
+    );
+
+    const Data = {
+      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeName: formData.employeeName || "",
+      StartDate,
+      EndDate,
+      Length: newSize,
+      sRow: 0,
+    };
+
+    dispatch(GetFEDiscountingRateInputDataAPI({ navigate, Data }));
+  };
+
   //Calling GetTransactionDetailsByBankAPI
   useEffect(() => {
     try {
@@ -81,7 +108,7 @@ const FEDiscounting = () => {
         EmployeeName: "",
         StartDate: "",
         EndDate: "",
-        Length: 50,
+        Length: dropdownvalue,
         sRow: 0,
       };
 
@@ -111,6 +138,9 @@ const FEDiscounting = () => {
           setRateReportTblData(tableData);
           setRateReportColumns(columns); // 👈 add this new state
         }
+
+        // if (tableData.length > 0) {
+        // }
       } catch (error) {
         console.error("Error building table:", error);
       }
@@ -305,7 +335,7 @@ const FEDiscounting = () => {
       EmployeeID: formData.employeeId || 0,
       StartDate: FromDate ? formatDateToUTC(FromDate) : "",
       EndDate: ToDate ? formatDateToUTC(ToDate) : "",
-      Length: 10,
+      Length: dropdownvalue,
       sRow: 0,
     };
 
@@ -341,7 +371,7 @@ const FEDiscounting = () => {
       EmployeeID: 0,
       StartDate: "",
       EndDate: "",
-      Length: 10,
+      Length: dropdownvalue,
       sRow: 0,
     };
     dispatch(GetFEDiscountingRateInputDataAPI({ navigate, Data }));
@@ -357,7 +387,7 @@ const FEDiscounting = () => {
           EmployeeID: 0,
           StartDate: "",
           EndDate: "",
-          Length: 10,
+          Length: dropdownvalue,
           sRow: sRow,
         };
         dispatch(GetFEDiscountingRateInputDataAPI({ navigate, Data }));
@@ -490,7 +520,15 @@ const FEDiscounting = () => {
             />
           </Col>
         </Row>
-        <Row className="mt-4">
+        <Row className="">
+          <Col lg={12} md={12} sm={12}>
+            <ExportShowComponent
+              value={dropdownvalue}
+              onChange={handlePageSizeChange}
+            />
+          </Col>
+        </Row>
+        <Row className="">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={rateReportColumns}

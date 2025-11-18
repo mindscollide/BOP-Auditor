@@ -10,7 +10,11 @@ import {
   CustomTable,
   TextField,
 } from "../../../components/elements";
-import { formatDate, formatPkAmount } from "../../../components/common/utils";
+import {
+  formatDate,
+  formatDateForPayload,
+  formatPkAmount,
+} from "../../../components/common/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GetTransactionDetailsByCorporateAuditor } from "../../../store/AuditorActions/AuditorActions";
@@ -24,6 +28,7 @@ import {
   getDateTimeString,
 } from "../../../utils/Timer";
 import moment from "moment";
+import ExportShowComponent from "../../../components/common/ExportShowComponent/ExportShowComponent";
 const AuditTrialByCorporate = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,6 +44,7 @@ const AuditTrialByCorporate = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [sRow, setSRow] = useState(0);
+  const [dropdownvalue, setDropdownvalue] = useState(50);
   const [totalRecord, setTotalRecord] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [transactionByBankTblData, setTransactionByBankTblData] = useState([]);
@@ -49,6 +55,24 @@ const AuditTrialByCorporate = () => {
     txnByTreasuryUser: "",
   });
 
+  const handlePageSizeChange = (newSize) => {
+    setDropdownvalue(newSize);
+    setSRow(0);
+    setIsLoading(false);
+    setTransactionByBankTblData([]); // other wise append the new records only
+    setTotalRecord(0);
+
+    const Data = {
+      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeName: formData.employeeName || "",
+      StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
+      EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
+      Length: newSize,
+      sRow: 0,
+    };
+
+    dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
+  };
   //Calling
   useEffect(() => {
     try {
@@ -59,7 +83,7 @@ const AuditTrialByCorporate = () => {
         TransactionByTreasuryUser: "",
         StartDate: "",
         EndDate: "",
-        Length: 10,
+        Length: dropdownvalue,
         sRow: 0,
       };
       dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
@@ -606,13 +630,21 @@ const AuditTrialByCorporate = () => {
             </div>
           </Col>
         </Row>
+        <Row className="">
+          <Col lg={12} md={12} sm={12}>
+            <ExportShowComponent
+              value={dropdownvalue}
+              onChange={handlePageSizeChange}
+            />
+          </Col>
+        </Row>
         <Row className="mt-5">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={AuditTrialByCorporate}
               rows={transactionByBankTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: "45vh" }}
+              scroll={{ x: "max-content", y: "40vh" }}
               className={"BankUserList-table"}
             />
           </Col>

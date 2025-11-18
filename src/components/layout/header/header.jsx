@@ -36,21 +36,12 @@ const Header = () => {
               <i className="icon-arrow-down dropdown-style"></i>
             </Dropdown.Toggle>
             <Dropdown.Menu className="dropdown_menu-Header2">
-              {/* <Dropdown.Item
-                className="dropdown_menu-Item"
-                onClick={onClickSetting}
-              >
-                <Nav.Link>
-                  <i className="icon-settings me-1 header-icon-style"></i>
-                  <label className="dropdown-select-labels">Setting</label>
-                </Nav.Link>
-              </Dropdown.Item> */}
               <Dropdown.Item
                 className="dropdown_menu-Item"
                 onClick={handleLogout}
               >
                 <i className="icon-logout me-1 header-icon-style"></i>
-                <label className="dropdown-select-labels">Logout</label>
+                <label className="setting_dropdown-select-labels">Logout</label>
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

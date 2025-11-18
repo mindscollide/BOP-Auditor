@@ -85,7 +85,7 @@ const Spot = () => {
     );
 
     const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeID: formData.employeeId || "",
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
@@ -99,7 +99,7 @@ const Spot = () => {
   useEffect(() => {
     try {
       let Data = {
-        EmployeeID: 0,
+        EmployeeID: "",
         EmployeeName: "",
         StartDate: "",
         EndDate: "",
@@ -178,7 +178,7 @@ const Spot = () => {
     );
 
     const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeID: formData.employeeId || "",
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
@@ -195,7 +195,7 @@ const Spot = () => {
     );
 
     const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeID: formData.employeeId || "",
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
@@ -317,7 +317,7 @@ const Spot = () => {
     );
 
     const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeID: formData.employeeId || "",
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
@@ -353,7 +353,7 @@ const Spot = () => {
     setTotalRecord(0);
     let Data = {
       EmployeeName: "",
-      EmployeeID: 0,
+      EmployeeID: "",
       StartDate: "",
       EndDate: "",
       Length: dropdownvalue,
@@ -435,7 +435,7 @@ const Spot = () => {
           formData.dateTo.value
         );
         const Data = {
-          EmployeeID: Number(formData.employeeId) || 0,
+          EmployeeID: formData.employeeId || "",
           EmployeeName: formData.employeeName || "",
           StartDate,
           EndDate,

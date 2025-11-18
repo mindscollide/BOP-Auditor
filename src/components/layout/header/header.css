@@ -124,11 +124,13 @@
 .header-icon-style {
   font-size: 16px;
   position: relative;
-  top: 2px;
 }
 
 .show.dropdown {
   top: 0px !important;
   left: auto !important;
   right: 10px !important;
+}
+.setting-dropdown-select-labels {
+  cursor: pointer;
 }

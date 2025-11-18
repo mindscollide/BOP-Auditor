@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./forwards.module.css";
 import { useDispatch, useSelector } from "react-redux";
-// import { useNavigate } from "react-router-dom";
 import { formatDateForPayload } from "../../../../components/common/utils";
 import { useTableScrollBottomByClassName } from "../../../../components/common/useTableScrollBottom";
 import pdfIcon from "../../../../assets/images/pdf.png";
@@ -39,10 +38,7 @@ const Forwards = () => {
   const [totalRecord, setTotalRecord] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [rateReportTblData, setRateReportTblData] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
   const [rateReportColumns, setRateReportColumns] = useState([]);
-
   const [formData, setFormData] = useState({
     employeeName: "",
     employeeId: "",
@@ -86,7 +82,7 @@ const Forwards = () => {
     );
 
     const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeID: formData.employeeId || "",
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
@@ -100,7 +96,7 @@ const Forwards = () => {
   useEffect(() => {
     try {
       let Data = {
-        EmployeeID: 0,
+        EmployeeID: "",
         EmployeeName: "",
         StartDate: "",
         EndDate: "",
@@ -121,23 +117,42 @@ const Forwards = () => {
     ) {
       try {
         const tenors = GetAllTenors.tenors.filter(
-          (t) => t.isForwardingApplicable === true
+          (t) => t.isForwardStandard === true
         );
+
+        //to Optimize code
+
         const { columns, tableData } = createTableFunc(
           1,
           tenors,
           GetForwardRateInputData.forwardRateInputs
         );
-        if (columns.length > 0) {
-          // Set dynamic data
-          setRateReportTblData(tableData);
-          setRateReportColumns(columns); // 👈 add this new state
+
+        if (tableData && tableData !== null && columns.length > 0) {
+          const newRecords = tableData || [];
+          if (isLoading) {
+            setIsLoading(false);
+            setTotalRecord(GetForwardRateInputData.totalCount);
+            setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
+            setSRow((prev) => prev + newRecords.length);
+          } else {
+            setRateReportColumns(columns);
+            setIsLoading(false);
+            setRateReportTblData(newRecords); // other wise append the new records only
+            setSRow(newRecords.length);
+            setTotalRecord(GetForwardRateInputData.totalCount);
+          }
+        } else if (GetForwardRateInputData === null) {
+          setIsLoading(false);
+          setTotalRecord(0);
+          setSRow(0);
+          setRateReportTblData([]);
         }
       } catch (error) {
         console.error("Error building table:", error);
       }
     }
-  }, [GetAllTenors, GetForwardRateInputData]);
+  }, [GetForwardRateInputData, GetAllTenors]);
 
   //Toggle Functino to view Export Icons
   const toggleExportOptions = () => {
@@ -160,7 +175,6 @@ const Forwards = () => {
 
   //Excel And PDF Icon Click Func
   const handleExport = (format) => {
-    console.log(typeof format, "formatformatformat");
     if (format === "excel") {
       exportToExcel();
     } else if (format === "pdf") {
@@ -176,7 +190,7 @@ const Forwards = () => {
     );
 
     const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeID: formData.employeeId || "",
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
@@ -193,7 +207,7 @@ const Forwards = () => {
     );
 
     const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeID: formData.employeeId || "",
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
@@ -277,7 +291,6 @@ const Forwards = () => {
   };
   //Handle Date Change method
   const handleDateChange = (fieldName, value) => {
-    console.log({ fieldName: fieldName, value: Date(value) });
     setFormData((prev) => ({
       ...prev,
       [fieldName]: {
@@ -313,7 +326,7 @@ const Forwards = () => {
     );
 
     const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeID: formData.employeeId || "",
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
@@ -321,7 +334,6 @@ const Forwards = () => {
       sRow: 0,
     };
 
-    console.log(Data, "PayloadToSend");
     dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
   };
 
@@ -343,15 +355,13 @@ const Forwards = () => {
       },
     });
     setSelectedDateRange(null);
-    setStartDate(null);
-    setEndDate(null);
     setRateReportTblData([]);
     setSRow(0);
     // setIsLoading(false);
     setTotalRecord(0);
     let Data = {
       EmployeeName: "",
-      EmployeeID: 0,
+      EmployeeID: "",
       StartDate: "",
       EndDate: "",
       Length: dropdownvalue,
@@ -370,7 +380,7 @@ const Forwards = () => {
           formData.dateTo.value
         );
         const Data = {
-          EmployeeID: Number(formData.employeeId) || 0,
+          EmployeeID: formData.employeeId || "",
           EmployeeName: formData.employeeName || "",
           StartDate,
           EndDate,
@@ -383,9 +393,6 @@ const Forwards = () => {
     0,
     "RateInputForward-table"
   );
-
-  console.log(totalRecord, "totalRecordtotalRecord");
-  console.log(rateReportTblData.length, "totalRecordtotalRecord");
 
   return (
     <>
@@ -524,6 +531,7 @@ const Forwards = () => {
               column={rateReportColumns}
               rows={rateReportTblData}
               pagination={false}
+              rowKey={(data, index) => index}
               scroll={{ x: "max-content", y: "30vh" }}
               className={"RateInputForward-table"}
             />
