@@ -2,10 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./FEDiscounting.module.css";
 import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
-import {
-  formatDateForPayload,
-  formatDateToUTC,
-} from "../../../../components/common/utils";
+import { formatDateForPayload } from "../../../../components/common/utils";
 import { useTableScrollBottomByClassName } from "../../../../components/common/useTableScrollBottom";
 import pdfIcon from "../../../../assets/images/pdf.png";
 
@@ -47,8 +44,6 @@ const FEDiscounting = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [rateReportTblData, setRateReportTblData] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
   const [rateReportColumns, setRateReportColumns] = useState([]);
 
   const [formData, setFormData] = useState({
@@ -89,7 +84,7 @@ const FEDiscounting = () => {
     );
 
     const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeID: formData.employeeId || "",
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
@@ -104,7 +99,7 @@ const FEDiscounting = () => {
   useEffect(() => {
     try {
       let Data = {
-        EmployeeID: 0,
+        EmployeeID: "",
         EmployeeName: "",
         StartDate: "",
         EndDate: "",
@@ -126,21 +121,34 @@ const FEDiscounting = () => {
     ) {
       try {
         const tenors = GetAllTenors.tenors.filter(
-          (t) => t.isDiscountingApplicable === true
+          (t) => t.isFEStandard === true
         );
         const { columns, tableData } = createTableFunc(
           2,
           tenors,
           GetFEDiscountingRateInputData.feDiscountingRateInput
         );
-        if (columns.length > 0) {
-          // Set dynamic data
-          setRateReportTblData(tableData);
-          setRateReportColumns(columns); // 👈 add this new state
-        }
 
-        // if (tableData.length > 0) {
-        // }
+        if (tableData && tableData !== null && columns.length > 0) {
+          const newRecords = tableData || [];
+          if (isLoading) {
+            setIsLoading(false);
+            setTotalRecord(GetFEDiscountingRateInputData.totalCount);
+            setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
+            setSRow((prev) => prev + newRecords.length);
+          } else {
+            setRateReportColumns(columns);
+            setIsLoading(false);
+            setRateReportTblData(newRecords); // other wise append the new records only
+            setSRow(newRecords.length);
+            setTotalRecord(GetFEDiscountingRateInputData.totalCount);
+          }
+        } else if (GetFEDiscountingRateInputData === null) {
+          setIsLoading(false);
+          setTotalRecord(0);
+          setSRow(0);
+          setRateReportTblData([]);
+        }
       } catch (error) {
         console.error("Error building table:", error);
       }
@@ -184,7 +192,7 @@ const FEDiscounting = () => {
     );
 
     const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeID: formData.employeeId || "",
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
@@ -201,7 +209,7 @@ const FEDiscounting = () => {
     );
 
     const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeID: formData.employeeId || "",
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
@@ -317,24 +325,16 @@ const FEDiscounting = () => {
 
   //Handle Search Button
   const handleSearchBtn = () => {
-    let FromDate = null;
-    let ToDate = null;
-
-    if (formData.dateFrom.value) {
-      FromDate = new Date(formData.dateFrom.value);
-      FromDate.setHours(0, 0, 0);
-    }
-
-    if (formData.dateTo.value) {
-      ToDate = new Date(formData.dateTo.value);
-      ToDate.setHours(23, 59, 59);
-    }
+    const { StartDate, EndDate } = formatDateForPayload(
+      formData.dateFrom.value,
+      formData.dateTo.value
+    );
 
     let Data = {
       EmployeeName: formData.employeeName || "",
-      EmployeeID: formData.employeeId || 0,
-      StartDate: FromDate ? formatDateToUTC(FromDate) : "",
-      EndDate: ToDate ? formatDateToUTC(ToDate) : "",
+      EmployeeID: formData.employeeId || "",
+      StartDate,
+      EndDate,
       Length: dropdownvalue,
       sRow: 0,
     };
@@ -360,15 +360,13 @@ const FEDiscounting = () => {
       },
     });
     setSelectedDateRange(null);
-    setStartDate(null);
-    setEndDate(null);
     setRateReportTblData([]);
     setSRow(0);
     // setIsLoading(false);
     setTotalRecord(0);
     let Data = {
       EmployeeName: "",
-      EmployeeID: 0,
+      EmployeeID: "",
       StartDate: "",
       EndDate: "",
       Length: dropdownvalue,
@@ -381,12 +379,16 @@ const FEDiscounting = () => {
   useTableScrollBottomByClassName(
     () => {
       if (rateReportTblData.length !== totalRecord) {
-        // setIsLoading(true);
+        setIsLoading(true);
+        const { StartDate, EndDate } = formatDateForPayload(
+          formData.dateFrom.value,
+          formData.dateTo.value
+        );
         const Data = {
-          EmployeeName: "",
-          EmployeeID: 0,
-          StartDate: "",
-          EndDate: "",
+          EmployeeID: formData.employeeId || "",
+          EmployeeName: formData.employeeName || "",
+          StartDate,
+          EndDate,
           Length: dropdownvalue,
           sRow: sRow,
         };

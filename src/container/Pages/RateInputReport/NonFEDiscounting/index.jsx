@@ -27,6 +27,7 @@ import {
   DownloadNonFEDiscountingRateInputExcelReportAPI,
   DownloadNonFEDiscountingRateInputReportPDFAPI,
 } from "../../../../store/ReportActions/ReportActions";
+import ExportShowComponent from "../../../../components/common/ExportShowComponent/ExportShowComponent";
 
 const NonFEDiscounting = () => {
   const dispatch = useDispatch();
@@ -52,6 +53,7 @@ const NonFEDiscounting = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [rateReportColumns, setRateReportColumns] = useState([]);
+  const [dropdownvalue, setDropdownvalue] = useState(50);
 
   const [formData, setFormData] = useState({
     employeeName: "",
@@ -67,6 +69,31 @@ const NonFEDiscounting = () => {
       errorStatus: false,
     },
   });
+
+  const handlePageSizeChange = (newSize) => {
+    setDropdownvalue(newSize);
+    setSRow(0);
+    setIsLoading(false);
+    setRateReportTblData([]); // other wise append the new records only
+    setTotalRecord(0);
+
+    const { StartDate, EndDate } = formatDateForPayload(
+      formData.dateFrom.value,
+      formData.dateTo.value
+    );
+
+    const Data = {
+      EmployeeID: formData.employeeId || "",
+      EmployeeName: formData.employeeName || "",
+      StartDate,
+      EndDate,
+      Length: newSize,
+      sRow: 0,
+    };
+
+    dispatch(GetNonFEDiscountingRateInputDataAPI({ navigate, Data }));
+  };
+
   // Date range options
   const [dateRangeOptions] = useState([
     { value: 1, label: "1 Month" },
@@ -82,11 +109,11 @@ const NonFEDiscounting = () => {
   useEffect(() => {
     try {
       let Data = {
-        EmployeeID: 0,
+        EmployeeID: "",
         EmployeeName: "",
         StartDate: "",
         EndDate: "",
-        Length: 50,
+        Length: dropdownvalue,
         sRow: 0,
       };
 
@@ -104,17 +131,32 @@ const NonFEDiscounting = () => {
     ) {
       try {
         const tenors = GetAllTenors.tenors.filter(
-          (t) => t.isDiscountingApplicable === true
+          (t) => t.isNonFEStandard === true
         );
         const { columns, tableData } = createTableFunc(
           3,
           tenors,
           GetNonFEDiscountingRateInputData.nonfeDiscountingRateInput
         );
-        if (columns.length > 0) {
-          // Set dynamic data
-          setRateReportTblData(tableData);
-          setRateReportColumns(columns); // 👈 add this new state
+        if (tableData && tableData !== null && columns.length > 0) {
+          const newRecords = tableData || [];
+          if (isLoading) {
+            setIsLoading(false);
+            setTotalRecord(GetNonFEDiscountingRateInputData.totalCount);
+            setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
+            setSRow((prev) => prev + newRecords.length);
+          } else {
+            setRateReportColumns(columns);
+            setIsLoading(false);
+            setRateReportTblData(newRecords); // other wise append the new records only
+            setSRow(newRecords.length);
+            setTotalRecord(GetNonFEDiscountingRateInputData.totalCount);
+          }
+        } else if (GetNonFEDiscountingRateInputData === null) {
+          setIsLoading(false);
+          setTotalRecord(0);
+          setSRow(0);
+          setRateReportTblData([]);
         }
       } catch (error) {
         console.error("Error building table:", error);
@@ -159,7 +201,7 @@ const NonFEDiscounting = () => {
     );
 
     const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeID: formData.employeeId || "",
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
@@ -178,7 +220,7 @@ const NonFEDiscounting = () => {
     );
 
     const Data = {
-      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeID: formData.employeeId || "",
       EmployeeName: formData.employeeName || "",
       StartDate,
       EndDate,
@@ -309,10 +351,10 @@ const NonFEDiscounting = () => {
 
     let Data = {
       EmployeeName: formData.employeeName || "",
-      EmployeeID: formData.employeeId || 0,
+      EmployeeID: formData.employeeId || "",
       StartDate: FromDate ? formatDateToUTC(FromDate) : "",
       EndDate: ToDate ? formatDateToUTC(ToDate) : "",
-      Length: 50,
+      Length: dropdownvalue,
       sRow: 0,
     };
     console.log(Data, "DateCheck");
@@ -346,10 +388,10 @@ const NonFEDiscounting = () => {
 
     let Data = {
       EmployeeName: "",
-      EmployeeID: 0,
+      EmployeeID: "",
       StartDate: "",
       EndDate: "",
-      Length: 50,
+      Length: dropdownvalue,
       sRow: 0,
     };
     dispatch(GetNonFEDiscountingRateInputDataAPI({ navigate, Data }));
@@ -362,11 +404,11 @@ const NonFEDiscounting = () => {
         setIsLoading(true);
         const Data = {
           EmployeeName: formData.employeeName || "",
-          EmployeeID: formData.employeeId || 0,
+          EmployeeID: formData.employeeId || "",
           StartDate: startDate !== null ? startDate : "",
           EndDate: endDate !== null ? endDate : "",
           sRow: sRow,
-          Length: 50,
+          Length: dropdownvalue,
         };
         dispatch(GetNonFEDiscountingRateInputDataAPI({ navigate, Data }));
       }
@@ -374,9 +416,6 @@ const NonFEDiscounting = () => {
     0,
     "BankUserList-table"
   );
-
-  console.log(totalRecord, "totalRecordtotalRecord");
-  console.log(rateReportTblData.length, "totalRecordtotalRecord");
 
   return (
     <>
@@ -498,6 +537,14 @@ const NonFEDiscounting = () => {
               minDate={formData.dateFrom.value}
               maxDate={null}
               editable={false}
+            />
+          </Col>
+        </Row>
+        <Row className="">
+          <Col lg={12} md={12} sm={12}>
+            <ExportShowComponent
+              value={dropdownvalue}
+              onChange={handlePageSizeChange}
             />
           </Col>
         </Row>

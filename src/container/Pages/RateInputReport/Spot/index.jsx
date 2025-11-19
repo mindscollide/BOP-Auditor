@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./spot.module.css";
 import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
@@ -57,6 +57,7 @@ const Spot = () => {
     },
   });
 
+  console.log(formData, "formDataformData");
   // Date range options
   const [dateRangeOptions] = useState([
     { value: 1, label: "1 Month" },
@@ -72,29 +73,39 @@ const Spot = () => {
     (state) => state.AuditorReducer.GetSpotRateInputData
   );
 
-  const handlePageSizeChange = (newSize) => {
-    setDropdownvalue(newSize);
-    setSRow(0);
-    setIsLoading(false);
-    setRateReportTblData([]); // other wise append the new records only
-    setTotalRecord(0);
+  const handlePageSizeChange = useCallback(
+    (newSize) => {
+      setDropdownvalue(newSize);
+      setSRow(0);
+      setIsLoading(false);
+      setRateReportTblData([]);
+      setTotalRecord(0);
 
-    const { StartDate, EndDate } = formatDateForPayload(
+      const { StartDate, EndDate } = formatDateForPayload(
+        formData.dateFrom.value,
+        formData.dateTo.value
+      );
+
+      const Data = {
+        EmployeeID: formData.employeeId || "",
+        EmployeeName: formData.employeeName || "",
+        StartDate,
+        EndDate,
+        Length: newSize,
+        sRow: 0,
+      };
+
+      dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
+    },
+    [
+      formData.employeeId,
+      formData.employeeName,
       formData.dateFrom.value,
-      formData.dateTo.value
-    );
-
-    const Data = {
-      EmployeeID: formData.employeeId || "",
-      EmployeeName: formData.employeeName || "",
-      StartDate,
-      EndDate,
-      Length: newSize,
-      sRow: 0,
-    };
-
-    dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
-  };
+      formData.dateTo.value,
+      dispatch,
+      navigate,
+    ]
+  );
 
   useEffect(() => {
     try {
@@ -206,19 +217,22 @@ const Spot = () => {
 
   //Common OnChange for textFields
   const handleTextChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, validity } = e.target;
+    console.log(
+      { name, value, validity: validity.valid, target: e.target },
+      "formDataformData"
+    );
 
-    const cleanedValue = value.replace(/\t/g, "").trim();
+    // const cleanedValue = value.replace(/\t/g, "").trim();
 
-    if (name === "employeeId") {
-      const numericValue = cleanedValue.replace(/\D/g, "");
-      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+    if (name === "employeeId" && validity.valid === true) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
       return;
     }
 
-    // For all other fields, strip tabs and trim, then limit to 50 characters
-    const limitedValue = cleanedValue.slice(0, 50);
-    setFormData((prev) => ({ ...prev, [name]: limitedValue }));
+    if (name === "employeeName") {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   //new date work
@@ -449,9 +463,6 @@ const Spot = () => {
     "BankUserList-table"
   );
 
-  console.log(totalRecord, "totalRecordtotalRecord");
-  console.log(rateReportTblData.length, "totalRecordtotalRecord");
-
   return (
     <>
       <CustomPaper variant="outlined">
@@ -521,6 +532,7 @@ const Spot = () => {
               value={formData.employeeId}
               onChange={handleTextChange}
               applyClass="TextFieldAuditors"
+              pattern="^[0-9]*$"
               maxLength={15}
             />
           </Col>

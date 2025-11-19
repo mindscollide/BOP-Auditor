@@ -16,6 +16,7 @@ const CustomTable = ({
   prefixCls,
   style,
   bordered,
+  rowKey,
 }) => {
   return (
     <>
@@ -34,6 +35,7 @@ const CustomTable = ({
         prefixCls={prefixCls}
         scroll={scroll}
         style={style}
+        rowKey={rowKey}
       />
     </>
   );

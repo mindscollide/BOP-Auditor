@@ -198,10 +198,11 @@ export const createTableFunc = (value, tenors, data) => {
     ];
 
     // === Dynamic Tenor Columns ===
-    const tenorColumns = tenors.map((tenor) => ({
+    const tenorColumns = tenors.map((tenor, index) => ({
       title: tenor.tenorName, // e.g. "1 MONTH", "2 MONTH"
       dataIndex: `${tenor.tenorName}_rate`,
-      key: `${tenor.tenorName}_rate`,
+      // key: `${tenor.tenorName}_rate`,
+      key: index,
       width: 120,
       align: "center",
       render: (text) => <div>{text ? text : "-"}</div>,
@@ -216,7 +217,7 @@ export const createTableFunc = (value, tenors, data) => {
 
       currencies.forEach((cur, curIndex) => {
         const row = {
-          key: `${empIndex}-${curIndex}`,
+          // key: `${empIndex}-${curIndex}`,
           employeeID: emp.employeeID,
           employeeName: emp.employeeName,
           emailID: emp.emailID,
@@ -291,10 +292,11 @@ export const createTableFunc = (value, tenors, data) => {
 
     // Dynamic tenor columns
     // === Dynamic Tenor Columns ===
-    const tenorColumns = tenors.map((tenor) => ({
+    const tenorColumns = tenors.map((tenor, index) => ({
       title: tenor.tenorName, // e.g. "1 MONTH", "2 MONTH"
       dataIndex: `${tenor.tenorName}_rate`,
-      key: `${tenor.tenorName}_rate`,
+      key: index,
+      // key: `${tenor.tenorName}_rate`,
       width: 120,
       align: "center",
       render: (text) => <div>{text ? text : "-"}</div>,
@@ -308,7 +310,6 @@ export const createTableFunc = (value, tenors, data) => {
     // Map data rows
     tableData = data.map((emp, index) => {
       const row = {
-        key: index,
         employeeID: emp.employeeID,
         employeeName: emp.employeeName,
         emailID: emp.emailID,
