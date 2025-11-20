@@ -626,7 +626,7 @@ const AuditTrialByCorporate = () => {
             </div>
           </Col>
         </Row>
-        <Row className="">
+        <Row className="mt-5">
           <Col lg={12} md={12} sm={12}>
             <ExportShowComponent
               value={dropdownvalue}
@@ -634,7 +634,7 @@ const AuditTrialByCorporate = () => {
             />
           </Col>
         </Row>
-        <Row className="mt-5">
+        <Row className="">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={AuditTrialByCorporate}
