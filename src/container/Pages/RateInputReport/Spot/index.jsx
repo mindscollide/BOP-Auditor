@@ -57,7 +57,6 @@ const Spot = () => {
     },
   });
 
-  console.log(formData, "formDataformData");
   // Date range options
   const [dateRangeOptions] = useState([
     { value: 1, label: "1 Month" },
@@ -70,7 +69,7 @@ const Spot = () => {
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
 
   const GetSpotRateInputData = useSelector(
-    (state) => state.AuditorReducer.GetSpotRateInputData
+    (state) => state.RateInputSlicer.GetSpotRateInputData
   );
 
   const handlePageSizeChange = useCallback(

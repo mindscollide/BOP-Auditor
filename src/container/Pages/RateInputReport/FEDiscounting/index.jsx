@@ -32,7 +32,7 @@ const FEDiscounting = () => {
   const exportRef = useRef(null);
 
   const GetFEDiscountingRateInputData = useSelector(
-    (state) => state.AuditorReducer.GetFEDiscountingRateInputData
+    (state) => state.RateInputSlicer.GetFEDiscountingRateInputData
   );
   const GetAllTenors = useSelector((state) => state.authReducer.getAllTenors);
 

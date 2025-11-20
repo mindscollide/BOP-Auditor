@@ -210,3 +210,7 @@ th.RateInputForward-table-cell {
   line-height: 30px;
   padding: 0;
 }
+
+.RateInputForward-table .ant-table-body {
+  scrollbar-color: auto !important;
+}

@@ -65,7 +65,7 @@ const Forwards = () => {
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
 
   const GetForwardRateInputData = useSelector(
-    (state) => state.AuditorReducer.GetForwardRateInputData
+    (state) => state.RateInputSlicer.GetForwardRateInputData
   );
   const GetAllTenors = useSelector((state) => state.authReducer.getAllTenors);
 

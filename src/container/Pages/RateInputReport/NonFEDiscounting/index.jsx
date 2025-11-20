@@ -36,14 +36,10 @@ const NonFEDiscounting = () => {
 
   // Extracting the Transaction by Bank Details Data from Reducer
   const GetNonFEDiscountingRateInputData = useSelector(
-    (state) => state.AuditorReducer.GetNonFEDiscountingRateInputData
+    (state) => state.RateInputSlicer.GetNonFEDiscountingRateInputData
   );
   const GetAllTenors = useSelector((state) => state.authReducer.getAllTenors);
 
-  console.log(
-    GetNonFEDiscountingRateInputData,
-    "GetNonFEDiscountingRateInputDataGetNonFEDiscountingRateInputData"
-  );
   //Local States
   const [open, setOpen] = useState(false);
   const [sRow, setSRow] = useState(0);
@@ -336,28 +332,19 @@ const NonFEDiscounting = () => {
 
   //Handle Search Button
   const handleSearchBtn = () => {
-    let FromDate = null;
-    let ToDate = null;
-
-    if (formData.dateFrom.value) {
-      FromDate = new Date(formData.dateFrom.value);
-      FromDate.setHours(0, 0, 0);
-    }
-
-    if (formData.dateTo.value) {
-      ToDate = new Date(formData.dateTo.value);
-      ToDate.setHours(23, 59, 59);
-    }
+    const { StartDate, EndDate } = formatDateForPayload(
+      formData.dateFrom.value,
+      formData.dateTo.value
+    );
 
     let Data = {
       EmployeeName: formData.employeeName || "",
       EmployeeID: formData.employeeId || "",
-      StartDate: FromDate ? formatDateToUTC(FromDate) : "",
-      EndDate: ToDate ? formatDateToUTC(ToDate) : "",
+      StartDate,
+      EndDate,
       Length: dropdownvalue,
       sRow: 0,
     };
-    console.log(Data, "DateCheck");
     dispatch(GetNonFEDiscountingRateInputDataAPI({ navigate, Data }));
   };
 
@@ -548,7 +535,7 @@ const NonFEDiscounting = () => {
             />
           </Col>
         </Row>
-        <Row className="mt-4">
+        <Row className="">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={rateReportColumns}

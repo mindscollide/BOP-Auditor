@@ -13,10 +13,7 @@ import excelIcon from "../../../../assets/images/excel.png";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  useTableScrollBottom,
-  useTableScrollBottomByClassName,
-} from "../../../../components/common/useTableScrollBottom";
+import { useTableScrollBottomByClassName } from "../../../../components/common/useTableScrollBottom";
 import {
   GetTransactionDetailsByCorporateExcelTypeReportAuditor,
   GetTransactionDetailsByCorporatePDFTypeReportAuditor,
@@ -172,41 +169,41 @@ const Branch = () => {
   });
 
   //Custome hook for Scrolling (1)
-  const { hasReachedBottom, setHasReachedBottom } = useTableScrollBottom(() => {
-    console.log("🚀 Table reached bottom");
-    // Load more data here if needed
-    if (recordsLength !== tableData.length) {
-      let Data = {
-        employeeId: formData?.employeeID,
-        email: formData?.email,
-        role:
-          selectedRoleOption?.value !== undefined
-            ? selectedRoleOption.value
-            : "",
-        createdBy:
-          selectCreatedByOptions?.value !== undefined
-            ? selectCreatedByOptions.value
-            : "",
-        approvedBy: selectApprovedByOptions?.value
-          ? selectApprovedByOptions.value
-          : "",
-        deactivatedBy: selectDeactivatedByOptions?.value
-          ? selectDeactivatedByOptions.value
-          : "",
-        branchName: formData?.branchName,
-        // TransactionByTreasuryUser: formData.employeeName,
-        sRow: sRow,
-        Length: dropdownvalue,
-      };
+  // const { hasReachedBottom, setHasReachedBottom } = useTableScrollBottom(() => {
+  //   console.log("🚀 Table reached bottom");
+  //   // Load more data here if needed
+  //   if (recordsLength !== tableData.length) {
+  //     let Data = {
+  //       employeeId: formData?.employeeID,
+  //       email: formData?.email,
+  //       role:
+  //         selectedRoleOption?.value !== undefined
+  //           ? selectedRoleOption.value
+  //           : "",
+  //       createdBy:
+  //         selectCreatedByOptions?.value !== undefined
+  //           ? selectCreatedByOptions.value
+  //           : "",
+  //       approvedBy: selectApprovedByOptions?.value
+  //         ? selectApprovedByOptions.value
+  //         : "",
+  //       deactivatedBy: selectDeactivatedByOptions?.value
+  //         ? selectDeactivatedByOptions.value
+  //         : "",
+  //       branchName: formData?.branchName,
+  //       // TransactionByTreasuryUser: formData.employeeName,
+  //       sRow: sRow,
+  //       Length: dropdownvalue,
+  //     };
 
-      // dispatch(SearchBankUsersAPI(navigate, Data));
-    }
-  });
+  //     // dispatch(SearchBankUsersAPI(navigate, Data));
+  //   }
+  // });
 
   const handlePageSizeChange = (newSize) => {
     setDropdownvalue(newSize);
     setSRow(0);
-    setHasReachedBottom(false);
+    // setHasReachedBottom(false);
     setTableData([]);
     setRecordLength(0);
 

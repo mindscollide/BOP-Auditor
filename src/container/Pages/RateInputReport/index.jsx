@@ -77,7 +77,7 @@ const MainInputReport = () => {
     },
   ];
   return (
-    <>
+    <div className={styles["pageScrollContainer"]}>
       <Row>
         <Col lg={12} md={12} sm={12}>
           <span className={styles["AuditTrialBankMainHeading"]}>
@@ -94,7 +94,7 @@ const MainInputReport = () => {
         activeKey={activeTab}
         onTabChange={(key) => setActiveTab(key)} // 🔹 track tab change
       />
-    </>
+    </div>
   );
 };
 

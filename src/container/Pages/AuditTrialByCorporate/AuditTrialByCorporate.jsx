@@ -10,11 +10,7 @@ import {
   CustomTable,
   TextField,
 } from "../../../components/elements";
-import {
-  formatDate,
-  formatDateForPayload,
-  formatPkAmount,
-} from "../../../components/common/utils";
+import { formatDate, formatPkAmount } from "../../../components/common/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GetTransactionDetailsByCorporateAuditor } from "../../../store/AuditorActions/AuditorActions";
