@@ -1,9 +1,3 @@
-.pageScrollContainer {
-  max-height: 85vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  /* padding-right: 10px; */
-}
 .AuditTrialBankMainHeading {
   font-size: 24px !important;
   font-weight: 700 !important;

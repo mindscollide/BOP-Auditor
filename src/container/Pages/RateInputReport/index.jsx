@@ -9,7 +9,7 @@ import Forwards from "./Forwards";
 import FEDiscounting from "./FEDiscounting";
 import NonFEDiscounting from "./NonFEDiscounting";
 import { GetAllTenorsAPI } from "../../../store/UserManagementActions/UserManagementActions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const MainInputReport = () => {
@@ -30,6 +30,8 @@ const MainInputReport = () => {
     }
   }, [dispatch, navigate]);
 
+  const allData = useSelector((state) => state.RateInputSlicer);
+  console.log(allData, "allDataallData");
   const tabsData = [
     {
       title: "Spot",
@@ -45,6 +47,7 @@ const MainInputReport = () => {
     {
       title: "Forwards",
       key: "Forwards",
+
       content: (
         <div className="position-relative">
           <Suspense fallback={<SectionLoader />}>
@@ -77,7 +80,8 @@ const MainInputReport = () => {
     },
   ];
   return (
-    <div className={styles["pageScrollContainer"]}>
+    // <div className={styles["pageScrollContainer"]}>
+    <div>
       <Row>
         <Col lg={12} md={12} sm={12}>
           <span className={styles["AuditTrialBankMainHeading"]}>
