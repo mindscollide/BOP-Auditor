@@ -24,6 +24,18 @@ const RateInputSlicer = createSlice({
     clearAuthResponseMessage: (state) => {
       state.responseMessage = "";
     },
+    clearGetSpotRateInputData: (state) => {
+      state.GetSpotRateInputData = null;
+    },
+    clearGetForwardRateInputData: (state) => {
+      state.GetForwardRateInputData = null;
+    },
+    clearGetFEDiscountingRateInputData: (state) => {
+      state.GetFEDiscountingRateInputData = null;
+    },
+    clearGetNonFEDiscountingRateInputData: (state) => {
+      state.GetNonFEDiscountingRateInputData = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -110,5 +122,11 @@ const RateInputSlicer = createSlice({
       );
   },
 });
-export const { clearAuthResponseMessage } = RateInputSlicer.actions;
+export const {
+  clearAuthResponseMessage,
+  clearGetSpotRateInputData,
+  clearGetForwardRateInputData,
+  clearGetFEDiscountingRateInputData,
+  clearGetNonFEDiscountingRateInputData,
+} = RateInputSlicer.actions;
 export default RateInputSlicer.reducer;

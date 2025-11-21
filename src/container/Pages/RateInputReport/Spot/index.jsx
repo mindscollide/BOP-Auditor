@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styles from "./spot.module.css";
 import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
@@ -28,6 +34,7 @@ import {
   DownloadSpotRateInputExcelReportPDFAPI,
 } from "../../../../store/ReportActions/ReportActions";
 import ExportShowComponent from "../../../../components/common/ExportShowComponent/ExportShowComponent";
+import { clearGetSpotRateInputData } from "../../../../store/authSlicer/RateInputSlicer";
 
 const Spot = () => {
   const dispatch = useDispatch();
@@ -121,6 +128,9 @@ const Spot = () => {
     } catch (error) {
       console.log(error, "errorerror");
     }
+    return () => {
+      dispatch(clearGetSpotRateInputData());
+    };
   }, []);
 
   //Extracting the Data
@@ -215,7 +225,7 @@ const Spot = () => {
   };
 
   //Common OnChange for textFields
-  const handleTextChange = (e) => {
+  const handleTextChange = useCallback((e) => {
     const { name, value, validity } = e.target;
     console.log(
       { name, value, validity: validity.valid, target: e.target },
@@ -232,7 +242,7 @@ const Spot = () => {
     if (name === "employeeName") {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-  };
+  }, []);
 
   //new date work
   // Function to handle date range selection
@@ -376,67 +386,72 @@ const Spot = () => {
   };
 
   // Columns for Audit Trial By Bank
-  const RateReportColumns = [
-    {
-      title: "Employee ID",
-      dataIndex: "employeeID",
-      key: "employeeID",
-      width: 100,
-    },
-    {
-      title: "Employee Name",
-      dataIndex: "employeeName",
-      key: "employeeName",
-      width: 180,
-    },
-    {
-      title: "Email ID",
-      dataIndex: "emailID",
-      key: "emailID",
-      width: 200,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      width: 100,
-      render: (text) => (
-        <span
-          style={{ color: text?.toLowerCase() === "active" ? "green" : "red" }}
-        >
-          {text}
-        </span>
-      ),
-    },
-    {
-      title: "Time Stamps",
-      dataIndex: "timeStamps",
-      key: "timeStamps",
-      width: 180,
-      render: (text) => (
-        <span>
-          {text &&
-            moment(convertDateTimeIntoLocal(text)).format(
-              "YYYY/MM/DD hh:mm:ss A"
-            )}
-        </span>
-      ),
-    },
-    {
-      title: "Bid",
-      dataIndex: "bid",
-      key: "bid",
-      width: 70,
-      render: (text) => <span>{formatPkAmount(text)}</span>,
-    },
-    {
-      title: "Ask",
-      dataIndex: "ask",
-      key: "ask",
-      width: 70,
-      render: (text) => <span>{formatPkAmount(text)}</span>,
-    },
-  ];
+  const RateReportColumns = useMemo(
+    () => [
+      {
+        title: "Employee ID",
+        dataIndex: "employeeID",
+        key: "employeeID",
+        width: 100,
+      },
+      {
+        title: "Employee Name",
+        dataIndex: "employeeName",
+        key: "employeeName",
+        width: 180,
+      },
+      {
+        title: "Email ID",
+        dataIndex: "emailID",
+        key: "emailID",
+        width: 200,
+      },
+      {
+        title: "Status",
+        dataIndex: "status",
+        key: "status",
+        width: 100,
+        render: (text) => (
+          <span
+            style={{
+              color: text?.toLowerCase() === "active" ? "green" : "red",
+            }}
+          >
+            {text}
+          </span>
+        ),
+      },
+      {
+        title: "Time Stamps",
+        dataIndex: "timeStamps",
+        key: "timeStamps",
+        width: 180,
+        render: (text) => (
+          <span>
+            {text &&
+              moment(convertDateTimeIntoLocal(text)).format(
+                "YYYY/MM/DD hh:mm:ss A"
+              )}
+          </span>
+        ),
+      },
+      {
+        title: "Bid",
+        dataIndex: "bid",
+        key: "bid",
+        width: 70,
+        render: (text) => <span>{formatPkAmount(text)}</span>,
+      },
+      {
+        title: "Ask",
+        dataIndex: "ask",
+        key: "ask",
+        width: 70,
+        render: (text) => <span>{formatPkAmount(text)}</span>,
+      },
+    ],
+    []
+  );
 
   //Scroller Custom Hook
   useTableScrollBottomByClassName(

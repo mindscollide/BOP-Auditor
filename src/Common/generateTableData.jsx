@@ -211,13 +211,12 @@ export const createTableFunc = (value, tenors, data) => {
     columns = [...staticColumns, ...tenorColumns];
 
     // === Table Data Mapping ===
-    data.forEach((emp, empIndex) => {
+    data.forEach((emp) => {
       // Group by currency
       const currencies = [...new Set(emp.tenorRates.map((r) => r.currency))];
 
-      currencies.forEach((cur, curIndex) => {
+      currencies.forEach((cur) => {
         const row = {
-          // key: `${empIndex}-${curIndex}`,
           employeeID: emp.employeeID,
           employeeName: emp.employeeName,
           emailID: emp.emailID,
@@ -302,9 +301,6 @@ export const createTableFunc = (value, tenors, data) => {
       render: (text) => <div>{text ? text : "-"}</div>,
     }));
 
-    columns = [...staticColumns, ...tenorColumns];
-
-    // Combine all columns
     columns = [...staticColumns, ...tenorColumns];
 
     // Map data rows

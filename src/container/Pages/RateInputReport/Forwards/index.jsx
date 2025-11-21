@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./forwards.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDateForPayload } from "../../../../components/common/utils";
@@ -24,6 +24,7 @@ import {
   DownloadForwardRateInputExcelReportAPI,
   DownloadForwardRateInputReportPDFAPI,
 } from "../../../../store/ReportActions/ReportActions";
+import { clearGetForwardRateInputData } from "../../../../store/authSlicer/RateInputSlicer";
 
 const Forwards = () => {
   const dispatch = useDispatch();
@@ -69,29 +70,39 @@ const Forwards = () => {
   );
   const GetAllTenors = useSelector((state) => state.authReducer.getAllTenors);
 
-  const handlePageSizeChange = (newSize) => {
-    setDropdownvalue(newSize);
-    setSRow(0);
-    setIsLoading(false);
-    setRateReportTblData([]); // other wise append the new records only
-    setTotalRecord(0);
+  const handlePageSizeChange = useCallback(
+    (newSize) => {
+      setDropdownvalue(newSize);
+      setSRow(0);
+      setIsLoading(false);
+      setRateReportTblData([]); // other wise append the new records only
+      setTotalRecord(0);
 
-    const { StartDate, EndDate } = formatDateForPayload(
+      const { StartDate, EndDate } = formatDateForPayload(
+        formData.dateFrom.value,
+        formData.dateTo.value
+      );
+
+      const Data = {
+        EmployeeID: formData.employeeId || "",
+        EmployeeName: formData.employeeName || "",
+        StartDate,
+        EndDate,
+        Length: newSize,
+        sRow: 0,
+      };
+
+      dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
+    },
+    [
+      formData.employeeId,
+      formData.employeeName,
       formData.dateFrom.value,
-      formData.dateTo.value
-    );
-
-    const Data = {
-      EmployeeID: formData.employeeId || "",
-      EmployeeName: formData.employeeName || "",
-      StartDate,
-      EndDate,
-      Length: newSize,
-      sRow: 0,
-    };
-
-    dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
-  };
+      formData.dateTo.value,
+      dispatch,
+      navigate,
+    ]
+  );
 
   useEffect(() => {
     try {
@@ -108,6 +119,9 @@ const Forwards = () => {
     } catch (error) {
       console.log(error, "errorerror");
     }
+    return () => {
+      dispatch(clearGetForwardRateInputData());
+    };
   }, []);
 
   useEffect(() => {
@@ -155,9 +169,9 @@ const Forwards = () => {
   }, [GetForwardRateInputData, GetAllTenors]);
 
   //Toggle Functino to view Export Icons
-  const toggleExportOptions = () => {
+  const toggleExportOptions = useCallback(() => {
     setOpen((prev) => !prev);
-  };
+  }, []);
 
   // Automatically export icons closed UseEffect using Useref Hook
   useEffect(() => {
@@ -174,16 +188,16 @@ const Forwards = () => {
   }, []);
 
   //Excel And PDF Icon Click Func
-  const handleExport = (format) => {
+  const handleExport = useCallback((format) => {
     if (format === "excel") {
       exportToExcel();
     } else if (format === "pdf") {
       exportToPDF();
     }
-  };
+  }, []);
 
   //Export to PDF Trigger Function
-  const exportToExcel = () => {
+  const exportToExcel = useCallback(() => {
     const { StartDate, EndDate } = formatDateForPayload(
       formData.dateFrom.value,
       formData.dateTo.value
@@ -197,10 +211,17 @@ const Forwards = () => {
     };
 
     dispatch(DownloadForwardRateInputExcelReportAPI({ navigate, Data }));
-  };
+  }, [
+    formData.employeeId,
+    formData.employeeName,
+    formData.dateFrom.value,
+    formData.dateTo.value,
+    dispatch,
+    navigate,
+  ]);
 
   //Export to Excel Trigger Function
-  const exportToPDF = () => {
+  const exportToPDF = useCallback(() => {
     const { StartDate, EndDate } = formatDateForPayload(
       formData.dateFrom.value,
       formData.dateTo.value
@@ -214,9 +235,16 @@ const Forwards = () => {
     };
 
     dispatch(DownloadForwardRateInputReportPDFAPI({ navigate, Data }));
-  };
+  }, [
+    formData.employeeId,
+    formData.employeeName,
+    formData.dateFrom.value,
+    formData.dateTo.value,
+    dispatch,
+    navigate,
+  ]);
   //Common OnChange for textFields
-  const handleTextChange = (e) => {
+  const handleTextChange = useCallback((e) => {
     const { name, value } = e.target;
 
     const cleanedValue = value.replace(/\t/g, "").trim();
@@ -230,11 +258,11 @@ const Forwards = () => {
     // For all other fields, strip tabs and trim, then limit to 50 characters
     const limitedValue = cleanedValue.slice(0, 50);
     setFormData((prev) => ({ ...prev, [name]: limitedValue }));
-  };
+  }, []);
 
   //new date work
   // Function to handle date range selection
-  const handleDateRangeChange = (selectedOption) => {
+  const handleDateRangeChange = useCallback((selectedOption) => {
     setSelectedDateRange(selectedOption);
 
     if (selectedOption.value === 5) {
@@ -288,38 +316,41 @@ const Forwards = () => {
       ...selectedOption,
       label: displayLabel,
     });
-  };
+  }, []);
   //Handle Date Change method
-  const handleDateChange = (fieldName, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [fieldName]: {
-        ...prev[fieldName],
-        value,
-        errorMessage: "",
-        errorStatus: false,
-      },
-    }));
-
-    // Example validation: Start Date should be before End Date
-    if (
-      fieldName === "dateFrom" &&
-      formData.dateTo.value &&
-      new Date(value) > new Date(formData.dateTo.value)
-    ) {
+  const handleDateChange = useCallback(
+    (fieldName, value) => {
       setFormData((prev) => ({
         ...prev,
-        dateFrom: {
-          ...prev.dateFrom,
-          errorMessage: "Start date cannot be after end date.",
-          errorStatus: true,
+        [fieldName]: {
+          ...prev[fieldName],
+          value,
+          errorMessage: "",
+          errorStatus: false,
         },
       }));
-    }
-  };
+
+      // Example validation: Start Date should be before End Date
+      if (
+        fieldName === "dateFrom" &&
+        formData.dateTo.value &&
+        new Date(value) > new Date(formData.dateTo.value)
+      ) {
+        setFormData((prev) => ({
+          ...prev,
+          dateFrom: {
+            ...prev.dateFrom,
+            errorMessage: "Start date cannot be after end date.",
+            errorStatus: true,
+          },
+        }));
+      }
+    },
+    [formData.dateTo.value]
+  );
 
   //Handle Search Button
-  const handleSearchBtn = () => {
+  const handleSearchBtn = useCallback(() => {
     const { StartDate, EndDate } = formatDateForPayload(
       formData.dateFrom.value,
       formData.dateTo.value
@@ -335,10 +366,18 @@ const Forwards = () => {
     };
 
     dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
-  };
+  }, [
+    formData.employeeId,
+    formData.employeeName,
+    formData.dateFrom.value,
+    formData.dateTo.value,
+    dropdownvalue,
+    dispatch,
+    navigate,
+  ]);
 
   //Handle Reset Button
-  const handleResetBtn = () => {
+  const handleResetBtn = useCallback(() => {
     setShowCustomDatePicker(false);
     setFormData({
       employeeName: "",
@@ -368,7 +407,7 @@ const Forwards = () => {
       sRow: 0,
     };
     dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
-  };
+  }, [dropdownvalue, dispatch, navigate]);
 
   //Scroller Custom Hook
   useTableScrollBottomByClassName(

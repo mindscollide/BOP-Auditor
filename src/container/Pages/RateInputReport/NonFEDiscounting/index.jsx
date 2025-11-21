@@ -1,11 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./NonFEDiscounting.module.css";
 import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
-import {
-  formatDateForPayload,
-  formatDateToUTC,
-} from "../../../../components/common/utils";
+import { formatDateForPayload } from "../../../../components/common/utils";
 import { useTableScrollBottomByClassName } from "../../../../components/common/useTableScrollBottom";
 import pdfIcon from "../../../../assets/images/pdf.png";
 
@@ -28,6 +25,7 @@ import {
   DownloadNonFEDiscountingRateInputReportPDFAPI,
 } from "../../../../store/ReportActions/ReportActions";
 import ExportShowComponent from "../../../../components/common/ExportShowComponent/ExportShowComponent";
+import { clearGetNonFEDiscountingRateInputData } from "../../../../store/authSlicer/RateInputSlicer";
 
 const NonFEDiscounting = () => {
   const dispatch = useDispatch();
@@ -117,6 +115,9 @@ const NonFEDiscounting = () => {
     } catch (error) {
       console.log(error, "errorerror");
     }
+    return () => {
+      dispatch(clearGetNonFEDiscountingRateInputData());
+    };
   }, []);
 
   // Extracting the Data
@@ -161,9 +162,9 @@ const NonFEDiscounting = () => {
   }, [GetAllTenors, GetNonFEDiscountingRateInputData]);
 
   //Toggle Functino to view Export Icons
-  const toggleExportOptions = () => {
+  const toggleExportOptions = useCallback(() => {
     setOpen((prev) => !prev);
-  };
+  }, []);
 
   // Automatically export icons closed UseEffect using Useref Hook
   useEffect(() => {
@@ -226,7 +227,7 @@ const NonFEDiscounting = () => {
   };
 
   //Common OnChange for textFields
-  const handleTextChange = (e) => {
+  const handleTextChange = useCallback((e) => {
     const { name, value } = e.target;
 
     const cleanedValue = value.replace(/\t/g, "").trim();
@@ -240,7 +241,7 @@ const NonFEDiscounting = () => {
     // For all other fields, strip tabs and trim, then limit to 50 characters
     const limitedValue = cleanedValue.slice(0, 50);
     setFormData((prev) => ({ ...prev, [name]: limitedValue }));
-  };
+  }, []);
 
   //new date work
   // Function to handle date range selection
