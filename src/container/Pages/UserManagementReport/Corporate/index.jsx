@@ -1,27 +1,11 @@
-import React, {
-  // useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "../UserManagementReport.module.css";
 import { Col, Row } from "react-bootstrap";
-import DatePicker from "react-multi-date-picker";
-import { Popover } from "antd";
 import pdfIcon from "../../../../assets/images/pdf.png";
 import excelIcon from "../../../../assets/images/excel.png";
-
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTableScrollBottomByClassName } from "../../../../components/common/useTableScrollBottom";
-import {
-  GetTransactionDetailsByCorporateExcelTypeReportAuditor,
-  GetTransactionDetailsByCorporatePDFTypeReportAuditor,
-} from "../../../../store/ReportActions/ReportActions";
-// import {
-//   convertDateTimeIntoLocal,
-//   getDateTimeString,
-// } from "../../../utils/Timer";
-// import moment from "moment";
 import SelectDropdown from "../../../../components/common/selectDropdown/SelectDropdown";
 import {
   Button,
@@ -29,94 +13,142 @@ import {
   CustomTable,
   TextField,
 } from "../../../../components/elements";
-import { GetTransactionDetailsByCorporateAuditor } from "../../../../store/AuditorActions/AuditorActions";
 import { useNotification } from "../../../../context/NotificationProvider";
+import {
+  GetAdminEmailforUserManagementAPI,
+  SearchCorporateUserForUserManagementAPI,
+} from "../../../../store/UserManagementActions/UserManagementActions";
+import moment from "moment";
+import { convertDateTimeIntoLocal } from "../../../../utils/Timer";
+import ExportShowComponent from "../../../../components/common/ExportShowComponent/ExportShowComponent";
+import {
+  DownloadCorporateUserForAuditorExcelReportAPI,
+  DownloadCorporateUserForAuditorReportPDFAPI,
+} from "../../../../store/ReportActions/ReportActions";
 const Corporate = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const exportRef = useRef(null);
   const { showMessage } = useNotification();
 
-  // Extracting the Transaction by Bank Details Data from Reducer
-  const AuditorTransactionCorporateData = useSelector(
-    (state) => state.AuditorReducer.transactionDetailsByCorporateData
-  );
-
   //Local States
   const [open, setOpen] = useState(false);
   const [sRow, setSRow] = useState(0);
+  const [dropdownvalue, setDropdownvalue] = useState(50);
   const [totalRecord, setTotalRecord] = useState(0);
-  // const [isLoading, setIsLoading] = useState(false);
-  const [userManagementTblData, setUserManagementTblData] = useState([]);
-
-  // const [branchCorporateOptions, setBranchCorporateOptions] = useState([
-  //   { label: "Branch", value: 0 },
-  //   { label: "Corporate", value: 1 },
-  // ]);
-
-  //TEMPORARY OPTIONS
-  const createdByOptions = [
-    { label: "ali@gulamAhmed", value: 0 },
-    { label: "taha@ppl.com", value: 1 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 2 },
-    { label: "Yunus@mindscollide.com", value: 3 },
-    { label: "ali@treasmark.com", value: 4 },
-    { label: "ali@gulamAhmed", value: 15 },
-    { label: "taha@ppl.com", value: 5 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 6 },
-    { label: "Yunus@mindscollide.com", value: 7 },
-    { label: "ali@treasmark.com", value: 8 },
-    { label: "ali@treasmark.com", value: 9 },
-    { label: "ali@gulamAhmed", value: 10 },
-    { label: "taha@ppl.com", value: 11 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 12 },
-    { label: "Yunus@mindscollide.com", value: 13 },
-    { label: "ali@treasmark.com", value: 14 },
-  ];
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    corporateUser: "",
+    corporateName: "",
+  });
+  const [userManagementCorpTblData, setUserManagementCorpTblData] = useState(
+    []
+  );
+  const [securityRoleOptions, setSecurityRoleOptions] = useState([]);
+  const [SystemRoleOptions, setSystemRoleOptions] = useState([]);
+  const GetAdminEmailforUserManagement = useSelector(
+    (state) => state.userManagementSlicer.GetAdminEmailforUserManagement
+  );
+  const SearchCorporateUserForUserManagement = useSelector(
+    (state) => state.userManagementSlicer.SearchCorporateUserForUserManagement
+  );
   const [selectApprovedByOptions, setSelectApprovedByOptions] = useState(null);
-
-  //TEMPORARY OPTIONS
-  const approvedByOptions = [
-    { label: "ali@gulamAhmed", value: 0 },
-    { label: "taha@ppl.com", value: 1 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 2 },
-    { label: "Yunus@mindscollide.com", value: 3 },
-    { label: "ali@treasmark.com", value: 4 },
-    { label: "ali@gulamAhmed", value: 15 },
-    { label: "taha@ppl.com", value: 5 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 6 },
-    { label: "Yunus@mindscollide.com", value: 7 },
-    { label: "ali@treasmark.com", value: 8 },
-    { label: "ali@treasmark.com", value: 9 },
-    { label: "ali@gulamAhmed", value: 10 },
-    { label: "taha@ppl.com", value: 11 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 12 },
-    { label: "Yunus@mindscollide.com", value: 13 },
-    { label: "ali@treasmark.com", value: 14 },
-  ];
   const [selectCreatedByOptions, setSelectCreatedByOptions] = useState(null);
-
-  //TEMPORARY OPTIONS
-  const deactivatedByOptions = [
-    { label: "ali@gulamAhmed", value: 0 },
-    { label: "taha@ppl.com", value: 1 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 2 },
-    { label: "Yunus@mindscollide.com", value: 3 },
-    { label: "ali@treasmark.com", value: 4 },
-    { label: "ali@gulamAhmed", value: 15 },
-    { label: "taha@ppl.com", value: 5 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 6 },
-    { label: "Yunus@mindscollide.com", value: 7 },
-    { label: "ali@treasmark.com", value: 8 },
-    { label: "ali@treasmark.com", value: 9 },
-    { label: "ali@gulamAhmed", value: 10 },
-    { label: "taha@ppl.com", value: 11 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 12 },
-    { label: "Yunus@mindscollide.com", value: 13 },
-    { label: "ali@treasmark.com", value: 14 },
-  ];
   const [selectDeactivatedByOptions, setSelectDeactivatedByOptions] =
     useState(null);
+
+  //initial useEffect
+  useEffect(() => {
+    dispatch(GetAdminEmailforUserManagementAPI(navigate));
+    let Data = {
+      CorporateUser: "",
+      CorporateName: "",
+      Email: "",
+      CreatedBy: 0,
+      ApprovedBy: 0,
+      DeactivatedBy: 0,
+      Length: dropdownvalue,
+      sRow: 0,
+    };
+    dispatch(SearchCorporateUserForUserManagementAPI({ navigate, Data }));
+  }, []);
+
+  // Set Security and System Role Options
+  useEffect(() => {
+    if (
+      GetAdminEmailforUserManagement &&
+      GetAdminEmailforUserManagement !== null
+    ) {
+      try {
+        //For Security Roles
+        if (
+          GetAdminEmailforUserManagement.securityAdminEmailList &&
+          GetAdminEmailforUserManagement.securityAdminEmailList.length > 0
+        ) {
+          const { securityAdminEmailList = [] } =
+            GetAdminEmailforUserManagement;
+          let newSecurityRoles = [];
+          securityAdminEmailList.map((role) => {
+            newSecurityRoles.push({
+              value: role.userID,
+              label: role.userEmail,
+            });
+          });
+          setSecurityRoleOptions(newSecurityRoles);
+        }
+        // For System Roles
+        if (
+          GetAdminEmailforUserManagement.systemAdminEmailList &&
+          GetAdminEmailforUserManagement.systemAdminEmailList.length > 0
+        ) {
+          const { systemAdminEmailList = [] } = GetAdminEmailforUserManagement;
+          let newSystemRoles = [];
+          systemAdminEmailList.map((role) => {
+            newSystemRoles.push({
+              value: role.userID,
+              label: role.userEmail,
+            });
+          });
+          setSystemRoleOptions(newSystemRoles);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [GetAdminEmailforUserManagement]);
+
+  // UseEffect to set Data for Search API in the table
+  useEffect(() => {
+    try {
+      if (
+        SearchCorporateUserForUserManagement &&
+        SearchCorporateUserForUserManagement !== null
+      ) {
+        const newRecords =
+          SearchCorporateUserForUserManagement.corporateUsers || [];
+        if (isLoading) {
+          setIsLoading(false);
+          setUserManagementCorpTblData((prev) => [...prev, ...newRecords]);
+          setSRow((prev) => prev + newRecords.length);
+          setTotalRecord(SearchCorporateUserForUserManagement.totalCount);
+        } else {
+          setIsLoading(false);
+          setUserManagementCorpTblData(newRecords);
+          setSRow(newRecords.length);
+          setTotalRecord(SearchCorporateUserForUserManagement.totalCount);
+        }
+      } else if (SearchCorporateUserForUserManagement === null) {
+        setIsLoading(false);
+        setTotalRecord(0);
+        setSRow(0);
+        setUserManagementCorpTblData([]);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  }, [SearchCorporateUserForUserManagement]);
 
   const handleSelectOption = (e, name) => {
     if (name === "createdBy") {
@@ -130,108 +162,99 @@ const Corporate = () => {
     }
   };
 
-  const [formData, setFormData] = useState({
-    employeeID: "",
-    email: "",
-    corporateUser: "",
-    corporateName: "",
-  });
-  //Calling
-  // useEffect(() => {
-  //   try {
-  //     let Data = {
-  //       TXNID: 0,
-  //       CorporateUser: "",
-  //       CorporateName: "",
-  //       TransactionByTreasuryUser: "",
-  //       StartDate: "",
-  //       EndDate: "",
-  //       Length: 10,
-  //       sRow: 0,
-  //     };
-  //     dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
-  //   } catch (error) {
-  //     console.log(error, "errorerrorerror");
-  //   }
-  // }, []);
+  const handlePageSizeChange = (newSize) => {
+    setDropdownvalue(newSize);
+    setSRow(0);
+    setIsLoading(false);
+    setUserManagementCorpTblData([]);
+    setTotalRecord(0);
 
-  //Extracting the Data
-  // useEffect(() => {
-  //   try {
-  //     if (
-  //       AuditorTransactionCorporateData &&
-  //       AuditorTransactionCorporateData !== null
-  //     ) {
-  //       const newRecords =
-  //         AuditorTransactionCorporateData.transactionForCorporate || [];
-  //       console.log(
-  //         AuditorTransactionCorporateData,
-  //         "AuditorTransactionBankData"
-  //       );
-  //       if (isLoading) {
-  //         setIsLoading(false);
-  //         setTotalRecord(AuditorTransactionCorporateData.totalCount);
-  //         setTransactionByBankTblData((prev) => [...prev, ...newRecords]);
-  //         setSRow((prev) => prev + newRecords.length);
-  //       } else {
-  //         setIsLoading(false);
-  //         setTransactionByBankTblData(newRecords);
-  //         setSRow(newRecords.length);
-  //         setTotalRecord(AuditorTransactionCorporateData.totalCount);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log(error, "errorerror");
-  //     setIsLoading(false);
-  //   }
-  // }, [AuditorTransactionCorporateData]);
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      showMessage("Please enter a valid email address.");
+      return;
+    }
+
+    let Data = {
+      CorporateUser: formData.corporateUser || "",
+      CorporateName: formData.corporateName || "",
+      Email: formData.email || "",
+      CreatedBy:
+        selectCreatedByOptions?.value !== undefined
+          ? selectCreatedByOptions.value
+          : 0,
+      ApprovedBy:
+        selectApprovedByOptions?.value !== undefined
+          ? selectApprovedByOptions.value
+          : 0,
+      DeactivatedBy:
+        selectDeactivatedByOptions?.value !== undefined
+          ? selectDeactivatedByOptions.value
+          : 0,
+      Length: newSize,
+      sRow: 0,
+    };
+    dispatch(SearchCorporateUserForUserManagementAPI({ navigate, Data }));
+  };
 
   //Excel And PDF Icon Click Func
-  // const handleExport = (format) => {
-  //   if (format === "excel") {
-  //     exportToExcel();
-  //   } else if (format === "pdf") {
-  //     exportToPDF();
-  //   }
-  // };
+  const handleExport = (format) => {
+    if (format === "excel") {
+      exportToExcel();
+    } else if (format === "pdf") {
+      exportToPDF();
+    }
+  };
 
   //Export to PDF Trigger Function
-  // const exportToExcel = () => {
-  //   let Data = {
-  //     TXNID: Number(formData.txnId),
-  //     CorporateUser:
-  //       formData.corporateUser !== "" ? formData.corporateUser : "",
-  //     CorporateName:
-  //       formData.corporateName !== "" ? formData.corporateName : "",
-  //     TransactionByTreasuryUser:
-  //       formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
-  //     StartDate: startDate !== null ? startDate : "",
-  //     EndDate: endDate !== null ? endDate : "",
-  //   };
+  const exportToExcel = () => {
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      showMessage("Please enter a valid email address.");
+      return;
+    }
 
-  //   dispatch(
-  //     GetTransactionDetailsByCorporateExcelTypeReportAuditor({ navigate, Data })
-  //   );
-  // };
+    let Data = {
+      CorporateUser: formData.corporateUser || "",
+      CorporateName: formData.corporateName || "",
+      Email: formData.email || "",
+      CreatedBy:
+        selectCreatedByOptions?.value !== undefined
+          ? selectCreatedByOptions.value
+          : 0,
+      ApprovedBy:
+        selectApprovedByOptions?.value !== undefined
+          ? selectApprovedByOptions.value
+          : 0,
+      DeactivatedBy:
+        selectDeactivatedByOptions?.value !== undefined
+          ? selectDeactivatedByOptions.value
+          : 0,
+    };
+
+    dispatch(DownloadCorporateUserForAuditorExcelReportAPI({ navigate, Data }));
+  };
 
   //Export to Excel Trigger Function
-  // const exportToPDF = () => {
-  //   let Data = {
-  //     TXNID: Number(formData.txnId),
-  //     CorporateUser:
-  //       formData.corporateUser !== "" ? formData.corporateUser : "",
-  //     CorporateName:
-  //       formData.corporateName !== "" ? formData.corporateName : "",
-  //     TransactionByTreasuryUser:
-  //       formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
-  //     StartDate: startDate !== null ? startDate : "",
-  //     EndDate: endDate !== null ? endDate : "",
-  //   };
+  const exportToPDF = () => {
+    let Data = {
+      CorporateUser: formData.corporateUser || "",
+      CorporateName: formData.corporateName || "",
+      Email: formData.email || "",
+      CreatedBy:
+        selectCreatedByOptions?.value !== undefined
+          ? selectCreatedByOptions.value
+          : 0,
+      ApprovedBy:
+        selectApprovedByOptions?.value !== undefined
+          ? selectApprovedByOptions.value
+          : 0,
+      DeactivatedBy:
+        selectDeactivatedByOptions?.value !== undefined
+          ? selectDeactivatedByOptions.value
+          : 0,
+    };
 
-  //   dispatch(
-  //     GetTransactionDetailsByCorporatePDFTypeReportAuditor({ navigate, Data })
-  //   );
-  // };
+    dispatch(DownloadCorporateUserForAuditorReportPDFAPI({ navigate, Data }));
+  };
 
   //Toggle Fucntion to view Export Icons
   const toggleExportOptions = () => {
@@ -239,35 +262,35 @@ const Corporate = () => {
   };
 
   // Automatically export icons closed UseEffect using Useref Hook
-  // useEffect(() => {
-  //   const handleClickOutside = (event) => {
-  //     if (exportRef.current && !exportRef.current.contains(event.target)) {
-  //       setOpen(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (exportRef.current && !exportRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
 
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, []);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   //Common OnChange for textFields
   const handleTextChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, validity } = e.target;
     console.log({ name, value }, "value");
 
-    const cleanedValue = value.replace(/\t/g, "").trim();
+    if (name === "email") {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
 
-    // if (name === "employeeID") {
-    //   console.log("standing here");
-    //   const numericValue = cleanedValue.replace(/\D/g, "");
-    //   setFormData((prev) => ({ ...prev, [name]: numericValue }));
-    //   return;
-    // }
+    if (name === "corporateUser" && validity.valid) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
 
-    // For all other fields, strip tabs and trim, then limit to 50 characters
-    setFormData((prev) => ({ ...prev, [name]: cleanedValue }));
+    if (name === "corporateName" && validity.valid) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
   //Handle Search Button
   const handleSearchBtn = () => {
@@ -277,25 +300,27 @@ const Corporate = () => {
       return;
     }
     let Data = {
-      employeeId: formData?.employeeID,
-      email: formData?.email,
-      role: "Corporate",
-      createdBy:
+      CorporateUser: formData.corporateUser,
+      CorporateName: formData?.corporateName,
+      Email: formData?.email,
+      CreatedBy:
         selectCreatedByOptions?.value !== undefined
           ? selectCreatedByOptions.value
-          : "",
-      approvedBy: selectApprovedByOptions?.value
-        ? selectApprovedByOptions.value
-        : "",
-      deactivatedBy: selectDeactivatedByOptions?.value
-        ? selectDeactivatedByOptions.value
-        : "",
-      corporateName: formData?.corporateName,
-      Length: 10,
+          : 0,
+      ApprovedBy:
+        selectApprovedByOptions?.value !== undefined
+          ? selectApprovedByOptions.value
+          : 0,
+      DeactivatedBy:
+        selectDeactivatedByOptions?.value !== undefined
+          ? selectDeactivatedByOptions.value
+          : 0,
+      Length: dropdownvalue,
       sRow: 0,
     };
     console.log(Data, "DataDataDataData");
-    // dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
+
+    dispatch(SearchCorporateUserForUserManagementAPI({ navigate, Data }));
   };
 
   //Handle Reset Button
@@ -305,187 +330,177 @@ const Corporate = () => {
     setSelectDeactivatedByOptions(null);
 
     setFormData({
-      employeeID: "",
       email: "",
-      corporateUser: "",
       corporateName: "",
+      corporateUser: "",
     });
 
-    setUserManagementTblData([]);
+    setUserManagementCorpTblData([]);
     setSRow(0);
     // setIsLoading(false);
     setTotalRecord(0);
     let Data = {
-      TXNID: 0,
       CorporateUser: "",
       CorporateName: "",
-      TransactionByTreasuryUser: "",
-      StartDate: "",
-      EndDate: "",
-      Length: 10,
+      Email: "",
+      CreatedBy: 0,
+      ApprovedBy: 0,
+      DeactivatedBy: 0,
+      Length: dropdownvalue,
       sRow: 0,
     };
-    // dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
+    dispatch(SearchCorporateUserForUserManagementAPI({ navigate, Data }));
   };
 
   // Columns for User Management table
   const UserManagementTable = [
     {
-      title: "Employee ID",
-      // dataIndex: "txnid",
-      // key: "txnid",
-      width: 100,
-      render: (text) => <span>{text}</span>,
-    },
-    {
       title: "Corporate User",
-      // dataIndex: "corporateName",
-      // key: "corporateName",
+      dataIndex: "corporateUser",
+      key: "corporateUser",
       width: 180,
-      render: (text) => <span>{text}</span>,
+      ellipsis: true,
     },
     {
       title: "Corporate Name",
-      // dataIndex: "corporateName",
-      // key: "corporateName",
+      dataIndex: "corporateName",
+      key: "corporateName",
       width: 180,
-      render: (text) => <span>{text}</span>,
+      ellipsis: true,
     },
     {
       title: "Email",
-      // dataIndex: "corporateUser",
-      // key: "corporateUser",
+      dataIndex: "email",
+      key: "email",
       width: 190,
-      render: (text) => <span>{text}</span>,
+      ellipsis: true,
     },
     {
       title: "Contact",
-      // dataIndex: "date",
-      // key: "date",
+      dataIndex: "contact",
+      key: "contact",
       width: 120,
-      render: (text) => <span>{text}</span>,
+      align: "center",
+      ellipsis: true,
     },
     {
       title: "Status",
-      dataIndex: "status", // use your actual data field name
-      key: "status",
-      width: 120,
+      dataIndex: "statusID", // use your actual data field name
+      key: "statusID",
+      width: 75,
+
+      render: (val) => {
+        return (
+          <span style={{ color: val === 1 ? "green" : "red" }}>
+            {val === 1
+              ? "Active"
+              : val === 2
+              ? "Inactive"
+              : val === 3
+              ? "Locked"
+              : val === 4
+              ? "Closed"
+              : val === 9
+              ? "Dormant"
+              : ""}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Last Password Change",
+      dataIndex: "lastPasswordChange",
+      key: "lastPasswordChange",
+      width: 180,
+      align: "center",
       render: (text) => (
-        <span
-          style={{ color: text?.toLowerCase() === "active" ? "green" : "red" }}
-        >
-          {text}
+        <span>
+          {text === "-"
+            ? "-"
+            : text &&
+              moment(convertDateTimeIntoLocal(text)).format(
+                "YYYY/MM/DD hh:mm:ss A"
+              )}
         </span>
       ),
     },
     {
-      title: "Last Password Change",
-      // dataIndex: "time",
-      // key: "time",
-      width: 160,
-
-      // render: (text, record) => {
-      //   let dateStr = getDateTimeString(record.date, record.time);
-
-      //   return (
-      //     <span>
-      //       {dateStr &&
-      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
-      //     </span>
-      //   );
-      // },
-    },
-    {
       title: "Creation Date Time",
-      // dataIndex: "type",
-      // key: "type",
-      width: 160,
-      // render: (text, record) => {
-      //   let dateStr = getDateTimeString(record.date, record.time);
-
-      //   return (
-      //     <span>
-      //       {dateStr &&
-      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
-      //     </span>
-      //   );
-      // },
+      dataIndex: "creationDateTime",
+      key: "creationDateTime",
+      width: 180,
+      align: "center",
+      render: (text) => (
+        <span>
+          {text &&
+            moment(convertDateTimeIntoLocal(text)).format(
+              "YYYY/MM/DD hh:mm:ss A"
+            )}
+        </span>
+      ),
     },
     {
       title: "Created By",
-      // dataIndex: "nature",
-      // key: "nature",
-      width: 220,
-      render: (text) => <span>{text}</span>,
+      dataIndex: "createdBy",
+      key: "createdBy",
+      width: 200,
+      ellipsis: true,
     },
 
     {
       title: "Approved Date Time",
-      // dataIndex: "type",
-      // key: "type",
-      width: 160,
-      // render: (text, record) => {
-      //   let dateStr = getDateTimeString(record.date, record.time);
-
-      //   return (
-      //     <span>
-      //       {dateStr &&
-      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
-      //     </span>
-      //   );
-      // },
+      dataIndex: "approvedDateTime",
+      key: "approvedDateTime",
+      width: 180,
+      align: "center",
+      render: (text) => (
+        <span>
+          {text &&
+            moment(convertDateTimeIntoLocal(text)).format(
+              "YYYY/MM/DD hh:mm:ss A"
+            )}
+        </span>
+      ),
     },
     {
       title: "Approved By",
-      // dataIndex: "ccY1",
-      // key: "ccY1",
-      width: 220,
-      render: (text) => <span>{text}</span>,
+      dataIndex: "approvedBy",
+      key: "approvedBy",
+      width: 200,
+      ellipsis: true,
     },
 
     {
       title: "Deactivated By",
-      // dataIndex: "ccY1",
-      // key: "ccY1",
-      width: 220,
-      render: (text) => <span>{text}</span>,
-    },
-
-    {
-      title: "Role Modified on",
-      // dataIndex: "type",
-      // key: "type",
-      width: 160,
-      // render: (text, record) => {
-      //   let dateStr = getDateTimeString(record.date, record.time);
-
-      //   return (
-      //     <span>
-      //       {dateStr &&
-      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
-      //     </span>
-      //   );
-      // },
+      dataIndex: "deactivatedBy",
+      key: "deactivatedBy",
+      width: 200,
+      ellipsis: true,
     },
   ];
-
   //Scroller Custom Hook
   useTableScrollBottomByClassName(
     () => {
-      if (userManagementTblData.length !== totalRecord) {
-        // setIsLoading(true);
+      if (userManagementCorpTblData.length !== totalRecord) {
+        setIsLoading(true);
         let Data = {
-          TXNID: Number(formData.txnId) !== "" ? Number(formData.txnId) : 0,
-          CorporateUser:
-            formData.corporateUser !== "" ? formData.corporateUser : "",
-          CorporateName:
-            formData.corporateName !== "" ? formData.corporateName : "",
-          TransactionByTreasuryUser:
-            formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
-          Length: 10,
+          CorporateUser: formData.corporateUser || "",
+          CorporateName: formData.corporateName || "",
+          Email: formData.email || "",
+          CreatedBy:
+            selectCreatedByOptions?.value !== undefined
+              ? selectCreatedByOptions.value
+              : 0,
+          ApprovedBy: selectApprovedByOptions?.value
+            ? selectApprovedByOptions.value
+            : 0,
+          DeactivatedBy: selectDeactivatedByOptions?.value
+            ? selectDeactivatedByOptions.value
+            : 0,
+          Length: dropdownvalue,
           sRow: sRow,
         };
-        dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
+        dispatch(SearchCorporateUserForUserManagementAPI({ navigate, Data }));
       }
     },
     0,
@@ -496,17 +511,7 @@ const Corporate = () => {
     <>
       <CustomPaper variant="outlined">
         <Row>
-          <Col lg={3} md={3} sm={3} xs={12}>
-            <TextField
-              name="employeeID"
-              placeholder="Employee ID"
-              applyClass="TextFieldAuditors"
-              maxLength={15}
-              value={formData.employeeID}
-              onChange={handleTextChange}
-            />
-          </Col>
-          <Col lg={3} md={3} sm={3} xs={12}>
+          <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
               name="email"
               placeholder="Email"
@@ -521,6 +526,7 @@ const Corporate = () => {
               name="corporateUser"
               placeholder="Corporate User"
               applyClass="TextFieldAuditors"
+              pattern={"^[A-Za-z ]+$"}
               maxLength={50}
               value={formData.corporateUser}
               onChange={handleTextChange}
@@ -534,7 +540,18 @@ const Corporate = () => {
               applyClass="TextFieldAuditors"
               maxLength={50}
               value={formData.corporateName}
+              pattern={"^[A-Za-z ]+$"}
               onChange={handleTextChange}
+            />
+          </Col>
+          <Col lg={4} md={4} sm={4} xs={12}>
+            <SelectDropdown
+              classNamePrefix="dropdownBranchSpotTreasury"
+              placeholder={"Created By"}
+              options={SystemRoleOptions}
+              value={selectCreatedByOptions}
+              isSearchable
+              onChange={(e) => handleSelectOption(e, "createdBy")}
             />
           </Col>
         </Row>
@@ -542,21 +559,8 @@ const Corporate = () => {
           <Col lg={4} md={4} sm={4} xs={12}>
             <SelectDropdown
               classNamePrefix="dropdownBranchSpotTreasury"
-              placeholder={"Created By"}
-              options={createdByOptions}
-              value={selectCreatedByOptions}
-              isSearchable
-              onChange={(e) => handleSelectOption(e, "createdBy")}
-            />
-          </Col>
-          <Col lg={4} md={4} sm={4} xs={12}>
-            <SelectDropdown
-              classNamePrefix="dropdownBranchSpotTreasury"
-              placeholder="Approved by"
-              styles={{
-                maxLength: "10px",
-              }}
-              options={approvedByOptions}
+              placeholder={"Approved By"}
+              options={securityRoleOptions}
               value={selectApprovedByOptions}
               isSearchable
               onChange={(e) => handleSelectOption(e, "approvedBy")}
@@ -569,7 +573,7 @@ const Corporate = () => {
               styles={{
                 maxLength: "10px",
               }}
-              options={deactivatedByOptions}
+              options={securityRoleOptions}
               value={selectDeactivatedByOptions}
               isSearchable
               onChange={(e) => handleSelectOption(e, "deactivatedBy")}
@@ -577,16 +581,16 @@ const Corporate = () => {
           </Col>
 
           <Col
-            lg={12}
-            md={12}
-            sm={12}
+            lg={4}
+            md={4}
+            sm={4}
             xs={12}
-            className={`mt-2 d-flex gap-2 align-items-center justify-content-center`}
+            className={"d-flex gap-2 justify-content-center align-items-center"}
           >
             <Button
               icon={<i className="icon-search icon-check-space"></i>}
               value={"Search"}
-              className={styles["SearchButtonStyles"]}
+              className={styles["Usermanagement_SearchButton"]}
               onClick={handleSearchBtn}
             />
             <Button
@@ -611,26 +615,33 @@ const Corporate = () => {
               >
                 <Button
                   icon={<img src={excelIcon} alt="Excel Icon" />}
-                  // onClick={() => handleExport("excel")}
+                  onClick={() => handleExport("excel")}
                   className={styles["export-button"]}
                 />
                 <Button
                   icon={<img src={pdfIcon} alt="PDF Icon" />}
-                  // onClick={() => handleExport("pdf")}
+                  onClick={() => handleExport("pdf")}
                   className={styles["export-button"]}
                 />
               </span>
             </div>
           </Col>
         </Row>
-
-        <Row className="mt-5">
+        <Row className="mt-3">
+          <Col lg={12} md={12} sm={12}>
+            <ExportShowComponent
+              value={dropdownvalue}
+              onChange={handlePageSizeChange}
+            />
+          </Col>
+        </Row>
+        <Row className="mt-1">
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={UserManagementTable}
-              rows={userManagementTblData}
+              rows={userManagementCorpTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: "45vh" }}
+              scroll={{ y: "45vh" }}
               className={"BankUserList-table"}
             />
           </Col>

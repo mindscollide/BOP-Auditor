@@ -94,3 +94,33 @@ export const DownloadNonFEDiscountingRateInputExcelReport = {
 export const DownloadNonFEDiscountingRateInputReportPDF = {
   RequestMethod: "ServiceManager.DownloadNonFEDiscountingRateInputReportPDF",
 };
+
+export const GetRoleforUserManagement = {
+  RequestMethod: "ServiceManager.GetRoleforUserManagement",
+};
+
+export const GetAdminEmailforUserManagement = {
+  RequestMethod: "ServiceManager.GetAdminEmailforUserManagement",
+};
+
+export const SearchBranchUserForUserManagement = {
+  RequestMethod: "ServiceManager.SearchBranchUserForUserManagement",
+};
+
+export const SearchCorporateUserForUserManagement = {
+  RequestMethod: "ServiceManager.SearchCorporateUserForUserManagement",
+};
+
+export const DownloadBranchUserForAuditorExcelReport = {
+  RequestMethod: "ServiceManager.DownloadBranchUserForAuditorExcelReport",
+};
+export const DownloadBranchUserForAuditorReportPDF = {
+  RequestMethod: "ServiceManager.DownloadBranchUserForAuditorReportPDF",
+};
+
+export const DownloadCorporateUserForAuditorExcelReport = {
+  RequestMethod: "ServiceManager.DownloadCorporateUserForAuditorExcelReport",
+};
+export const DownloadCorporateUserForAuditorReportPDF = {
+  RequestMethod: "ServiceManager.DownloadCorporateUserForAuditorReportPDF",
+};

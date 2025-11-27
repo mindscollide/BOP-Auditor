@@ -4,7 +4,7 @@ import {
   logoutApi,
   refreshTokenAction,
 } from "../../container/Pages/Login/logInAction";
-import { GetAllTenorsAPI } from "../UserManagementActions/UserManagementActions";
+import { GetAllTenorsAPI } from "../RateInputActions/RateInputActions";
 
 const authSlice = createSlice({
   name: "auth",

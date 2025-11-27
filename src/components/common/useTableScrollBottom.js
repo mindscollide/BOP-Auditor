@@ -79,6 +79,7 @@ export const useTableScrollBottom = (onBottomReach, threshold = 10) => {
           setHasReachedBottom(true);
           onBottomReach?.();
         } else if (!isBottom && hasReachedBottom) {
+          console.log("Bottom Reached");
           setHasReachedBottom(false);
         }
       }, 100);

@@ -399,11 +399,13 @@ const Spot = () => {
         dataIndex: "employeeName",
         key: "employeeName",
         width: 180,
+        ellipsis: true,
       },
       {
         title: "Email ID",
         dataIndex: "emailID",
         key: "emailID",
+        ellipsis: true,
         width: 200,
       },
       {
@@ -644,7 +646,7 @@ const Spot = () => {
               column={RateReportColumns}
               rows={rateReportTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: "30vh" }}
+              scroll={{ y: "30vh" }}
               className={"BankUserList-table"}
             />
           </Col>

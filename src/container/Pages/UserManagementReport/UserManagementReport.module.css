@@ -98,15 +98,15 @@
 
 .Export_Button {
   font-size: 14px;
-  border-radius: 4px !important;
-  padding: 6px 18px !important;
-  border: none;
   height: 100% !important;
-  background: #019308 !important;
+  border-radius: 4px !important;
   display: flex !important;
   gap: 4px !important;
   font-family: "Poppins", sans-serif;
-  align-items: center !important;
+  align-items: center;
+  padding: 6px 18px !important;
+  border: none;
+  background: #019308 !important;
 }
 
 .Export_Button:is(:hover, :focus, :focus-visible) {

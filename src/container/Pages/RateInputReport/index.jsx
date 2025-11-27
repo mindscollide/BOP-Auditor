@@ -1,6 +1,5 @@
 import React, { Suspense, useEffect, useState } from "react";
 import styles from "./RateInputReport.module.css";
-
 import SectionLoader from "../../../components/common/sectionLoader/SectionLoader";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
 import { Col, Row } from "react-bootstrap";
@@ -8,9 +7,9 @@ import Spot from "./Spot";
 import Forwards from "./Forwards";
 import FEDiscounting from "./FEDiscounting";
 import NonFEDiscounting from "./NonFEDiscounting";
-import { GetAllTenorsAPI } from "../../../store/UserManagementActions/UserManagementActions";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { GetAllTenorsAPI } from "../../../store/RateInputActions/RateInputActions";
 
 const MainInputReport = () => {
   const dispatch = useDispatch();
@@ -30,8 +29,6 @@ const MainInputReport = () => {
     }
   }, [dispatch, navigate]);
 
-  const allData = useSelector((state) => state.RateInputSlicer);
-  console.log(allData, "allDataallData");
   const tabsData = [
     {
       title: "Spot",
@@ -92,9 +89,6 @@ const MainInputReport = () => {
       <GlobalTabs
         tabClass="mt-4 mb-4"
         tabs={tabsData}
-        // onTabChange={(data) => setActiveTab(data)}
-        // activeTab={activeTab}
-        // defaultActiveKey={"0"}
         activeKey={activeTab}
         onTabChange={(key) => setActiveTab(key)} // 🔹 track tab change
       />

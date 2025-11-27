@@ -3,12 +3,6 @@ import {
   GetTransactionDetailsByBankAuditor,
   GetTransactionDetailsByCorporateAuditor,
 } from "../AuditorActions/AuditorActions";
-// import {
-//   GetFEDiscountingRateInputDataAPI,
-//   GetForwardRateInputDataAPI,
-//   GetNonFEDiscountingRateInputDataAPI,
-//   GetSpotRateInputDataAPI,
-// } from "../RateInputActions/RateInputActions";
 
 const AuditorSlice = createSlice({
   name: "Auditor",

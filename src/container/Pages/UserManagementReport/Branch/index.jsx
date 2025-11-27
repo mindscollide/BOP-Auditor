@@ -1,28 +1,11 @@
-import React, {
-  useEffect,
-  // useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styles from "../UserManagementReport.module.css";
 import { Col, Row } from "react-bootstrap";
-import DatePicker from "react-multi-date-picker";
-import { Popover } from "antd";
 import pdfIcon from "../../../../assets/images/pdf.png";
 import excelIcon from "../../../../assets/images/excel.png";
-
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTableScrollBottomByClassName } from "../../../../components/common/useTableScrollBottom";
-import {
-  GetTransactionDetailsByCorporateExcelTypeReportAuditor,
-  GetTransactionDetailsByCorporatePDFTypeReportAuditor,
-} from "../../../../store/ReportActions/ReportActions";
-// import {
-//   convertDateTimeIntoLocal,
-//   getDateTimeString,
-// } from "../../../utils/Timer";
-// import moment from "moment";
 import SelectDropdown from "../../../../components/common/selectDropdown/SelectDropdown";
 import {
   Button,
@@ -30,115 +13,167 @@ import {
   CustomTable,
   TextField,
 } from "../../../../components/elements";
-import { GetTransactionDetailsByCorporateAuditor } from "../../../../store/AuditorActions/AuditorActions";
 import { useNotification } from "../../../../context/NotificationProvider";
 import ExportShowComponent from "../../../../components/common/ExportShowComponent/ExportShowComponent";
-import { GetAllTenorsAPI } from "../../../../store/UserManagementActions/UserManagementActions";
+import {
+  GetAdminEmailforUserManagementAPI,
+  GetRoleforUserManagementAPI,
+  SearchBranchUserForUserManagementAPI,
+} from "../../../../store/UserManagementActions/UserManagementActions";
+import { convertDateTimeIntoLocal } from "../../../../utils/Timer";
+import moment from "moment";
+import {
+  DownloadBranchUserForAuditorExcelReportAPI,
+  DownloadBranchUserForAuditorReportPDFAPI,
+} from "../../../../store/ReportActions/ReportActions";
 const Branch = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const exportRef = useRef(null);
   const { showMessage } = useNotification();
 
-  // Extracting the Transaction by Bank Details Data from Reducer
-  const AuditorTransactionCorporateData = useSelector(
-    (state) => state.AuditorReducer.transactionDetailsByCorporateData
-  );
-
   //Local States
   const [open, setOpen] = useState(false);
   const [sRow, setSRow] = useState(0);
-  const [totalRecord, setTotalRecord] = useState(0);
-  const [recordsLength, setRecordLength] = useState(0);
-
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [userManagementTblData, setUserManagementTblData] = useState([]);
-  const [tableData, setTableData] = useState([]);
-
   const [dropdownvalue, setDropdownvalue] = useState(50);
-
-  // const [branchCorporateOptions, setBranchCorporateOptions] = useState([
-  //   { label: "Branch", value: 0 },
-  //   { label: "Corporate", value: 1 },
-  // ]);
-
-  //TEMPORARY OPTIONS
-  const createdByOptions = [
-    { label: "ali@gulamAhmed", value: 0 },
-    { label: "taha@ppl.com", value: 1 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 2 },
-    { label: "Yunus@mindscollide.com", value: 3 },
-    { label: "ali@treasmark.com", value: 4 },
-    { label: "ali@gulamAhmed", value: 15 },
-    { label: "taha@ppl.com", value: 5 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 6 },
-    { label: "Yunus@mindscollide.com", value: 7 },
-    { label: "ali@treasmark.com", value: 8 },
-    { label: "ali@treasmark.com", value: 9 },
-    { label: "ali@gulamAhmed", value: 10 },
-    { label: "taha@ppl.com", value: 11 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 12 },
-    { label: "Yunus@mindscollide.com", value: 13 },
-    { label: "ali@treasmark.com", value: 14 },
-  ];
+  const [totalRecord, setTotalRecord] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userManagementBranchTblData, setUserManagementBranchTblData] =
+    useState([]);
+  const [roleOptions, setRoleOptions] = useState([]);
+  const [securityRoleOptions, setSecurityRoleOptions] = useState([]);
+  const [SystemRoleOptions, setSystemRoleOptions] = useState([]);
   const [selectApprovedByOptions, setSelectApprovedByOptions] = useState(null);
-
-  //TEMPORARY OPTIONS
-  const approvedByOptions = [
-    { label: "ali@gulamAhmed", value: 0 },
-    { label: "taha@ppl.com", value: 1 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 2 },
-    { label: "Yunus@mindscollide.com", value: 3 },
-    { label: "ali@treasmark.com", value: 4 },
-    { label: "ali@gulamAhmed", value: 15 },
-    { label: "taha@ppl.com", value: 5 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 6 },
-    { label: "Yunus@mindscollide.com", value: 7 },
-    { label: "ali@treasmark.com", value: 8 },
-    { label: "ali@treasmark.com", value: 9 },
-    { label: "ali@gulamAhmed", value: 10 },
-    { label: "taha@ppl.com", value: 11 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 12 },
-    { label: "Yunus@mindscollide.com", value: 13 },
-    { label: "ali@treasmark.com", value: 14 },
-  ];
   const [selectCreatedByOptions, setSelectCreatedByOptions] = useState(null);
-
-  //TEMPORARY OPTIONS
-  const deactivatedByOptions = [
-    { label: "ali@gulamAhmed", value: 0 },
-    { label: "taha@ppl.com", value: 1 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 2 },
-    { label: "Yunus@mindscollide.com", value: 3 },
-    { label: "ali@treasmark.com", value: 4 },
-    { label: "ali@gulamAhmed", value: 15 },
-    { label: "taha@ppl.com", value: 5 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 6 },
-    { label: "Yunus@mindscollide.com", value: 7 },
-    { label: "ali@treasmark.com", value: 8 },
-    { label: "ali@treasmark.com", value: 9 },
-    { label: "ali@gulamAhmed", value: 10 },
-    { label: "taha@ppl.com", value: 11 },
-    { label: "mohammad.ahmed@gulamAhmed", value: 12 },
-    { label: "Yunus@mindscollide.com", value: 13 },
-    { label: "ali@treasmark.com", value: 14 },
-  ];
   const [selectDeactivatedByOptions, setSelectDeactivatedByOptions] =
     useState(null);
-  //TEMPORARY
-  const roleOptions = [
-    { label: "Branch", value: 0 },
-    { label: "FX Trading", value: 1 },
-    { label: "Treasury Sales", value: 2 },
-    { label: "System Admin", value: 3 },
-    { label: "Security Admin", value: 4 },
-  ];
 
   const [selectedRoleOption, setSelectedRoleOption] = useState(null);
 
+  const GetRoleforUserManagement = useSelector(
+    (state) => state.userManagementSlicer.GetRoleforUserManagement
+  );
+
+  const GetAdminEmailforUserManagement = useSelector(
+    (state) => state.userManagementSlicer.GetAdminEmailforUserManagement
+  );
+
+  const SearchBranchUserForUserManagement = useSelector(
+    (state) => state.userManagementSlicer.SearchBranchUserForUserManagement
+  );
+
+  //initial useEffect
   useEffect(() => {
-    dispatch(GetAllTenorsAPI(navigate));
+    dispatch(GetRoleforUserManagementAPI(navigate));
+    dispatch(GetAdminEmailforUserManagementAPI(navigate));
+    let Data = {
+      EmployeeID: "",
+      EmployeeName: "",
+      EmployeeEmail: "",
+      RoleID: 0,
+      CreatedBy: 0,
+      ApprovedBy: 0,
+      DeactivatedBy: 0,
+      Length: dropdownvalue,
+      sRow: 0,
+    };
+    dispatch(SearchBranchUserForUserManagementAPI({ navigate, Data }));
   }, []);
+
+  //set roleID Dropdown
+  useEffect(() => {
+    if (GetRoleforUserManagement && GetRoleforUserManagement !== null) {
+      try {
+        const { userRoles = [] } = GetRoleforUserManagement;
+        let newRoles = [];
+        userRoles.map((role) => {
+          newRoles.push({
+            value: role.userRoleID,
+            label: role.userRoleName,
+          });
+        });
+        setRoleOptions(newRoles);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [GetRoleforUserManagement]);
+
+  // Set Security and System Role Options
+  useEffect(() => {
+    if (
+      GetAdminEmailforUserManagement &&
+      GetAdminEmailforUserManagement !== null
+    ) {
+      try {
+        //For Security Roles
+        if (
+          GetAdminEmailforUserManagement.securityAdminEmailList &&
+          GetAdminEmailforUserManagement.securityAdminEmailList.length > 0
+        ) {
+          const { securityAdminEmailList = [] } =
+            GetAdminEmailforUserManagement;
+          let newSecurityRoles = [];
+          securityAdminEmailList.map((role) => {
+            newSecurityRoles.push({
+              value: role.userID,
+              label: role.userEmail,
+            });
+          });
+          setSecurityRoleOptions(newSecurityRoles);
+        }
+        // For System Roles
+        if (
+          GetAdminEmailforUserManagement.systemAdminEmailList &&
+          GetAdminEmailforUserManagement.systemAdminEmailList.length > 0
+        ) {
+          const { systemAdminEmailList = [] } = GetAdminEmailforUserManagement;
+          let newSystemRoles = [];
+          systemAdminEmailList.map((role) => {
+            newSystemRoles.push({
+              value: role.userID,
+              label: role.userEmail,
+            });
+          });
+          setSystemRoleOptions(newSystemRoles);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [GetAdminEmailforUserManagement]);
+
+  // UseEffect to set Data for Search API in the table
+  useEffect(() => {
+    try {
+      if (
+        SearchBranchUserForUserManagement &&
+        SearchBranchUserForUserManagement !== null
+      ) {
+        const newRecords = SearchBranchUserForUserManagement.branchUsers || [];
+        if (isLoading) {
+          setIsLoading(false);
+          setUserManagementBranchTblData((prev) => [...prev, ...newRecords]);
+          setSRow((prev) => prev + newRecords.length);
+          setTotalRecord(SearchBranchUserForUserManagement.totalCount);
+        } else {
+          setIsLoading(false);
+          setUserManagementBranchTblData(newRecords);
+          setSRow(newRecords.length);
+          setTotalRecord(SearchBranchUserForUserManagement.totalCount);
+        }
+      } else if (SearchBranchUserForUserManagement === null) {
+        setIsLoading(false);
+        setTotalRecord(0);
+        setSRow(0);
+        setUserManagementBranchTblData([]);
+      }
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  }, [SearchBranchUserForUserManagement]);
+
   const handleSelectOption = (e, name) => {
     if (name === "createdBy") {
       setSelectCreatedByOptions(e);
@@ -152,12 +187,6 @@ const Branch = () => {
     if (name === "roleOptions") {
       setSelectedRoleOption(e);
       console.log(e, "roleOptions");
-      if (e.value !== 0) {
-        setFormData((prev) => ({
-          ...prev,
-          branchName: "",
-        }));
-      }
     }
   };
 
@@ -165,168 +194,112 @@ const Branch = () => {
     employeeID: "",
     email: "",
     employeeName: "",
+    roleName: "",
+    roleId: 0,
     branchName: "",
   });
-
-  //Custome hook for Scrolling (1)
-  // const { hasReachedBottom, setHasReachedBottom } = useTableScrollBottom(() => {
-  //   console.log("🚀 Table reached bottom");
-  //   // Load more data here if needed
-  //   if (recordsLength !== tableData.length) {
-  //     let Data = {
-  //       employeeId: formData?.employeeID,
-  //       email: formData?.email,
-  //       role:
-  //         selectedRoleOption?.value !== undefined
-  //           ? selectedRoleOption.value
-  //           : "",
-  //       createdBy:
-  //         selectCreatedByOptions?.value !== undefined
-  //           ? selectCreatedByOptions.value
-  //           : "",
-  //       approvedBy: selectApprovedByOptions?.value
-  //         ? selectApprovedByOptions.value
-  //         : "",
-  //       deactivatedBy: selectDeactivatedByOptions?.value
-  //         ? selectDeactivatedByOptions.value
-  //         : "",
-  //       branchName: formData?.branchName,
-  //       // TransactionByTreasuryUser: formData.employeeName,
-  //       sRow: sRow,
-  //       Length: dropdownvalue,
-  //     };
-
-  //     // dispatch(SearchBankUsersAPI(navigate, Data));
-  //   }
-  // });
 
   const handlePageSizeChange = (newSize) => {
     setDropdownvalue(newSize);
     setSRow(0);
-    // setHasReachedBottom(false);
-    setTableData([]);
-    setRecordLength(0);
+    setIsLoading(false);
+    setUserManagementBranchTblData([]);
+    setTotalRecord(0);
+
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      showMessage("Please enter a valid email address.");
+      return;
+    }
 
     let Data = {
-      employeeId: formData?.employeeID,
-      email: formData?.email,
-      role:
-        selectedRoleOption?.value !== undefined ? selectedRoleOption.value : "",
-      createdBy:
+      EmployeeID: formData.employeeID || "",
+      EmployeeName: formData.employeeName || "",
+      EmployeeEmail: formData.email || "",
+      RoleID:
+        selectedRoleOption?.value !== undefined ? selectedRoleOption.value : 0,
+      BranchName: formData.branchName || "",
+
+      CreatedBy:
         selectCreatedByOptions?.value !== undefined
           ? selectCreatedByOptions.value
-          : "",
-      approvedBy: selectApprovedByOptions?.value
-        ? selectApprovedByOptions.value
-        : "",
-      deactivatedBy: selectDeactivatedByOptions?.value
-        ? selectDeactivatedByOptions.value
-        : "",
-      branchName: formData?.branchName,
-      // TransactionByTreasuryUser: formData.employeeName,
-      sRow: sRow,
-      Length: dropdownvalue,
+          : 0,
+      ApprovedBy:
+        selectApprovedByOptions?.value !== undefined
+          ? selectApprovedByOptions.value
+          : 0,
+      DeactivatedBy:
+        selectDeactivatedByOptions?.value !== undefined
+          ? selectDeactivatedByOptions.value
+          : 0,
+      Length: newSize,
+      sRow: 0,
     };
 
-    // dispatch(SearchBankUsersAPI(navigate, Data));
+    dispatch(SearchBranchUserForUserManagementAPI({ navigate, Data }));
   };
 
-  //Calling
-  // useEffect(() => {
-  //   try {
-  //     let Data = {
-  //       TXNID: 0,
-  //       CorporateUser: "",
-  //       CorporateName: "",
-  //       TransactionByTreasuryUser: "",
-  //       StartDate: "",
-  //       EndDate: "",
-  //       Length: 10,
-  //       sRow: 0,
-  //     };
-  //     dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
-  //   } catch (error) {
-  //     console.log(error, "errorerrorerror");
-  //   }
-  // }, []);
-
-  //Extracting the Data
-  // useEffect(() => {
-  //   try {
-  //     if (
-  //       AuditorTransactionCorporateData &&
-  //       AuditorTransactionCorporateData !== null
-  //     ) {
-  //       const newRecords =
-  //         AuditorTransactionCorporateData.transactionForCorporate || [];
-  //       console.log(
-  //         AuditorTransactionCorporateData,
-  //         "AuditorTransactionBankData"
-  //       );
-  //       if (isLoading) {
-  //         setIsLoading(false);
-  //         setTotalRecord(AuditorTransactionCorporateData.totalCount);
-  //         setTransactionByBankTblData((prev) => [...prev, ...newRecords]);
-  //         setSRow((prev) => prev + newRecords.length);
-  //       } else {
-  //         setIsLoading(false);
-  //         setTransactionByBankTblData(newRecords);
-  //         setSRow(newRecords.length);
-  //         setTotalRecord(AuditorTransactionCorporateData.totalCount);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log(error, "errorerror");
-  //     setIsLoading(false);
-  //   }
-  // }, [AuditorTransactionCorporateData]);
-
   //Excel And PDF Icon Click Func
-  // const handleExport = (format) => {
-  //   if (format === "excel") {
-  //     exportToExcel();
-  //   } else if (format === "pdf") {
-  //     exportToPDF();
-  //   }
-  // };
+  const handleExport = (format) => {
+    if (format === "excel") {
+      exportToExcel();
+    } else if (format === "pdf") {
+      exportToPDF();
+    }
+  };
 
   //Export to PDF Trigger Function
-  // const exportToExcel = () => {
-  //   let Data = {
-  //     TXNID: Number(formData.txnId),
-  //     CorporateUser:
-  //       formData.corporateUser !== "" ? formData.corporateUser : "",
-  //     CorporateName:
-  //       formData.corporateName !== "" ? formData.corporateName : "",
-  //     TransactionByTreasuryUser:
-  //       formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
-  //     StartDate: startDate !== null ? startDate : "",
-  //     EndDate: endDate !== null ? endDate : "",
-  //   };
+  const exportToExcel = () => {
+    let Data = {
+      EmployeeID: formData.employeeID || "",
+      EmployeeName: formData.employeeName || "",
+      EmployeeEmail: formData.email || "",
+      RoleID:
+        selectedRoleOption?.value !== undefined ? selectedRoleOption.value : 0,
+      BranchName: formData.branchName || "",
 
-  //   dispatch(
-  //     GetTransactionDetailsByCorporateExcelTypeReportAuditor({ navigate, Data })
-  //   );
-  // };
+      CreatedBy:
+        selectCreatedByOptions?.value !== undefined
+          ? selectCreatedByOptions.value
+          : 0,
+      ApprovedBy:
+        selectApprovedByOptions?.value !== undefined
+          ? selectApprovedByOptions.value
+          : 0,
+      DeactivatedBy:
+        selectDeactivatedByOptions?.value !== undefined
+          ? selectDeactivatedByOptions.value
+          : 0,
+    };
+
+    dispatch(DownloadBranchUserForAuditorExcelReportAPI({ navigate, Data }));
+  };
 
   //Export to Excel Trigger Function
-  // const exportToPDF = () => {
-  //   let Data = {
-  //     TXNID: Number(formData.txnId),
-  //     CorporateUser:
-  //       formData.corporateUser !== "" ? formData.corporateUser : "",
-  //     CorporateName:
-  //       formData.corporateName !== "" ? formData.corporateName : "",
-  //     TransactionByTreasuryUser:
-  //       formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
-  //     StartDate: startDate !== null ? startDate : "",
-  //     EndDate: endDate !== null ? endDate : "",
-  //   };
+  const exportToPDF = () => {
+    let Data = {
+      EmployeeID: formData.employeeID || "",
+      EmployeeName: formData.employeeName || "",
+      EmployeeEmail: formData.email || "",
+      RoleID:
+        selectedRoleOption?.value !== undefined ? selectedRoleOption.value : 0,
+      BranchName: formData.branchName || "",
 
-  //   dispatch(
-  //     GetTransactionDetailsByCorporatePDFTypeReportAuditor({ navigate, Data })
-  //   );
-  // };
+      CreatedBy:
+        selectCreatedByOptions?.value !== undefined
+          ? selectCreatedByOptions.value
+          : 0,
+      ApprovedBy:
+        selectApprovedByOptions?.value !== undefined
+          ? selectApprovedByOptions.value
+          : 0,
+      DeactivatedBy:
+        selectDeactivatedByOptions?.value !== undefined
+          ? selectDeactivatedByOptions.value
+          : 0,
+    };
+
+    dispatch(DownloadBranchUserForAuditorReportPDFAPI({ navigate, Data }));
+  };
 
   //Toggle Fucntion to view Export Icons
   const toggleExportOptions = () => {
@@ -334,65 +307,71 @@ const Branch = () => {
   };
 
   // Automatically export icons closed UseEffect using Useref Hook
-  // useEffect(() => {
-  //   const handleClickOutside = (event) => {
-  //     if (exportRef.current && !exportRef.current.contains(event.target)) {
-  //       setOpen(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (exportRef.current && !exportRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
 
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, []);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
-  //Common OnChange for textFields
-  const handleTextChange = (e) => {
-    const { name, value } = e.target;
-    console.log({ name, value }, "value");
+  const handleTextChange = useCallback((e) => {
+    const { name, value, validity } = e.target;
+    console.log(
+      { name, value, validity: validity.valid, target: e.target },
+      "formDataformData"
+    );
 
-    const cleanedValue = value.replace(/\t/g, "").trim();
+    // const cleanedValue = value.replace(/\t/g, "").trim();
 
-    // if (name === "employeeID") {
-    //   console.log("standing here");
-    //   const numericValue = cleanedValue.replace(/\D/g, "");
-    //   setFormData((prev) => ({ ...prev, [name]: numericValue }));
-    //   return;
-    // }
+    if (name === "employeeID" && validity.valid) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+      return;
+    }
+    if (name === "email") {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
 
-    // For all other fields, strip tabs and trim, then limit to 50 characters
-
-    setFormData((prev) => ({ ...prev, [name]: cleanedValue }));
-  };
+    if (name === "employeeName" && validity.valid) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  }, []);
   //Handle Search Button
   const handleSearchBtn = () => {
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       showMessage("Please enter a valid email address.");
       return;
     }
+
     let Data = {
-      employeeId: formData?.employeeID,
-      email: formData?.email,
-      role:
-        selectedRoleOption?.value !== undefined ? selectedRoleOption.value : "",
-      createdBy:
+      EmployeeID: formData.employeeID !== "" ? formData.employeeID : "",
+      EmployeeName: formData.employeeName !== "" ? formData.employeeName : "",
+      EmployeeEmail: formData.email !== "" ? formData.email : "",
+      RoleID:
+        selectedRoleOption?.value !== undefined ? selectedRoleOption.value : 0,
+      BranchName: formData.branchName !== "" ? formData.branchName : "",
+
+      CreatedBy:
         selectCreatedByOptions?.value !== undefined
           ? selectCreatedByOptions.value
-          : "",
-      approvedBy: selectApprovedByOptions?.value
+          : 0,
+      ApprovedBy: selectApprovedByOptions?.value
         ? selectApprovedByOptions.value
-        : "",
-      deactivatedBy: selectDeactivatedByOptions?.value
+        : 0,
+      DeactivatedBy: selectDeactivatedByOptions?.value
         ? selectDeactivatedByOptions.value
-        : "",
-      branchName: formData?.branchName,
-      // TransactionByTreasuryUser: formData.employeeName,
-      Length: 10,
+        : 0,
+      Length: dropdownvalue,
       sRow: 0,
     };
+
     console.log(Data, "DataDataDataData");
-    // dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
+    dispatch(SearchBranchUserForUserManagementAPI({ navigate, Data }));
   };
 
   //Handle Reset Button
@@ -407,189 +386,196 @@ const Branch = () => {
       email: "",
       employeeName: "",
       branchName: "",
+      roleId: 0,
     });
 
-    setTableData([]);
+    setUserManagementBranchTblData([]);
     setSRow(0);
     // setIsLoading(false);
     setTotalRecord(0);
     let Data = {
-      TXNID: 0,
-      CorporateUser: "",
-      CorporateName: "",
-      TransactionByTreasuryUser: "",
-      StartDate: "",
-      EndDate: "",
-      Length: 10,
+      EmployeeID: "",
+      EmployeeName: "",
+      BranchName: "",
+      EmployeeEmail: "",
+      RoleID: 0,
+      CreatedBy: 0,
+      ApprovedBy: 0,
+      DeactivatedBy: 0,
+      Length: dropdownvalue,
       sRow: 0,
     };
-    // dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
+    dispatch(SearchBranchUserForUserManagementAPI({ navigate, Data }));
   };
 
   // Columns for User Management table
   const UserManagementTable = [
     {
       title: "Employee ID",
-      // dataIndex: "txnid",
-      // key: "txnid",
-      width: 100,
-      render: (text) => <span>{text}</span>,
+      dataIndex: "employeeID",
+      key: "employeeID",
+      width: 90,
+      ellipsis: true,
     },
     {
       title: "Employee Name",
-      // dataIndex: "corporateName",
-      // key: "corporateName",
-      width: 180,
-      render: (text) => <span>{text}</span>,
+      dataIndex: "employeeName",
+      key: "employeeName",
+      ellipsis: true,
+      width: 220,
     },
     {
       title: "Email",
-      // dataIndex: "corporateUser",
-      // key: "corporateUser",
+      dataIndex: "email",
+      key: "email",
+      ellipsis: true,
       width: 190,
-      render: (text) => <span>{text}</span>,
     },
     {
       title: "Role",
-      // dataIndex: "treasuryUser",
-      // key: "treasuryUser",
+      dataIndex: "roleID",
+      key: "roleID",
+      ellipsis: true,
       width: 100,
-      render: (text) => <span>{text}</span>,
+      render: (val) => {
+        let roleName = roleOptions.find((role) => role.value === val);
+        return <span>{roleName?.label}</span>;
+      },
     },
     {
       title: "Branch",
-      // dataIndex: "treasuryUser",
-      // key: "treasuryUser",
+      dataIndex: "branchName",
+      key: "branchName",
       width: 100,
-      render: (text) => <span>{text}</span>,
+      ellipsis: true,
     },
     {
       title: "Contact",
-      // dataIndex: "date",
-      // key: "date",
+      dataIndex: "contact",
+      key: "contact",
+      ellipsis: true,
       width: 120,
-      render: (text) => <span>{text}</span>,
     },
     {
       title: "Status",
-      // dataIndex: "date",
-      // key: "date",
-      width: 120,
+      dataIndex: "statusID",
+      key: "statusID",
+      width: 75,
+      render: (val) => {
+        return (
+          <span style={{ color: val === 1 ? "green" : "red" }}>
+            {val === 1
+              ? "Active"
+              : val === 2
+              ? "Inactive"
+              : val === 3
+              ? "Locked"
+              : val === 4
+              ? "Closed"
+              : val === 9
+              ? "Dormant"
+              : ""}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Creation Date Time",
+      dataIndex: "creationDateTime",
+      key: "creationDateTime",
+      width: 180,
+      align: "center",
       render: (text) => (
-        <span
-          style={{ color: text?.toLowerCase() === "active" ? "green" : "red" }}
-        >
-          {text}
+        <span>
+          {text &&
+            moment(convertDateTimeIntoLocal(text)).format(
+              "YYYY/MM/DD hh:mm:ss A"
+            )}
         </span>
       ),
     },
     {
-      title: "Last Password Change",
-      // dataIndex: "time",
-      // key: "time",
-      width: 160,
-
-      // render: (text, record) => {
-      //   let dateStr = getDateTimeString(record.date, record.time);
-
-      //   return (
-      //     <span>
-      //       {dateStr &&
-      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
-      //     </span>
-      //   );
-      // },
-    },
-    {
-      title: "Creation Date Time",
-      // dataIndex: "type",
-      // key: "type",
-      width: 160,
-      // render: (text, record) => {
-      //   let dateStr = getDateTimeString(record.date, record.time);
-
-      //   return (
-      //     <span>
-      //       {dateStr &&
-      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
-      //     </span>
-      //   );
-      // },
-    },
-    {
       title: "Created By",
-      // dataIndex: "nature",
-      // key: "nature",
-      width: 220,
-      render: (text) => <span>{text}</span>,
+      dataIndex: "createdBy",
+      key: "createdBy",
+      width: 200,
+      ellipsis: true,
     },
 
     {
       title: "Approved Date Time",
-      // dataIndex: "type",
-      // key: "type",
-      width: 160,
-      // render: (text, record) => {
-      //   let dateStr = getDateTimeString(record.date, record.time);
-
-      //   return (
-      //     <span>
-      //       {dateStr &&
-      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
-      //     </span>
-      //   );
-      // },
+      dataIndex: "approvedDateTime",
+      key: "approvedDateTime",
+      width: 180,
+      align: "center",
+      render: (text) => (
+        <span>
+          {text &&
+            moment(convertDateTimeIntoLocal(text)).format(
+              "YYYY/MM/DD hh:mm:ss A"
+            )}
+        </span>
+      ),
     },
     {
       title: "Approved By",
-      // dataIndex: "ccY1",
-      // key: "ccY1",
+      dataIndex: "approvedBy",
+      key: "approvedBy",
       width: 220,
-      render: (text) => <span>{text}</span>,
     },
 
     {
       title: "Deactivated By",
-      // dataIndex: "ccY1",
-      // key: "ccY1",
+      dataIndex: "deactivatedBy",
+      key: "deactivatedBy",
       width: 220,
-      render: (text) => <span>{text}</span>,
     },
     {
       title: "Role Modified on",
-      // dataIndex: "type",
-      // key: "type",
-      width: 160,
-      // render: (text, record) => {
-      //   let dateStr = getDateTimeString(record.date, record.time);
-
-      //   return (
-      //     <span>
-      //       {dateStr &&
-      //         moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss")}
-      //     </span>
-      //   );
-      // },
+      dataIndex: "roleModifiedOn",
+      key: "roleModifiedOn",
+      width: 180,
+      align: "center",
+      render: (text) => (
+        <span>
+          {text &&
+            moment(convertDateTimeIntoLocal(text)).format(
+              "YYYY/MM/DD hh:mm:ss A"
+            )}
+        </span>
+      ),
     },
   ];
 
   //Scroller Custom Hook
   useTableScrollBottomByClassName(
     () => {
-      if (tableData.length !== totalRecord) {
-        // setIsLoading(true);
+      if (userManagementBranchTblData.length !== totalRecord) {
+        setIsLoading(true);
         let Data = {
-          TXNID: Number(formData.txnId) !== "" ? Number(formData.txnId) : 0,
-          CorporateUser:
-            formData.corporateUser !== "" ? formData.corporateUser : "",
-          CorporateName:
-            formData.corporateName !== "" ? formData.corporateName : "",
-          TransactionByTreasuryUser:
-            formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
-          Length: 10,
+          EmployeeID: formData.employeeID || "",
+          EmployeeName: formData.employeeName || "",
+          EmployeeEmail: formData.email || "",
+          RoleID:
+            selectedRoleOption?.value !== undefined
+              ? selectedRoleOption.value
+              : 0,
+          BranchName: formData.branchName || "",
+
+          CreatedBy:
+            selectCreatedByOptions?.value !== undefined
+              ? selectCreatedByOptions.value
+              : 0,
+          ApprovedBy: selectApprovedByOptions?.value
+            ? selectApprovedByOptions.value
+            : 0,
+          DeactivatedBy: selectDeactivatedByOptions?.value
+            ? selectDeactivatedByOptions.value
+            : 0,
+          Length: dropdownvalue,
           sRow: sRow,
         };
-        dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
+        dispatch(SearchBranchUserForUserManagementAPI({ navigate, Data }));
       }
     },
     0,
@@ -607,6 +593,7 @@ const Branch = () => {
               applyClass="TextFieldAuditors"
               maxLength={15}
               value={formData.employeeID}
+              pattern={"^[a-zA-Z0-9]+$"}
               onChange={handleTextChange}
             />
           </Col>
@@ -627,6 +614,7 @@ const Branch = () => {
               applyClass="TextFieldAuditors"
               maxLength={50}
               value={formData.employeeName}
+              pattern={"^[A-Za-z ]+$"}
               onChange={handleTextChange}
             />
           </Col>
@@ -641,7 +629,7 @@ const Branch = () => {
               menuPortalTarget={document.body}
             />
           </Col>
-          {selectedRoleOption?.value === 0 && (
+          {selectedRoleOption?.value === 9 && (
             <Col lg={4} md={4} sm={4} xs={12}>
               <TextField
                 name="branchName"
@@ -653,12 +641,12 @@ const Branch = () => {
               />
             </Col>
           )}
-          {selectedRoleOption?.value !== 0 && (
+          {selectedRoleOption?.value !== 9 && (
             <Col lg={4} md={4} sm={4} xs={12}>
               <SelectDropdown
                 classNamePrefix="dropdownBranchSpotTreasury"
                 placeholder={"Created By"}
-                options={createdByOptions}
+                options={SystemRoleOptions}
                 value={selectCreatedByOptions}
                 isSearchable
                 onChange={(e) => handleSelectOption(e, "createdBy")}
@@ -667,12 +655,12 @@ const Branch = () => {
           )}
         </Row>
         <Row className="mt-3">
-          {selectedRoleOption?.value === 0 && (
+          {selectedRoleOption?.value === 9 && (
             <Col lg={4} md={4} sm={4} xs={12}>
               <SelectDropdown
                 classNamePrefix="dropdownBranchSpotTreasury"
                 placeholder={"Created By"}
-                options={createdByOptions}
+                options={SystemRoleOptions}
                 value={selectCreatedByOptions}
                 isSearchable
                 onChange={(e) => handleSelectOption(e, "createdBy")}
@@ -686,7 +674,7 @@ const Branch = () => {
               styles={{
                 maxLength: "10px",
               }}
-              options={approvedByOptions}
+              options={securityRoleOptions}
               value={selectApprovedByOptions}
               isSearchable
               onChange={(e) => handleSelectOption(e, "approvedBy")}
@@ -699,13 +687,13 @@ const Branch = () => {
               styles={{
                 maxLength: "10px",
               }}
-              options={deactivatedByOptions}
+              options={securityRoleOptions}
               value={selectDeactivatedByOptions}
               isSearchable
               onChange={(e) => handleSelectOption(e, "deactivatedBy")}
             />
           </Col>
-          {selectedRoleOption?.value === 0 ? (
+          {selectedRoleOption?.value === 9 ? (
             <>
               <Col
                 lg={12}
@@ -713,7 +701,7 @@ const Branch = () => {
                 sm={12}
                 xs={12}
                 className={`${
-                  selectedRoleOption?.value === 0
+                  selectedRoleOption?.value === 9
                     ? "mt-2 justify-content-center align-items-center"
                     : ""
                 } d-flex gap-2 `}
@@ -746,12 +734,12 @@ const Branch = () => {
                   >
                     <Button
                       icon={<img src={excelIcon} alt="Excel Icon" />}
-                      // onClick={() => handleExport("excel")}
+                      onClick={() => handleExport("excel")}
                       className={styles["export-button"]}
                     />
                     <Button
                       icon={<img src={pdfIcon} alt="PDF Icon" />}
-                      // onClick={() => handleExport("pdf")}
+                      onClick={() => handleExport("pdf")}
                       className={styles["export-button"]}
                     />
                   </span>
@@ -766,7 +754,7 @@ const Branch = () => {
                 sm={12}
                 xs={12}
                 className={`${
-                  selectedRoleOption?.value === 0
+                  selectedRoleOption?.value === 9
                     ? "mt-2 d-flex justify-content-center align-items-center"
                     : ""
                 } d-flex gap-2`}
@@ -799,12 +787,12 @@ const Branch = () => {
                   >
                     <Button
                       icon={<img src={excelIcon} alt="Excel Icon" />}
-                      // onClick={() => handleExport("excel")}
+                      onClick={() => handleExport("excel")}
                       className={styles["export-button"]}
                     />
                     <Button
                       icon={<img src={pdfIcon} alt="PDF Icon" />}
-                      // onClick={() => handleExport("pdf")}
+                      onClick={() => handleExport("pdf")}
                       className={styles["export-button"]}
                     />
                   </span>
@@ -826,9 +814,9 @@ const Branch = () => {
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={UserManagementTable}
-              rows={tableData}
+              rows={userManagementBranchTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: "45vh" }}
+              scroll={{ y: "45vh" }}
               className={"BankUserList-table"}
             />
           </Col>

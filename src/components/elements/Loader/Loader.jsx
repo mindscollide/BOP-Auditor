@@ -11,12 +11,16 @@ const Loader = () => {
   const ReportLoader = useSelector((state) => state.ReportReducer.Loader);
   const SettingsLoader = useSelector((state) => state.SettingReducer.Loader);
   const RateInputLoadser = useSelector((state) => state.RateInputSlicer.Loader);
+  const UserManagementLoader = useSelector(
+    (state) => state.userManagementSlicer.Loader
+  );
   const isLoading = [
     AuthLoader,
     AuditorLoader,
     ReportLoader,
     SettingsLoader,
     RateInputLoadser,
+    UserManagementLoader,
   ].some((loading) => loading);
 
   useEffect(() => {

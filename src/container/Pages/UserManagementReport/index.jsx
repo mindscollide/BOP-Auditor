@@ -1,34 +1,33 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import styles from "./UserManagementReport.module.css";
-
 import SectionLoader from "../../../components/common/sectionLoader/SectionLoader";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
 import { Col, Row } from "react-bootstrap";
 import Branch from "./Branch";
 import Corporate from "./Corporate";
-// import Spot from "./Spot";
-// import Forwards from "./Forwards";
-// import FEDiscounting from "./FEDiscounting";
-// import NonFEDiscounting from "./NonFEDiscounting";
 
 const UserManagementReport = () => {
+  const [activeTab, setActiveTab] = useState("Branch"); // default tab key
+
   const tabsData = [
     {
       title: "Branch",
+      key: "Branch",
       content: (
         <div className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            <Branch />
+            {activeTab === "Branch" && <Branch />}
           </Suspense>
         </div>
       ),
     },
     {
       title: "Corporate",
+      key: "Corporate",
       content: (
         <div className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            <Corporate />
+            {activeTab === "Corporate" && <Corporate />}
           </Suspense>
         </div>
       ),
@@ -43,7 +42,12 @@ const UserManagementReport = () => {
           </span>
         </Col>
       </Row>
-      <GlobalTabs tabClass="mt-2 mb-4" tabs={tabsData} defaultActiveKey={"0"} />
+      <GlobalTabs
+        tabClass="mt-2 mb-4"
+        tabs={tabsData}
+        activeKey={activeTab}
+        onTabChange={(key) => setActiveTab(key)}
+      />
     </>
   );
 };

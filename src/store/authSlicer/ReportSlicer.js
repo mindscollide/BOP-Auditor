@@ -12,6 +12,10 @@ import {
   DownloadFeDiscountingRateInputReportPDFAPI,
   DownloadNonFEDiscountingRateInputExcelReportAPI,
   DownloadNonFEDiscountingRateInputReportPDFAPI,
+  DownloadBranchUserForAuditorExcelReportAPI,
+  DownloadBranchUserForAuditorReportPDFAPI,
+  DownloadCorporateUserForAuditorExcelReportAPI,
+  DownloadCorporateUserForAuditorReportPDFAPI,
 } from "../ReportActions/ReportActions";
 
 const ReportSlice = createSlice({
@@ -33,6 +37,10 @@ const ReportSlice = createSlice({
     DownloadFeDiscountingRateInputReportPDF: null,
     DownloadNonFEDiscountingRateInputExcelReport: null,
     DownloadNonFEDiscountingRateInputReportPDF: null,
+    DownloadBranchUserForAuditorExcelReport: null,
+    DownloadBranchUserForAuditorReportPDF: null,
+    DownloadCorporateUserForAuditorExcelReport: null,
+    DownloadCorporateUserForAuditorReportPDF: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -292,6 +300,85 @@ const ReportSlice = createSlice({
         (state, { payload }) => {
           state.Loader = false;
           state.DownloadNonFEDiscountingRateInputReportPDF = null;
+          state.responseMessage = payload;
+        }
+      )
+      .addCase(DownloadBranchUserForAuditorExcelReportAPI.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        DownloadBranchUserForAuditorExcelReportAPI.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.DownloadBranchUserForAuditorExcelReport = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        DownloadBranchUserForAuditorExcelReportAPI.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.DownloadBranchUserForAuditorExcelReport = null;
+          state.responseMessage = payload;
+        }
+      )
+      .addCase(DownloadBranchUserForAuditorReportPDFAPI.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        DownloadBranchUserForAuditorReportPDFAPI.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.DownloadBranchUserForAuditorReportPDF = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        DownloadBranchUserForAuditorReportPDFAPI.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.DownloadBranchUserForAuditorReportPDF = null;
+          state.responseMessage = payload;
+        }
+      )
+      .addCase(
+        DownloadCorporateUserForAuditorExcelReportAPI.pending,
+        (state) => {
+          state.Loader = true;
+        }
+      )
+      .addCase(
+        DownloadCorporateUserForAuditorExcelReportAPI.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.DownloadCorporateUserForAuditorExcelReport = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        DownloadCorporateUserForAuditorExcelReportAPI.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.DownloadCorporateUserForAuditorExcelReport = null;
+          state.responseMessage = payload;
+        }
+      )
+      .addCase(DownloadCorporateUserForAuditorReportPDFAPI.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        DownloadCorporateUserForAuditorReportPDFAPI.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.DownloadCorporateUserForAuditorReportPDF = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        DownloadCorporateUserForAuditorReportPDFAPI.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.DownloadCorporateUserForAuditorReportPDF = null;
           state.responseMessage = payload;
         }
       );
