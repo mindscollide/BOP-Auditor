@@ -556,7 +556,7 @@ const Corporate = () => {
           </Col>
         </Row>
         <Row className="mt-3">
-          <Col lg={4} md={4} sm={4} xs={12}>
+          <Col lg={4} md={4} sm={6} xs={12}>
             <SelectDropdown
               classNamePrefix="dropdownBranchSpotTreasury"
               placeholder={"Approved By"}
@@ -566,7 +566,7 @@ const Corporate = () => {
               onChange={(e) => handleSelectOption(e, "approvedBy")}
             />
           </Col>
-          <Col lg={4} md={4} sm={4} xs={12}>
+          <Col lg={4} md={4} sm={6} xs={12}>
             <SelectDropdown
               classNamePrefix="dropdownBranchSpotTreasury"
               placeholder="Deactivated by"
@@ -582,8 +582,8 @@ const Corporate = () => {
 
           <Col
             lg={4}
-            md={4}
-            sm={4}
+            md={12}
+            sm={12}
             xs={12}
             className={"d-flex gap-2 justify-content-center align-items-center"}
           >

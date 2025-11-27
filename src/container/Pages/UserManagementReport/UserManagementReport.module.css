@@ -104,7 +104,7 @@
   gap: 4px !important;
   font-family: "Poppins", sans-serif;
   align-items: center;
-  padding: 6px 18px !important;
+  padding: 8px 18px !important;
   border: none;
   background: #019308 !important;
 }
@@ -112,7 +112,7 @@
 .Export_Button:is(:hover, :focus, :focus-visible) {
   font-size: 14px;
   border-radius: 4px !important;
-  padding: 6px 18px !important;
+  padding: 8px 18px !important;
   border: none;
   height: 100% !important;
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
