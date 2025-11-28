@@ -605,7 +605,7 @@ const AuditTrialByBankCom = () => {
               labelClass="d-none"
               showOtherDays
               minDate={startDate}
-              maxDate={null}
+              maxDate={new Date(new Date().setHours(23, 59, 59, 999))}
               editable={false}
             />
           </Col>

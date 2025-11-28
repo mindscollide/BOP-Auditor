@@ -48,6 +48,7 @@ const NonFEDiscounting = () => {
   const [endDate, setEndDate] = useState(null);
   const [rateReportColumns, setRateReportColumns] = useState([]);
   const [dropdownvalue, setDropdownvalue] = useState(50);
+  const [isSearch, setIsSearch] = useState(false);
 
   const [formData, setFormData] = useState({
     employeeName: "",
@@ -122,41 +123,52 @@ const NonFEDiscounting = () => {
 
   // Extracting the Data
   useEffect(() => {
-    if (
-      GetNonFEDiscountingRateInputData?.nonfeDiscountingRateInput?.length &&
-      GetAllTenors?.tenors?.length
-    ) {
-      try {
-        const tenors = GetAllTenors.tenors.filter(
-          (t) => t.isNonFEStandard === true
-        );
-        const { columns, tableData } = createTableFunc(
-          3,
-          tenors,
-          GetNonFEDiscountingRateInputData.nonfeDiscountingRateInput
-        );
-        if (tableData && tableData !== null && columns.length > 0) {
-          const newRecords = tableData || [];
-          if (isLoading) {
-            setIsLoading(false);
-            setTotalRecord(GetNonFEDiscountingRateInputData.totalCount);
-            setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
-            setSRow((prev) => prev + newRecords.length);
-          } else {
-            setRateReportColumns(columns);
-            setIsLoading(false);
-            setRateReportTblData(newRecords); // other wise append the new records only
-            setSRow(newRecords.length);
-            setTotalRecord(GetNonFEDiscountingRateInputData.totalCount);
+    if (GetNonFEDiscountingRateInputData !== null) {
+      if (GetAllTenors?.tenors?.length) {
+        const { nonfeDiscountingRateInput = [], totalCount } =
+          GetNonFEDiscountingRateInputData;
+        try {
+          const tenors = GetAllTenors.tenors.filter(
+            (t) => t.isNonFEStandard === true
+          );
+          const { columns, tableData } = createTableFunc(
+            3,
+            tenors,
+            nonfeDiscountingRateInput
+          );
+          if (tableData && tableData !== null && columns.length > 0) {
+            const newRecords = tableData || [];
+            if (isLoading) {
+              setIsLoading(false);
+              setTotalRecord(totalCount);
+              setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
+              setSRow((prev) => prev + newRecords.length);
+            } else {
+              setRateReportColumns(columns);
+              setIsLoading(false);
+              setRateReportTblData(newRecords); // other wise append the new records only
+              setSRow(newRecords.length);
+              setTotalRecord(totalCount);
+            }
+          } else if (GetNonFEDiscountingRateInputData === null) {
+            if (!isLoading) {
+              setIsLoading(false);
+              setTotalRecord(0);
+              setSRow(0);
+              setRateReportTblData([]);
+            }
           }
-        } else if (GetNonFEDiscountingRateInputData === null) {
+        } catch (error) {
           setIsLoading(false);
-          setTotalRecord(0);
-          setSRow(0);
-          setRateReportTblData([]);
+          console.error("Error building table:", error);
         }
-      } catch (error) {
-        console.error("Error building table:", error);
+      }
+    } else if (GetNonFEDiscountingRateInputData === null) {
+      if (!isLoading) {
+        setIsLoading(false);
+        setTotalRecord(0);
+        setSRow(0);
+        setRateReportTblData([]);
       }
     }
   }, [GetAllTenors, GetNonFEDiscountingRateInputData]);
@@ -333,6 +345,7 @@ const NonFEDiscounting = () => {
 
   //Handle Search Button
   const handleSearchBtn = () => {
+    setIsSearch(true);
     const { StartDate, EndDate } = formatDateForPayload(
       formData.dateFrom.value,
       formData.dateTo.value
@@ -351,7 +364,9 @@ const NonFEDiscounting = () => {
 
   //Handle Reset Button
   const handleResetBtn = () => {
+    setIsSearch(false);
     setShowCustomDatePicker(false);
+
     setFormData({
       employeeName: "",
       employeeId: "",
@@ -390,15 +405,29 @@ const NonFEDiscounting = () => {
     () => {
       if (rateReportTblData.length !== totalRecord) {
         setIsLoading(true);
-        const Data = {
-          EmployeeName: formData.employeeName || "",
-          EmployeeID: formData.employeeId || "",
-          StartDate: startDate !== null ? startDate : "",
-          EndDate: endDate !== null ? endDate : "",
-          sRow: sRow,
-          Length: dropdownvalue,
-        };
-        dispatch(GetNonFEDiscountingRateInputDataAPI({ navigate, Data }));
+        if (isSearch) {
+          const Data = {
+            EmployeeName:
+              formData.employeeName && isSearch ? formData.employeeName : "",
+            EmployeeID:
+              formData.employeeId && isSearch ? formData.employeeId : "",
+            StartDate: startDate !== null && isSearch ? startDate : "",
+            EndDate: endDate !== null && isSearch ? endDate : "",
+            sRow: sRow,
+            Length: dropdownvalue,
+          };
+          dispatch(GetNonFEDiscountingRateInputDataAPI({ navigate, Data }));
+        } else if (isSearch === false) {
+          const Data = {
+            EmployeeName: "",
+            EmployeeID: "",
+            StartDate: "",
+            EndDate: "",
+            sRow: sRow,
+            Length: dropdownvalue,
+          };
+          dispatch(GetNonFEDiscountingRateInputDataAPI({ navigate, Data }));
+        }
       }
     },
     0,
@@ -424,6 +453,7 @@ const NonFEDiscounting = () => {
               options={dateRangeOptions}
               value={selectedDateRange}
               isSearchable={true}
+              isClearable={false}
               onChange={handleDateRangeChange}
               menuPortalTarget={document.body}
             />
@@ -523,7 +553,7 @@ const NonFEDiscounting = () => {
               inputClass={styles["Tradecount-Datepicker-right"]}
               onChange={(date) => handleDateChange("dateTo", date)}
               minDate={formData.dateFrom.value}
-              maxDate={null}
+              maxDate={new Date(new Date().setHours(23, 59, 59, 999))}
               editable={false}
             />
           </Col>

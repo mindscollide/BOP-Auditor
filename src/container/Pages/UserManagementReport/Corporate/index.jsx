@@ -57,7 +57,7 @@ const Corporate = () => {
   const [selectCreatedByOptions, setSelectCreatedByOptions] = useState(null);
   const [selectDeactivatedByOptions, setSelectDeactivatedByOptions] =
     useState(null);
-
+  const [isSearch, setIsSearch] = useState(false);
   //initial useEffect
   useEffect(() => {
     dispatch(GetAdminEmailforUserManagementAPI(navigate));
@@ -139,10 +139,12 @@ const Corporate = () => {
           setTotalRecord(SearchCorporateUserForUserManagement.totalCount);
         }
       } else if (SearchCorporateUserForUserManagement === null) {
-        setIsLoading(false);
-        setTotalRecord(0);
-        setSRow(0);
-        setUserManagementCorpTblData([]);
+        if (!isLoading) {
+          setIsLoading(false);
+          setTotalRecord(0);
+          setSRow(0);
+          setUserManagementCorpTblData([]);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -235,6 +237,10 @@ const Corporate = () => {
 
   //Export to Excel Trigger Function
   const exportToPDF = () => {
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      showMessage("Please enter a valid email address.");
+      return;
+    }
     let Data = {
       CorporateUser: formData.corporateUser || "",
       CorporateName: formData.corporateName || "",
@@ -321,10 +327,12 @@ const Corporate = () => {
     console.log(Data, "DataDataDataData");
 
     dispatch(SearchCorporateUserForUserManagementAPI({ navigate, Data }));
+    setIsSearch(true);
   };
 
   //Handle Reset Button
   const handleResetBtn = () => {
+    setIsSearch(false);
     setSelectApprovedByOptions(null);
     setSelectCreatedByOptions(null);
     setSelectDeactivatedByOptions(null);
@@ -483,24 +491,40 @@ const Corporate = () => {
     () => {
       if (userManagementCorpTblData.length !== totalRecord) {
         setIsLoading(true);
-        let Data = {
-          CorporateUser: formData.corporateUser || "",
-          CorporateName: formData.corporateName || "",
-          Email: formData.email || "",
-          CreatedBy:
-            selectCreatedByOptions?.value !== undefined
-              ? selectCreatedByOptions.value
+        if (isSearch) {
+          let Data = {
+            CorporateUser:
+              formData.corporateUser && isSearch ? formData.corporateUser : "",
+            CorporateName:
+              formData.corporateName && isSearch ? formData.corporateName : "",
+            Email: formData.email && isSearch ? formData.email : "",
+            CreatedBy:
+              selectCreatedByOptions?.value !== undefined
+                ? selectCreatedByOptions.value
+                : 0,
+            ApprovedBy: selectApprovedByOptions?.value
+              ? selectApprovedByOptions.value
               : 0,
-          ApprovedBy: selectApprovedByOptions?.value
-            ? selectApprovedByOptions.value
-            : 0,
-          DeactivatedBy: selectDeactivatedByOptions?.value
-            ? selectDeactivatedByOptions.value
-            : 0,
-          Length: dropdownvalue,
-          sRow: sRow,
-        };
-        dispatch(SearchCorporateUserForUserManagementAPI({ navigate, Data }));
+            DeactivatedBy: selectDeactivatedByOptions?.value
+              ? selectDeactivatedByOptions.value
+              : 0,
+            Length: dropdownvalue,
+            sRow: sRow,
+          };
+          dispatch(SearchCorporateUserForUserManagementAPI({ navigate, Data }));
+        } else if (isSearch === false) {
+          let Data = {
+            CorporateUser: "",
+            CorporateName: "",
+            Email: "",
+            CreatedBy: 0,
+            ApprovedBy: 0,
+            DeactivatedBy: 0,
+            Length: dropdownvalue,
+            sRow: sRow,
+          };
+          dispatch(SearchCorporateUserForUserManagementAPI({ navigate, Data }));
+        }
       }
     },
     0,

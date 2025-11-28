@@ -49,6 +49,8 @@ const Spot = () => {
   const [rateReportTblData, setRateReportTblData] = useState([]);
   const [sRow, setSRow] = useState(0);
   const [dropdownvalue, setDropdownvalue] = useState(50);
+  const [isSearch, setIsSearch] = useState(false);
+
   const [formData, setFormData] = useState({
     employeeName: "",
     employeeId: "",
@@ -150,10 +152,12 @@ const Spot = () => {
           setTotalRecord(GetSpotRateInputData.totalCount);
         }
       } else if (GetSpotRateInputData === null) {
-        setIsLoading(false);
-        setTotalRecord(0);
-        setSRow(0);
-        setRateReportTblData([]);
+        if (!isLoading) {
+          setIsLoading(false);
+          setTotalRecord(0);
+          setSRow(0);
+          setRateReportTblData([]);
+        }
       }
     } catch (error) {
       console.log(error, "errorerror");
@@ -350,10 +354,12 @@ const Spot = () => {
 
     console.log(Data, "PayloadToSend");
     dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
+    setIsSearch(true);
   };
 
   //Handle Reset Button
   const handleResetBtn = () => {
+    setIsSearch(false);
     setShowCustomDatePicker(false);
     setFormData({
       employeeName: "",
@@ -460,19 +466,37 @@ const Spot = () => {
     () => {
       if (rateReportTblData.length !== totalRecord) {
         setIsLoading(true);
-        const { StartDate, EndDate } = formatDateForPayload(
-          formData.dateFrom.value,
-          formData.dateTo.value
-        );
-        const Data = {
-          EmployeeID: formData.employeeId || "",
-          EmployeeName: formData.employeeName || "",
-          StartDate,
-          EndDate,
-          Length: dropdownvalue,
-          sRow: sRow,
-        };
-        dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
+        if (isSearch) {
+          const { StartDate, EndDate } = formatDateForPayload(
+            formData.dateFrom.value,
+            formData.dateTo.value
+          );
+          const Data = {
+            EmployeeID:
+              formData.employeeId && isSearch ? formData.employeeId : "",
+            EmployeeName:
+              formData.employeeName && isSearch ? formData.employeeName : "",
+            StartDate,
+            EndDate,
+            Length: dropdownvalue,
+            sRow: sRow,
+          };
+          dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
+        } else if (isSearch === false) {
+          const { StartDate, EndDate } = formatDateForPayload(
+            formData.dateFrom.value,
+            formData.dateTo.value
+          );
+          const Data = {
+            EmployeeID: "",
+            EmployeeName: "",
+            StartDate,
+            EndDate,
+            Length: dropdownvalue,
+            sRow: sRow,
+          };
+          dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
+        }
       }
     },
     0,
@@ -483,35 +507,6 @@ const Spot = () => {
     <>
       <CustomPaper variant="outlined">
         <Row>
-          {/* <Col lg={3} md={3} sm={12} className="d-flex align-items-center ">
-            <DatePicker
-              name="dateFrom"
-              value={startDate}
-              onChange={handleStartDateChange}
-              placeholder="Start Date"
-              inputClass={styles["Tradecount-Datepicker-left"]}
-              labelClass="d-none"
-              showOtherDays
-              editable={false}
-              maxDate={endDate}
-              minDate={null}
-            />
-
-            <label className={styles["Tradecount-date-to"]}>to</label>
-
-            <DatePicker
-              name="dateTo"
-              value={endDate}
-              onChange={handleEndDateChange}
-              placeholder="End Date"
-              inputClass={styles["Tradecount-Datepicker-right"]}
-              labelClass="d-none"
-              showOtherDays
-              minDate={startDate}
-              maxDate={null}
-              editable={false}
-            />
-          </Col> */}
           <Col lg={3} md={12} sm={12}>
             <SelectDropdown
               styles={{
@@ -527,6 +522,7 @@ const Spot = () => {
               options={dateRangeOptions}
               value={selectedDateRange}
               isSearchable={true}
+              isClearable={false}
               onChange={handleDateRangeChange}
               menuPortalTarget={document.body}
             />
@@ -627,7 +623,7 @@ const Spot = () => {
               inputClass={styles["Tradecount-Datepicker-right"]}
               onChange={(date) => handleDateChange("dateTo", date)}
               minDate={formData.dateFrom.value}
-              maxDate={null}
+              maxDate={new Date(new Date().setHours(23, 59, 59, 999))}
               editable={false}
             />
           </Col>

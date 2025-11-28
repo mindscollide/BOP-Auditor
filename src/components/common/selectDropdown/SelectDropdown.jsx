@@ -17,6 +17,7 @@ const SelectDropdown = ({
   menuPlacement,
   filterOptions,
   menuIsOpen,
+  isClearable = true,
   menuPosition = "fixed",
   onChange,
   isMulti,
@@ -39,6 +40,7 @@ const SelectDropdown = ({
       placeholder={placeholder}
       value={value}
       pageSize={0}
+      isClearable={isClearable}
       menuPosition={menuPosition}
       filterOption={filterOptions}
       isMulti={isMulti}

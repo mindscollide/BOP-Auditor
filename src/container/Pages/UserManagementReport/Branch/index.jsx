@@ -47,6 +47,7 @@ const Branch = () => {
   const [selectCreatedByOptions, setSelectCreatedByOptions] = useState(null);
   const [selectDeactivatedByOptions, setSelectDeactivatedByOptions] =
     useState(null);
+  const [isSearch, setIsSearch] = useState(false);
 
   const [selectedRoleOption, setSelectedRoleOption] = useState(null);
 
@@ -163,10 +164,12 @@ const Branch = () => {
           setTotalRecord(SearchBranchUserForUserManagement.totalCount);
         }
       } else if (SearchBranchUserForUserManagement === null) {
-        setIsLoading(false);
-        setTotalRecord(0);
-        setSRow(0);
-        setUserManagementBranchTblData([]);
+        if (!isLoading) {
+          setIsLoading(false);
+          setTotalRecord(0);
+          setSRow(0);
+          setUserManagementBranchTblData([]);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -249,6 +252,10 @@ const Branch = () => {
 
   //Export to PDF Trigger Function
   const exportToExcel = () => {
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      showMessage("Please enter a valid email address.");
+      return;
+    }
     let Data = {
       EmployeeID: formData.employeeID || "",
       EmployeeName: formData.employeeName || "",
@@ -276,6 +283,10 @@ const Branch = () => {
 
   //Export to Excel Trigger Function
   const exportToPDF = () => {
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      showMessage("Please enter a valid email address.");
+      return;
+    }
     let Data = {
       EmployeeID: formData.employeeID || "",
       EmployeeName: formData.employeeName || "",
@@ -347,6 +358,7 @@ const Branch = () => {
       showMessage("Please enter a valid email address.");
       return;
     }
+    setIsSearch(true);
 
     let Data = {
       EmployeeID: formData.employeeID !== "" ? formData.employeeID : "",
@@ -376,6 +388,7 @@ const Branch = () => {
 
   //Handle Reset Button
   const handleResetBtn = () => {
+    setIsSearch(false);
     setSelectApprovedByOptions(null);
     setSelectCreatedByOptions(null);
     setSelectDeactivatedByOptions(null);
@@ -552,30 +565,56 @@ const Branch = () => {
     () => {
       if (userManagementBranchTblData.length !== totalRecord) {
         setIsLoading(true);
-        let Data = {
-          EmployeeID: formData.employeeID || "",
-          EmployeeName: formData.employeeName || "",
-          EmployeeEmail: formData.email || "",
-          RoleID:
-            selectedRoleOption?.value !== undefined
-              ? selectedRoleOption.value
-              : 0,
-          BranchName: formData.branchName || "",
+        if (isSearch) {
+          if (
+            formData.email !== "" &&
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+          ) {
+            showMessage("Please enter a valid email address.");
+            return;
+          }
+          let Data = {
+            EmployeeID:
+              formData.employeeID && isSearch ? formData.employeeID : "",
+            EmployeeName:
+              formData.employeeName && isSearch ? formData.employeeName : "",
+            EmployeeEmail: formData.email && isSearch ? formData.email : "",
+            RoleID:
+              selectedRoleOption?.value !== undefined
+                ? selectedRoleOption.value
+                : 0,
+            BranchName:
+              formData.branchName && isSearch ? formData.branchName : "",
 
-          CreatedBy:
-            selectCreatedByOptions?.value !== undefined
-              ? selectCreatedByOptions.value
+            CreatedBy:
+              selectCreatedByOptions?.value !== undefined
+                ? selectCreatedByOptions.value
+                : 0,
+            ApprovedBy: selectApprovedByOptions?.value
+              ? selectApprovedByOptions.value
               : 0,
-          ApprovedBy: selectApprovedByOptions?.value
-            ? selectApprovedByOptions.value
-            : 0,
-          DeactivatedBy: selectDeactivatedByOptions?.value
-            ? selectDeactivatedByOptions.value
-            : 0,
-          Length: dropdownvalue,
-          sRow: sRow,
-        };
-        dispatch(SearchBranchUserForUserManagementAPI({ navigate, Data }));
+            DeactivatedBy: selectDeactivatedByOptions?.value
+              ? selectDeactivatedByOptions.value
+              : 0,
+            Length: dropdownvalue,
+            sRow: sRow,
+          };
+          dispatch(SearchBranchUserForUserManagementAPI({ navigate, Data }));
+        } else if (isSearch === false) {
+          let Data = {
+            EmployeeID: "",
+            EmployeeName: "",
+            EmployeeEmail: "",
+            RoleID: 0,
+            BranchName: "",
+            CreatedBy: 0,
+            ApprovedBy: 0,
+            DeactivatedBy: 0,
+            Length: dropdownvalue,
+            sRow: sRow,
+          };
+          dispatch(SearchBranchUserForUserManagementAPI({ navigate, Data }));
+        }
       }
     },
     0,

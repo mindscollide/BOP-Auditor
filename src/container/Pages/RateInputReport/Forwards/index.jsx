@@ -40,6 +40,8 @@ const Forwards = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [rateReportTblData, setRateReportTblData] = useState([]);
   const [rateReportColumns, setRateReportColumns] = useState([]);
+  const [isSearch, setIsSearch] = useState(false);
+
   const [formData, setFormData] = useState({
     employeeName: "",
     employeeId: "",
@@ -125,45 +127,54 @@ const Forwards = () => {
   }, []);
 
   useEffect(() => {
-    if (
-      GetForwardRateInputData?.forwardRateInputs?.length &&
-      GetAllTenors?.tenors?.length
-    ) {
-      try {
-        const tenors = GetAllTenors.tenors.filter(
-          (t) => t.isForwardStandard === true
-        );
+    if (GetForwardRateInputData !== null) {
+      if (GetAllTenors?.tenors?.length) {
+        const { forwardRateInputs = [], totalCount } = GetForwardRateInputData;
+        try {
+          const tenors = GetAllTenors.tenors.filter(
+            (t) => t.isForwardStandard === true
+          );
 
-        //to Optimize code
+          //to Optimize code
+          const { columns, tableData } = createTableFunc(
+            1,
+            tenors,
+            forwardRateInputs
+          );
 
-        const { columns, tableData } = createTableFunc(
-          1,
-          tenors,
-          GetForwardRateInputData.forwardRateInputs
-        );
-
-        if (tableData && tableData !== null && columns.length > 0) {
-          const newRecords = tableData || [];
-          if (isLoading) {
-            setIsLoading(false);
-            setTotalRecord(GetForwardRateInputData.totalCount);
-            setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
-            setSRow((prev) => prev + newRecords.length);
-          } else {
-            setRateReportColumns(columns);
-            setIsLoading(false);
-            setRateReportTblData(newRecords); // other wise append the new records only
-            setSRow(newRecords.length);
-            setTotalRecord(GetForwardRateInputData.totalCount);
+          if (tableData && tableData !== null && columns.length > 0) {
+            const newRecords = tableData || [];
+            if (isLoading) {
+              setIsLoading(false);
+              setTotalRecord(totalCount);
+              setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
+              setSRow((prev) => prev + newRecords.length);
+            } else {
+              setIsLoading(false);
+              setRateReportColumns(columns);
+              setRateReportTblData(newRecords); // other wise append the new records only
+              setSRow(newRecords.length);
+              setTotalRecord(totalCount);
+            }
+          } else if (GetForwardRateInputData === null) {
+            if (!isLoading) {
+              setIsLoading(false);
+              setTotalRecord(0);
+              setSRow(0);
+              setRateReportTblData([]);
+            }
           }
-        } else if (GetForwardRateInputData === null) {
+        } catch (error) {
           setIsLoading(false);
-          setTotalRecord(0);
-          setSRow(0);
-          setRateReportTblData([]);
+          console.error("Error building table:", error);
         }
-      } catch (error) {
-        console.error("Error building table:", error);
+      }
+    } else if (GetForwardRateInputData === null) {
+      if (!isLoading) {
+        setIsLoading(false);
+        setTotalRecord(0);
+        setSRow(0);
+        setRateReportTblData([]);
       }
     }
   }, [GetForwardRateInputData, GetAllTenors]);
@@ -350,7 +361,7 @@ const Forwards = () => {
   );
 
   //Handle Search Button
-  const handleSearchBtn = useCallback(() => {
+  const handleSearchBtn = () => {
     const { StartDate, EndDate } = formatDateForPayload(
       formData.dateFrom.value,
       formData.dateTo.value
@@ -366,18 +377,12 @@ const Forwards = () => {
     };
 
     dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
-  }, [
-    formData.employeeId,
-    formData.employeeName,
-    formData.dateFrom.value,
-    formData.dateTo.value,
-    dropdownvalue,
-    dispatch,
-    navigate,
-  ]);
+    setIsSearch(true);
+  };
 
   //Handle Reset Button
   const handleResetBtn = useCallback(() => {
+    setIsSearch(false);
     setShowCustomDatePicker(false);
     setFormData({
       employeeName: "",
@@ -396,7 +401,7 @@ const Forwards = () => {
     setSelectedDateRange(null);
     setRateReportTblData([]);
     setSRow(0);
-    // setIsLoading(false);
+    setIsLoading(false);
     setTotalRecord(0);
     let Data = {
       EmployeeName: "",
@@ -407,26 +412,40 @@ const Forwards = () => {
       sRow: 0,
     };
     dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
-  }, [dropdownvalue, dispatch, navigate]);
+  }, [dropdownvalue, dispatch, navigate, setIsSearch]);
 
   //Scroller Custom Hook
   useTableScrollBottomByClassName(
     () => {
       if (rateReportTblData.length !== totalRecord) {
         setIsLoading(true);
-        const { StartDate, EndDate } = formatDateForPayload(
-          formData.dateFrom.value,
-          formData.dateTo.value
-        );
-        const Data = {
-          EmployeeID: formData.employeeId || "",
-          EmployeeName: formData.employeeName || "",
-          StartDate,
-          EndDate,
-          Length: dropdownvalue,
-          sRow: sRow,
-        };
-        dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
+        if (isSearch) {
+          const { StartDate, EndDate } = formatDateForPayload(
+            formData.dateFrom.value,
+            formData.dateTo.value
+          );
+          const Data = {
+            EmployeeID:
+              formData.employeeId && isSearch ? formData.employeeId : "",
+            EmployeeName:
+              formData.employeeName && isSearch ? formData.employeeName : "",
+            StartDate: StartDate && isSearch ? StartDate : "",
+            EndDate: EndDate && isSearch ? EndDate : "",
+            Length: dropdownvalue,
+            sRow: sRow,
+          };
+          dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
+        } else if (isSearch === false) {
+          const Data = {
+            EmployeeID: "",
+            EmployeeName: "",
+            StartDate: "",
+            EndDate: "",
+            Length: dropdownvalue,
+            sRow: sRow,
+          };
+          dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
+        }
       }
     },
     0,
@@ -452,6 +471,7 @@ const Forwards = () => {
               options={dateRangeOptions}
               value={selectedDateRange}
               isSearchable={true}
+              isClearable={false}
               onChange={handleDateRangeChange}
               menuPortalTarget={document.body}
             />
@@ -551,7 +571,7 @@ const Forwards = () => {
               inputClass={styles["Tradecount-Datepicker-right"]}
               onChange={(date) => handleDateChange("dateTo", date)}
               minDate={formData.dateFrom.value}
-              maxDate={null}
+              maxDate={new Date(new Date().setHours(23, 59, 59, 999))}
               editable={false}
             />
           </Col>

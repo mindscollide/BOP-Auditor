@@ -18,6 +18,7 @@ const CustomTable = React.memo(
     style,
     bordered,
     rowKey,
+    rowId,
   }) => {
     return (
       <>
@@ -37,6 +38,7 @@ const CustomTable = React.memo(
           scroll={scroll}
           style={style}
           rowKey={rowKey}
+          id={rowId}
         />
       </>
     );

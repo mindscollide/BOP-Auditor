@@ -46,6 +46,7 @@ const FEDiscounting = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [rateReportTblData, setRateReportTblData] = useState([]);
   const [rateReportColumns, setRateReportColumns] = useState([]);
+  const [isSearch, setIsSearch] = useState(false);
 
   const [formData, setFormData] = useState({
     employeeName: "",
@@ -119,42 +120,52 @@ const FEDiscounting = () => {
 
   // //Extracting the Data
   useEffect(() => {
-    if (
-      GetFEDiscountingRateInputData?.feDiscountingRateInput?.length &&
-      GetAllTenors?.tenors?.length
-    ) {
-      try {
-        const tenors = GetAllTenors.tenors.filter(
-          (t) => t.isFEStandard === true
-        );
-        const { columns, tableData } = createTableFunc(
-          2,
-          tenors,
-          GetFEDiscountingRateInputData.feDiscountingRateInput
-        );
+    if (GetFEDiscountingRateInputData !== null) {
+      if (GetAllTenors?.tenors?.length) {
+        const { feDiscountingRateInput = [], totalCount } =
+          GetFEDiscountingRateInputData;
+        try {
+          const tenors = GetAllTenors.tenors.filter(
+            (t) => t.isFEStandard === true
+          );
+          const { columns, tableData } = createTableFunc(
+            2,
+            tenors,
+            feDiscountingRateInput
+          );
 
-        if (tableData && tableData !== null && columns.length > 0) {
-          const newRecords = tableData || [];
-          if (isLoading) {
-            setIsLoading(false);
-            setTotalRecord(GetFEDiscountingRateInputData.totalCount);
-            setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
-            setSRow((prev) => prev + newRecords.length);
-          } else {
-            setRateReportColumns(columns);
-            setIsLoading(false);
-            setRateReportTblData(newRecords); // other wise append the new records only
-            setSRow(newRecords.length);
-            setTotalRecord(GetFEDiscountingRateInputData.totalCount);
+          if (tableData && tableData !== null && columns.length > 0) {
+            const newRecords = tableData || [];
+            if (isLoading) {
+              setIsLoading(false);
+              setTotalRecord(totalCount);
+              setRateReportTblData((prev) => [...prev, ...newRecords]); // when the below hook condtion total record and reducer state is not equal get new record appended with previous
+              setSRow((prev) => prev + newRecords.length);
+            } else {
+              setRateReportColumns(columns);
+              setIsLoading(false);
+              setRateReportTblData(newRecords); // other wise append the new records only
+              setSRow(newRecords.length);
+              setTotalRecord(totalCount);
+            }
+          } else if (GetFEDiscountingRateInputData === null) {
+            if (!isLoading) {
+              setIsLoading(false);
+              setTotalRecord(0);
+              setSRow(0);
+              setRateReportTblData([]);
+            }
           }
-        } else if (GetFEDiscountingRateInputData === null) {
-          setIsLoading(false);
-          setTotalRecord(0);
-          setSRow(0);
-          setRateReportTblData([]);
+        } catch (error) {
+          console.error("Error building table:", error);
         }
-      } catch (error) {
-        console.error("Error building table:", error);
+      }
+    } else if (GetFEDiscountingRateInputData === null) {
+      if (!isLoading) {
+        setIsLoading(false);
+        setTotalRecord(0);
+        setSRow(0);
+        setRateReportTblData([]);
       }
     }
   }, [GetAllTenors, GetFEDiscountingRateInputData]);
@@ -329,6 +340,7 @@ const FEDiscounting = () => {
 
   //Handle Search Button
   const handleSearchBtn = () => {
+    setIsSearch(true);
     const { StartDate, EndDate } = formatDateForPayload(
       formData.dateFrom.value,
       formData.dateTo.value
@@ -348,6 +360,7 @@ const FEDiscounting = () => {
 
   //Handle Reset Button
   const handleResetBtn = () => {
+    setIsSearch(false);
     setShowCustomDatePicker(false);
     setFormData({
       employeeName: "",
@@ -366,7 +379,7 @@ const FEDiscounting = () => {
     setSelectedDateRange(null);
     setRateReportTblData([]);
     setSRow(0);
-    // setIsLoading(false);
+    setIsLoading(false);
     setTotalRecord(0);
     let Data = {
       EmployeeName: "",
@@ -384,19 +397,33 @@ const FEDiscounting = () => {
     () => {
       if (rateReportTblData.length !== totalRecord) {
         setIsLoading(true);
-        const { StartDate, EndDate } = formatDateForPayload(
-          formData.dateFrom.value,
-          formData.dateTo.value
-        );
-        const Data = {
-          EmployeeID: formData.employeeId || "",
-          EmployeeName: formData.employeeName || "",
-          StartDate,
-          EndDate,
-          Length: dropdownvalue,
-          sRow: sRow,
-        };
-        dispatch(GetFEDiscountingRateInputDataAPI({ navigate, Data }));
+        if (isSearch) {
+          const { StartDate, EndDate } = formatDateForPayload(
+            formData.dateFrom.value,
+            formData.dateTo.value
+          );
+          const Data = {
+            EmployeeID:
+              formData.employeeId && isSearch ? formData.employeeId : "",
+            EmployeeName:
+              formData.employeeName && isSearch ? formData.employeeName : "",
+            StartDate,
+            EndDate,
+            Length: dropdownvalue,
+            sRow: sRow,
+          };
+          dispatch(GetFEDiscountingRateInputDataAPI({ navigate, Data }));
+        } else if (isSearch === false) {
+          const Data = {
+            EmployeeID: "",
+            EmployeeName: "",
+            StartDate: "",
+            EndDate: "",
+            Length: dropdownvalue,
+            sRow: sRow,
+          };
+          dispatch(GetFEDiscountingRateInputDataAPI({ navigate, Data }));
+        }
       }
     },
     0,
@@ -422,6 +449,7 @@ const FEDiscounting = () => {
               options={dateRangeOptions}
               value={selectedDateRange}
               isSearchable={true}
+              isClearable={false}
               onChange={handleDateRangeChange}
               menuPortalTarget={document.body}
             />
@@ -521,7 +549,7 @@ const FEDiscounting = () => {
               inputClass={styles["Tradecount-Datepicker-right"]}
               onChange={(date) => handleDateChange("dateTo", date)}
               minDate={formData.dateFrom.value}
-              maxDate={null}
+              maxDate={new Date(new Date().setHours(23, 59, 59, 999))}
               editable={false}
             />
           </Col>
