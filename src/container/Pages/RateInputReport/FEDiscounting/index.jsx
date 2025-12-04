@@ -74,6 +74,7 @@ const FEDiscounting = () => {
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
 
   const handlePageSizeChange = (newSize) => {
+    setIsSearch(true);
     setDropdownvalue(newSize);
     setSRow(0);
     setIsLoading(false);
@@ -190,14 +191,14 @@ const FEDiscounting = () => {
   }, []);
 
   //Excel And PDF Icon Click Func
-  const handleExport = useCallback((format) => {
+  const handleExport = (format) => {
     console.log(typeof format, "formatformatformat");
     if (format === "excel") {
       exportToExcel();
     } else if (format === "pdf") {
       exportToPDF();
     }
-  }, []);
+  };
 
   //Export to PDF Trigger Function
   const exportToExcel = () => {
@@ -212,7 +213,7 @@ const FEDiscounting = () => {
       StartDate,
       EndDate,
     };
-
+    // console.log(Data, "Export to Excel");
     dispatch(DownloadFeDiscountingRateInputExcelReportAPI({ navigate, Data }));
   };
 
@@ -234,21 +235,24 @@ const FEDiscounting = () => {
   };
 
   //Common OnChange for textFields
-  const handleTextChange = useCallback((e) => {
-    const { name, value } = e.target;
+  const handleTextChange = (e) => {
+    const { name, value, validity } = e.target;
+    console.log(
+      { name, value, validity: validity.valid, target: e.target },
+      "formDataformData"
+    );
 
-    const cleanedValue = value.replace(/\t/g, "").trim();
+    // const cleanedValue = value.replace(/\t/g, "").trim();
 
-    if (name === "employeeId") {
-      const numericValue = cleanedValue.replace(/\D/g, "");
-      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+    if (name === "employeeId" && validity.valid) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
       return;
     }
 
-    // For all other fields, strip tabs and trim, then limit to 50 characters
-    const limitedValue = cleanedValue.slice(0, 50);
-    setFormData((prev) => ({ ...prev, [name]: limitedValue }));
-  }, []);
+    if (name === "employeeName" && validity.valid) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
 
   //new date work
   // Function to handle date range selection
@@ -460,6 +464,7 @@ const FEDiscounting = () => {
               placeholder="Employee Name"
               value={formData.employeeName}
               onChange={handleTextChange}
+              pattern={"^[a-zA-Z][a-zA-Z ]*$"}
               applyClass="TextFieldAuditors"
               maxLength={50}
             />
@@ -470,6 +475,7 @@ const FEDiscounting = () => {
               placeholder="Employee ID"
               value={formData.employeeId}
               onChange={handleTextChange}
+              pattern="^[0-9a-zA-Z]*$"
               applyClass="TextFieldAuditors"
               maxLength={15}
             />

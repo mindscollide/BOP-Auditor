@@ -14,6 +14,7 @@ import { Loader } from "./components/elements";
 import PrivateRoute from "./routes/PrivateRoute";
 import UserManagementReport from "./container/Pages/UserManagementReport";
 import MainInputReport from "./container/Pages/RateInputReport";
+import { useSelector } from "react-redux";
 
 function App() {
   const [routes, setRoutes] = useState([]);

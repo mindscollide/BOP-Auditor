@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./spot.module.css";
 import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
@@ -81,39 +75,30 @@ const Spot = () => {
     (state) => state.RateInputSlicer.GetSpotRateInputData
   );
 
-  const handlePageSizeChange = useCallback(
-    (newSize) => {
-      setDropdownvalue(newSize);
-      setSRow(0);
-      setIsLoading(false);
-      setRateReportTblData([]);
-      setTotalRecord(0);
+  const handlePageSizeChange = (newSize) => {
+    setIsSearch(true);
+    setDropdownvalue(newSize);
+    setSRow(0);
+    setIsLoading(false);
+    setRateReportTblData([]);
+    setTotalRecord(0);
 
-      const { StartDate, EndDate } = formatDateForPayload(
-        formData.dateFrom.value,
-        formData.dateTo.value
-      );
-
-      const Data = {
-        EmployeeID: formData.employeeId || "",
-        EmployeeName: formData.employeeName || "",
-        StartDate,
-        EndDate,
-        Length: newSize,
-        sRow: 0,
-      };
-
-      dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
-    },
-    [
-      formData.employeeId,
-      formData.employeeName,
+    const { StartDate, EndDate } = formatDateForPayload(
       formData.dateFrom.value,
-      formData.dateTo.value,
-      dispatch,
-      navigate,
-    ]
-  );
+      formData.dateTo.value
+    );
+
+    const Data = {
+      EmployeeID: formData.employeeId || "",
+      EmployeeName: formData.employeeName || "",
+      StartDate,
+      EndDate,
+      Length: newSize,
+      sRow: 0,
+    };
+
+    dispatch(GetSpotRateInputDataAPI({ navigate, Data }));
+  };
 
   useEffect(() => {
     try {
@@ -229,7 +214,7 @@ const Spot = () => {
   };
 
   //Common OnChange for textFields
-  const handleTextChange = useCallback((e) => {
+  const handleTextChange = (e) => {
     const { name, value, validity } = e.target;
     console.log(
       { name, value, validity: validity.valid, target: e.target },
@@ -238,15 +223,15 @@ const Spot = () => {
 
     // const cleanedValue = value.replace(/\t/g, "").trim();
 
-    if (name === "employeeId" && validity.valid === true) {
+    if (name === "employeeId" && validity.valid) {
       setFormData((prev) => ({ ...prev, [name]: value }));
       return;
     }
 
-    if (name === "employeeName") {
+    if (name === "employeeName" && validity.valid) {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-  }, []);
+  };
 
   //new date work
   // Function to handle date range selection
@@ -534,6 +519,7 @@ const Spot = () => {
               value={formData.employeeName}
               onChange={handleTextChange}
               applyClass="TextFieldAuditors"
+              pattern={"^[a-zA-Z][a-zA-Z ]*$"}
               maxLength={50}
             />
           </Col>
@@ -544,7 +530,7 @@ const Spot = () => {
               value={formData.employeeId}
               onChange={handleTextChange}
               applyClass="TextFieldAuditors"
-              pattern="^[0-9]*$"
+              pattern="^[0-9a-zA-Z]*$"
               maxLength={15}
             />
           </Col>

@@ -18,7 +18,7 @@ const AuditorSlice = createSlice({
     // GetNonFEDiscountingRateInputData: null,
   },
   reducers: {
-    clearAuthResponseMessage: (state) => {
+    clearAuditorResponseMessage: (state) => {
       state.responseMessage = "";
     },
   },
@@ -154,5 +154,5 @@ const AuditorSlice = createSlice({
     // );
   },
 });
-export const { clearAuthResponseMessage } = AuditorSlice.actions;
+export const { clearAuditorResponseMessage } = AuditorSlice.actions;
 export default AuditorSlice.reducer;

@@ -165,16 +165,16 @@ const Corporate = () => {
   };
 
   const handlePageSizeChange = (newSize) => {
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      showMessage("Please enter a valid email address.");
+      return;
+    }
+    setIsSearch(true);
     setDropdownvalue(newSize);
     setSRow(0);
     setIsLoading(false);
     setUserManagementCorpTblData([]);
     setTotalRecord(0);
-
-    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      showMessage("Please enter a valid email address.");
-      return;
-    }
 
     let Data = {
       CorporateUser: formData.corporateUser || "",
@@ -286,9 +286,10 @@ const Corporate = () => {
     const { name, value, validity } = e.target;
     console.log({ name, value }, "value");
 
-    if (name === "email") {
+    if (name === "email" && !value.includes(" ")) {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
+    if (name === "email" && value.includes(" ")) return;
 
     if (name === "corporateUser" && validity.valid) {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -550,7 +551,7 @@ const Corporate = () => {
               name="corporateUser"
               placeholder="Corporate User"
               applyClass="TextFieldAuditors"
-              pattern={"^[A-Za-z ]+$"}
+              pattern={"^[A-Za-z][A-Za-z ]*$"}
               maxLength={50}
               value={formData.corporateUser}
               onChange={handleTextChange}
@@ -564,7 +565,7 @@ const Corporate = () => {
               applyClass="TextFieldAuditors"
               maxLength={50}
               value={formData.corporateName}
-              pattern={"^[A-Za-z ]+$"}
+              pattern={"^[A-Za-z][A-Za-z ]*$"}
               onChange={handleTextChange}
             />
           </Col>

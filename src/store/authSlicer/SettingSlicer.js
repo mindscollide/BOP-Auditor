@@ -14,7 +14,7 @@ const SettingsSlice = createSlice({
     updateUserSettingsApiData: null,
   },
   reducers: {
-    clearAuthResponseMessage: (state) => {
+    clearSettingResponseMessage: (state) => {
       state.responseMessage = "";
     },
   },
@@ -58,5 +58,5 @@ const SettingsSlice = createSlice({
       });
   },
 });
-export const { clearAuthResponseMessage } = SettingsSlice.actions;
+export const { clearSettingResponseMessage } = SettingsSlice.actions;
 export default SettingsSlice.reducer;

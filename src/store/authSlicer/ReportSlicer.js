@@ -43,7 +43,7 @@ const ReportSlice = createSlice({
     DownloadCorporateUserForAuditorReportPDF: null,
   },
   reducers: {
-    clearAuthResponseMessage: (state) => {
+    clearReportResponseMessage: (state) => {
       state.responseMessage = "";
     },
   },
@@ -384,5 +384,5 @@ const ReportSlice = createSlice({
       );
   },
 });
-export const { clearAuthResponseMessage } = ReportSlice.actions;
+export const { clearReportResponseMessage } = ReportSlice.actions;
 export default ReportSlice.reducer;

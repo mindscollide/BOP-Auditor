@@ -37,7 +37,7 @@ export const GetUserSettingsAuditorAPI = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Data Available",
+              message: "",
             };
           } else if (
             msg.includes("Setting_SettingServiceManager_GetUserSettings_02")

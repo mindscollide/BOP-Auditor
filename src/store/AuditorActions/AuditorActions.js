@@ -41,7 +41,7 @@ export const GetTransactionDetailsByBankAuditor = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Data Available",
+              message: "",
             };
           } else if (
             msg.includes(
@@ -108,7 +108,7 @@ export const GetTransactionDetailsByCorporateAuditor = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Data Available",
+              message: "",
             };
           } else if (
             msg.includes(

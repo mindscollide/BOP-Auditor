@@ -29,32 +29,45 @@ export const loginInApi = createAsyncThunk(
 
           switch (responseMessage.toLowerCase()) {
             case "ERM_AuthService_AuthManager_Login_01".toLowerCase():
+              return rejectWithValue("Device is Empty");
             case "ERM_AuthService_AuthManager_Login_02".toLowerCase():
+              return rejectWithValue("Device ID is Empty");
+
             case "ERM_AuthService_AuthManager_Login_04".toLowerCase():
+              return rejectWithValue("LDAP Auth Failed");
+
             case "ERM_AuthService_AuthManager_Login_05".toLowerCase():
               return rejectWithValue("User is Locked");
+
             case "ERM_AuthService_AuthManager_Login_06".toLowerCase():
               return rejectWithValue("User is Disabled");
+
             case "ERM_AuthService_AuthManager_Login_07".toLowerCase():
               return rejectWithValue("User is Closed");
+
             case "ERM_AuthService_AuthManager_Login_08".toLowerCase():
               return rejectWithValue("User is Dormant");
+
             case "ERM_AuthService_AuthManager_Login_09".toLowerCase():
               return rejectWithValue("Login Failed");
+
             case "ERM_AuthService_AuthManager_Login_10".toLowerCase():
               return rejectWithValue("Login Failed");
+
             case "ERM_AuthService_AuthManager_Login_11".toLowerCase():
               return rejectWithValue("Someting went wrong");
+
             case "ERM_AuthService_AuthManager_Login_12".toLowerCase():
-              console.log("", response.data);
-              return rejectWithValue("Not A valid role to login");
+              return rejectWithValue("Invalid Role");
 
             case "ERM_AuthService_AuthManager_Login_13".toLowerCase():
               console.log("", response.data);
               return rejectWithValue("Branch is InActive");
+
             case "ERM_AuthService_AuthManager_Login_14".toLowerCase():
               console.log("", response.data);
               return rejectWithValue("Invalid Role");
+
             case "ERM_AuthService_AuthManager_Login_03".toLowerCase(): {
               const {
                 branch,
@@ -84,7 +97,7 @@ export const loginInApi = createAsyncThunk(
 
               return {
                 response: response.data.responseResult,
-                message: "Successfully logged In",
+                message: "",
               };
             }
 
@@ -205,7 +218,7 @@ export const logoutApi = createAsyncThunk(
               navigate("/");
               return {
                 response: resResult,
-                message: "Successfully logged out",
+                message: "",
               };
 
             case "ERM_AuthService_AuthManager_LogOut_02":

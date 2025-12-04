@@ -7,7 +7,7 @@ import Spot from "./Spot";
 import Forwards from "./Forwards";
 import FEDiscounting from "./FEDiscounting";
 import NonFEDiscounting from "./NonFEDiscounting";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GetAllTenorsAPI } from "../../../store/RateInputActions/RateInputActions";
 

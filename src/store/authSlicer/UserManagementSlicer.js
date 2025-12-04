@@ -10,13 +10,14 @@ const userManagementSlicer = createSlice({
   name: "userManagement",
   initialState: {
     Loader: false,
+    responseMessage: "",
     GetRoleforUserManagement: null,
     GetAdminEmailforUserManagement: null,
     SearchBranchUserForUserManagement: null,
     SearchCorporateUserForUserManagement: null,
   },
   reducers: {
-    clearAuthResponseMessage: (state) => {
+    clearUserManagementResponseMessage: (state) => {
       state.responseMessage = "";
     },
   },
@@ -107,6 +108,7 @@ const userManagementSlicer = createSlice({
   },
 });
 
-export const { clearAuthResponseMessage } = userManagementSlicer.actions;
+export const { clearUserManagementResponseMessage } =
+  userManagementSlicer.actions;
 
 export default userManagementSlicer.reducer;

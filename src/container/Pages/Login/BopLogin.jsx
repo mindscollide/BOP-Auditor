@@ -8,12 +8,14 @@ import { updateEmail, updatePassword, updateUsername } from "./Loginfunctions";
 import IconElement from "../../../components/IconElement/IconElement";
 import CustomButton from "../../../components/elements/globalButton/button";
 import { loginInApi } from "./logInAction";
+import { useNotification } from "../../../context/NotificationProvider";
 
 // Conditionally import CustomButton based on the environment variables
 const BopLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  useEffect(() => {}, []);
+  const { showMessage } = useNotification();
+
   const passwordRef = useRef(null);
   const [crendentials, setCredentials] = useState({
     email: "",

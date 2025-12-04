@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./NonFEDiscounting.module.css";
 import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
@@ -66,6 +66,7 @@ const NonFEDiscounting = () => {
   });
 
   const handlePageSizeChange = (newSize) => {
+    setIsSearch(true);
     setDropdownvalue(newSize);
     setSRow(0);
     setIsLoading(false);
@@ -174,9 +175,9 @@ const NonFEDiscounting = () => {
   }, [GetAllTenors, GetNonFEDiscountingRateInputData]);
 
   //Toggle Functino to view Export Icons
-  const toggleExportOptions = useCallback(() => {
+  const toggleExportOptions = () => {
     setOpen((prev) => !prev);
-  }, []);
+  };
 
   // Automatically export icons closed UseEffect using Useref Hook
   useEffect(() => {
@@ -239,21 +240,18 @@ const NonFEDiscounting = () => {
   };
 
   //Common OnChange for textFields
-  const handleTextChange = useCallback((e) => {
-    const { name, value } = e.target;
+  const handleTextChange = (e) => {
+    const { name, value, validity } = e.target;
 
-    const cleanedValue = value.replace(/\t/g, "").trim();
-
-    if (name === "employeeId") {
-      const numericValue = cleanedValue.replace(/\D/g, "");
-      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+    if (name === "employeeId" && validity.valid) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
       return;
     }
 
-    // For all other fields, strip tabs and trim, then limit to 50 characters
-    const limitedValue = cleanedValue.slice(0, 50);
-    setFormData((prev) => ({ ...prev, [name]: limitedValue }));
-  }, []);
+    if (name === "employeeName" && validity.valid) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
 
   //new date work
   // Function to handle date range selection
@@ -464,6 +462,7 @@ const NonFEDiscounting = () => {
               placeholder="Employee Name"
               maxLength={50}
               value={formData.employeeName}
+              pattern={"^[a-zA-Z][a-zA-Z ]*$"}
               onChange={handleTextChange}
               applyClass="TextFieldAuditors"
             />
@@ -473,6 +472,7 @@ const NonFEDiscounting = () => {
               name="employeeId"
               placeholder="Employee ID"
               maxLength={15}
+              pattern="^[0-9a-zA-Z]*$"
               value={formData.employeeId}
               onChange={handleTextChange}
               applyClass="TextFieldAuditors"

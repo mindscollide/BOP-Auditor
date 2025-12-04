@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "../UserManagementReport.module.css";
 import { Col, Row } from "react-bootstrap";
 import pdfIcon from "../../../../assets/images/pdf.png";
@@ -203,16 +203,16 @@ const Branch = () => {
   });
 
   const handlePageSizeChange = (newSize) => {
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      showMessage("Please enter a valid email address.");
+      return;
+    }
+    setIsSearch(true);
     setDropdownvalue(newSize);
     setSRow(0);
     setIsLoading(false);
     setUserManagementBranchTblData([]);
     setTotalRecord(0);
-
-    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      showMessage("Please enter a valid email address.");
-      return;
-    }
 
     let Data = {
       EmployeeID: formData.employeeID || "",
@@ -331,7 +331,7 @@ const Branch = () => {
     };
   }, []);
 
-  const handleTextChange = useCallback((e) => {
+  const handleTextChange = (e) => {
     const { name, value, validity } = e.target;
     console.log(
       { name, value, validity: validity.valid, target: e.target },
@@ -344,17 +344,19 @@ const Branch = () => {
       setFormData((prev) => ({ ...prev, [name]: value }));
       return;
     }
-    if (name === "email") {
+    if (name === "email" && !value.includes(" ")) {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
+    if (name === "email" && value.includes(" ")) return;
 
     if (name === "employeeName" && validity.valid) {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-    if (name === "branchName") {
+    if (name === "branchName" && validity.valid) {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-  }, []);
+  };
+
   //Handle Search Button
   const handleSearchBtn = () => {
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
@@ -656,7 +658,7 @@ const Branch = () => {
               applyClass="TextFieldAuditors"
               maxLength={50}
               value={formData.employeeName}
-              pattern={"^[A-Za-z ]+$"}
+              pattern={"^[a-zA-Z][a-zA-Z ]*$"}
               onChange={handleTextChange}
             />
           </Col>
@@ -678,6 +680,7 @@ const Branch = () => {
                 placeholder="Branch Name"
                 applyClass="TextFieldAuditors"
                 value={formData.branchName}
+                pattern={"^[a-zA-Z][a-zA-Z ]*$"}
                 onChange={handleTextChange}
                 maxLength={50}
               />

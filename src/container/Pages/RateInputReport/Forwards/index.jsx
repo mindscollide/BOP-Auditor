@@ -72,39 +72,30 @@ const Forwards = () => {
   );
   const GetAllTenors = useSelector((state) => state.authReducer.getAllTenors);
 
-  const handlePageSizeChange = useCallback(
-    (newSize) => {
-      setDropdownvalue(newSize);
-      setSRow(0);
-      setIsLoading(false);
-      setRateReportTblData([]); // other wise append the new records only
-      setTotalRecord(0);
+  const handlePageSizeChange = (newSize) => {
+    setIsSearch(true);
+    setDropdownvalue(newSize);
+    setSRow(0);
+    setIsLoading(false);
+    setRateReportTblData([]); // other wise append the new records only
+    setTotalRecord(0);
 
-      const { StartDate, EndDate } = formatDateForPayload(
-        formData.dateFrom.value,
-        formData.dateTo.value
-      );
-
-      const Data = {
-        EmployeeID: formData.employeeId || "",
-        EmployeeName: formData.employeeName || "",
-        StartDate,
-        EndDate,
-        Length: newSize,
-        sRow: 0,
-      };
-
-      dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
-    },
-    [
-      formData.employeeId,
-      formData.employeeName,
+    const { StartDate, EndDate } = formatDateForPayload(
       formData.dateFrom.value,
-      formData.dateTo.value,
-      dispatch,
-      navigate,
-    ]
-  );
+      formData.dateTo.value
+    );
+
+    const Data = {
+      EmployeeID: formData.employeeId || "",
+      EmployeeName: formData.employeeName || "",
+      StartDate,
+      EndDate,
+      Length: newSize,
+      sRow: 0,
+    };
+
+    dispatch(GetForwardRateInputDataAPI({ navigate, Data }));
+  };
 
   useEffect(() => {
     try {
@@ -197,42 +188,32 @@ const Forwards = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  //Excel And PDF Icon Click Func
-  const handleExport = useCallback((format) => {
+  const handleExport = (format) => {
+    console.log(typeof format, "formatformatformat");
     if (format === "excel") {
       exportToExcel();
     } else if (format === "pdf") {
       exportToPDF();
     }
-  }, []);
-
+  };
   //Export to PDF Trigger Function
-  const exportToExcel = useCallback(() => {
+  const exportToExcel = () => {
     const { StartDate, EndDate } = formatDateForPayload(
       formData.dateFrom.value,
       formData.dateTo.value
     );
 
     const Data = {
-      EmployeeID: formData.employeeId || "",
-      EmployeeName: formData.employeeName || "",
+      EmployeeID: formData?.employeeId ? formData.employeeId : "",
+      EmployeeName: formData?.employeeName ? formData.employeeName : "",
       StartDate,
       EndDate,
     };
-
     dispatch(DownloadForwardRateInputExcelReportAPI({ navigate, Data }));
-  }, [
-    formData.employeeId,
-    formData.employeeName,
-    formData.dateFrom.value,
-    formData.dateTo.value,
-    dispatch,
-    navigate,
-  ]);
+  };
 
   //Export to Excel Trigger Function
-  const exportToPDF = useCallback(() => {
+  const exportToPDF = () => {
     const { StartDate, EndDate } = formatDateForPayload(
       formData.dateFrom.value,
       formData.dateTo.value
@@ -244,33 +225,28 @@ const Forwards = () => {
       StartDate,
       EndDate,
     };
-
+    console.log(Data, "Export to PDF");
     dispatch(DownloadForwardRateInputReportPDFAPI({ navigate, Data }));
-  }, [
-    formData.employeeId,
-    formData.employeeName,
-    formData.dateFrom.value,
-    formData.dateTo.value,
-    dispatch,
-    navigate,
-  ]);
-  //Common OnChange for textFields
-  const handleTextChange = useCallback((e) => {
-    const { name, value } = e.target;
+  };
 
-    const cleanedValue = value.replace(/\t/g, "").trim();
+  const handleTextChange = (e) => {
+    const { name, value, validity } = e.target;
+    console.log(
+      { name, value, validity: validity.valid, target: e.target },
+      "formDataformData"
+    );
 
-    if (name === "employeeId") {
-      const numericValue = cleanedValue.replace(/\D/g, "");
-      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+    // const cleanedValue = value.replace(/\t/g, "").trim();
+
+    if (name === "employeeId" && validity.valid) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
       return;
     }
 
-    // For all other fields, strip tabs and trim, then limit to 50 characters
-    const limitedValue = cleanedValue.slice(0, 50);
-    setFormData((prev) => ({ ...prev, [name]: limitedValue }));
-  }, []);
-
+    if (name === "employeeName" && validity.valid) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
   //new date work
   // Function to handle date range selection
   const handleDateRangeChange = useCallback((selectedOption) => {
@@ -482,6 +458,7 @@ const Forwards = () => {
               placeholder="Employee Name"
               value={formData.employeeName}
               onChange={handleTextChange}
+              pattern={"^[a-zA-Z][a-zA-Z ]*$"}
               applyClass="TextFieldAuditors"
               maxLength={50}
             />
@@ -491,6 +468,7 @@ const Forwards = () => {
               name="employeeId"
               placeholder="Employee ID"
               value={formData.employeeId}
+              pattern={"^[a-zA-Z0-9]*$"}
               onChange={handleTextChange}
               applyClass="TextFieldAuditors"
               maxLength={15}
