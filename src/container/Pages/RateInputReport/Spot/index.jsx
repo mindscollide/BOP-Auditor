@@ -628,7 +628,7 @@ const Spot = () => {
               column={RateReportColumns}
               rows={rateReportTblData}
               pagination={false}
-              scroll={{ y: "30vh" }}
+              scroll={{ y: "40vh" }}
               className={"BankUserList-table"}
             />
           </Col>

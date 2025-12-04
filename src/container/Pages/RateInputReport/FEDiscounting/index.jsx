@@ -574,7 +574,7 @@ const FEDiscounting = () => {
               column={rateReportColumns}
               rows={rateReportTblData}
               pagination={false}
-              scroll={{ x: "scroll", y: "30vh" }}
+              scroll={{ x: "scroll", y: "45vh" }}
               className={"BankUserList-table"}
             />
           </Col>

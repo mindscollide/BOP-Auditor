@@ -569,7 +569,7 @@ const Forwards = () => {
               rows={rateReportTblData}
               pagination={false}
               rowKey={(data, index) => index}
-              scroll={{ x: "max-content", y: "30vh" }}
+              scroll={{ x: "max-content", y: "45vh" }}
               className={"RateInputForward-table"}
             />
           </Col>

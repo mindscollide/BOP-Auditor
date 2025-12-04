@@ -572,7 +572,7 @@ const NonFEDiscounting = () => {
               column={rateReportColumns}
               rows={rateReportTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: "30vh" }}
+              scroll={{ x: "max-content", y: "45vh" }}
               className={"BankUserList-table"}
             />
           </Col>
