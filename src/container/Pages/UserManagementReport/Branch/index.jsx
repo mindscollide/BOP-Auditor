@@ -351,6 +351,9 @@ const Branch = () => {
     if (name === "employeeName" && validity.valid) {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
+    if (name === "branchName") {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   }, []);
   //Handle Search Button
   const handleSearchBtn = () => {
