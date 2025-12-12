@@ -45,28 +45,28 @@ export const createTableFunc = (value, tenors, data) => {
           },
         ],
       },
-      {
-        title: "",
-        key: "employeestatuscol",
+      // {
+      //   title: "",
+      //   key: "employeestatuscol",
 
-        children: [
-          {
-            title: "Status",
-            dataIndex: "status",
-            key: "status",
-            width: 70,
-            render: (text) => (
-              <span
-                style={{
-                  color: text?.toLowerCase() === "active" ? "green" : "red",
-                }}
-              >
-                {text}
-              </span>
-            ),
-          },
-        ],
-      },
+      //   children: [
+      //     {
+      //       title: "Status",
+      //       dataIndex: "status",
+      //       key: "status",
+      //       width: 70,
+      //       render: (text) => (
+      //         <span
+      //           style={{
+      //             color: text?.toLowerCase() === "active" ? "green" : "red",
+      //           }}
+      //         >
+      //           {text}
+      //         </span>
+      //       ),
+      //     },
+      //   ],
+      // },
       {
         title: "",
         children: [
@@ -159,21 +159,21 @@ export const createTableFunc = (value, tenors, data) => {
         key: "emailID",
         width: 220,
       },
-      {
-        title: "Status",
-        dataIndex: "status",
-        key: "status",
-        width: 100,
-        render: (text) => (
-          <span
-            style={{
-              color: text?.toLowerCase() === "active" ? "green" : "red",
-            }}
-          >
-            {text}
-          </span>
-        ),
-      },
+      // {
+      //   title: "Status",
+      //   dataIndex: "status",
+      //   key: "status",
+      //   width: 100,
+      //   render: (text) => (
+      //     <span
+      //       style={{
+      //         color: text?.toLowerCase() === "active" ? "green" : "red",
+      //       }}
+      //     >
+      //       {text}
+      //     </span>
+      //   ),
+      // },
       {
         title: "Time Stamps",
         dataIndex: "timeStamps",
@@ -258,21 +258,21 @@ export const createTableFunc = (value, tenors, data) => {
         key: "emailID",
         width: 120,
       },
-      {
-        title: "Status",
-        dataIndex: "status",
-        key: "status",
-        width: 70,
-        render: (text) => (
-          <span
-            style={{
-              color: text?.toLowerCase() === "active" ? "green" : "red",
-            }}
-          >
-            {text}
-          </span>
-        ),
-      },
+      // {
+      //   title: "Status",
+      //   dataIndex: "status",
+      //   key: "status",
+      //   width: 70,
+      //   render: (text) => (
+      //     <span
+      //       style={{
+      //         color: text?.toLowerCase() === "active" ? "green" : "red",
+      //       }}
+      //     >
+      //       {text}
+      //     </span>
+      //   ),
+      // },
       {
         title: "Time Stamps",
         dataIndex: "timeStamps",

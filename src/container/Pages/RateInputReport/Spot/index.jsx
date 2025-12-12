@@ -399,21 +399,21 @@ const Spot = () => {
         ellipsis: true,
         width: 200,
       },
-      {
-        title: "Status",
-        dataIndex: "status",
-        key: "status",
-        width: 100,
-        render: (text) => (
-          <span
-            style={{
-              color: text?.toLowerCase() === "active" ? "green" : "red",
-            }}
-          >
-            {text}
-          </span>
-        ),
-      },
+      // {
+      //   title: "Status",
+      //   dataIndex: "status",
+      //   key: "status",
+      //   width: 100,
+      //   render: (text) => (
+      //     <span
+      //       style={{
+      //         color: text?.toLowerCase() === "active" ? "green" : "red",
+      //       }}
+      //     >
+      //       {text}
+      //     </span>
+      //   ),
+      // },
       {
         title: "Time Stamps",
         dataIndex: "timeStamps",
