@@ -363,6 +363,15 @@ const AuditTrialByCorporate = () => {
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
+      title: "Squaring Rate",
+      dataIndex: "squaringRate",
+      key: "squaringRate",
+      width: 120,
+      ellipsis: true,
+      align: "center",
+      render: (text) => <span>{formatPkAmount(text)}</span>,
+    },
+    {
       title: "CCY2",
       dataIndex: "ccY2",
       key: "ccY2",
@@ -506,13 +515,13 @@ const AuditTrialByCorporate = () => {
           </span>
         </Col>
       </Row>
-      <CustomPaper variant="outlined">
+      <CustomPaper variant='outlined'>
         <Row>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              name="txnId"
-              placeholder="TXN ID"
-              applyClass="TextFieldAuditors"
+              name='txnId'
+              placeholder='TXN ID'
+              applyClass='TextFieldAuditors'
               maxLength={50}
               value={formData.txnId}
               onChange={handleTextChange}
@@ -521,19 +530,19 @@ const AuditTrialByCorporate = () => {
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
               maxLength={50}
-              name="corporateUser"
-              placeholder="Corporate User"
-              applyClass="TextFieldAuditors"
+              name='corporateUser'
+              placeholder='Corporate User'
+              applyClass='TextFieldAuditors'
               value={formData.corporateUser}
               onChange={handleTextChange}
             />
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              name="corporateName"
+              name='corporateName'
               maxLength={50}
-              placeholder="Corporate Name"
-              applyClass="TextFieldAuditors"
+              placeholder='Corporate Name'
+              applyClass='TextFieldAuditors'
               value={formData.corporateName}
               onChange={handleTextChange}
             />
@@ -541,21 +550,21 @@ const AuditTrialByCorporate = () => {
           <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
               maxLength={50}
-              name="txnByTreasuryUser"
-              placeholder="Transaction Accepted by Treasury Sales"
-              applyClass="TextFieldAuditors"
+              name='txnByTreasuryUser'
+              placeholder='Transaction Accepted by Treasury Sales'
+              applyClass='TextFieldAuditors'
               value={formData.txnByTreasuryUser}
               onChange={handleTextChange}
             />
           </Col>
-          <Col lg={3} md={3} sm={12} className="d-flex align-items-center ">
+          <Col lg={3} md={3} sm={12} className='d-flex align-items-center '>
             <DatePicker
-              name="dateFrom"
-              placeholder="Start Date"
+              name='dateFrom'
+              placeholder='Start Date'
               value={startDate}
               onChange={handleStartDateChange}
               inputClass={styles["Tradecount-Datepicker-left"]}
-              labelClass="d-none"
+              labelClass='d-none'
               showOtherDays
               editable={false}
               maxDate={endDate}
@@ -565,12 +574,12 @@ const AuditTrialByCorporate = () => {
             <label className={styles["Tradecount-date-to"]}>to</label>
 
             <DatePicker
-              name="dateTo"
+              name='dateTo'
               value={endDate}
               onChange={handleEndDateChange}
-              placeholder="End Date"
+              placeholder='End Date'
               inputClass={styles["Tradecount-Datepicker-right"]}
-              labelClass="d-none"
+              labelClass='d-none'
               showOtherDays
               minDate={startDate}
               maxDate={new Date(new Date().setHours(23, 59, 59, 999))}
@@ -578,47 +587,45 @@ const AuditTrialByCorporate = () => {
             />
           </Col>
         </Row>
-        <Row className="mt-4">
+        <Row className='mt-4'>
           <Col
             lg={12}
             md={12}
             sm={12}
             xs={12}
-            className="d-flex justify-content-center gap-2"
-          >
+            className='d-flex justify-content-center gap-2'>
             <Button
-              icon={<i className="icon-search icon-check-space"></i>}
+              icon={<i className='icon-search icon-check-space'></i>}
               value={"Search"}
               className={styles["SearchButtonStyles"]}
               onClick={handleSearchBtn}
             />
             <Button
-              icon={<i className="icon-refresh"></i>}
+              icon={<i className='icon-refresh'></i>}
               value={"Reset"}
               className={styles["ResetButtonStyles"]}
               onClick={handleResetBtn}
             />
 
-            <div className="position-relative" ref={exportRef}>
+            <div className='position-relative' ref={exportRef}>
               <Button
-                icon={<i className="icon-download"></i>}
+                icon={<i className='icon-download'></i>}
                 className={styles["Export_Button"]}
-                value="Export"
+                value='Export'
                 iconClass={styles["resetIconClass"]}
                 onClick={toggleExportOptions}
               />
               <span
                 className={`${styles["Export_optionsBox"]} ${
                   open ? styles["open"] : styles["closed"]
-                }`}
-              >
+                }`}>
                 <Button
-                  icon={<img src={excelIcon} alt="Excel Icon" />}
+                  icon={<img src={excelIcon} alt='Excel Icon' />}
                   onClick={() => handleExport("excel")}
                   className={styles["export-button"]}
                 />
                 <Button
-                  icon={<img src={pdfIcon} alt="PDF Icon" />}
+                  icon={<img src={pdfIcon} alt='PDF Icon' />}
                   onClick={() => handleExport("pdf")}
                   className={styles["export-button"]}
                 />
@@ -626,7 +633,7 @@ const AuditTrialByCorporate = () => {
             </div>
           </Col>
         </Row>
-        <Row className="mt-5">
+        <Row className='mt-5'>
           <Col lg={12} md={12} sm={12}>
             <ExportShowComponent
               value={dropdownvalue}
@@ -634,7 +641,7 @@ const AuditTrialByCorporate = () => {
             />
           </Col>
         </Row>
-        <Row className="">
+        <Row className=''>
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={AuditTrialByCorporate}

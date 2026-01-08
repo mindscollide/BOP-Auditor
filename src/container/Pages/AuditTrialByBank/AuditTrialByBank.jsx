@@ -374,6 +374,15 @@ const AuditTrialByBankCom = () => {
       render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
+      title: "Squaring Rate",
+      dataIndex: "squaringRate",
+      key: "squaringRate",
+      width: 120,
+      ellipsis: true,
+      align: "center",
+      render: (text) => <span>{formatPkAmount(text)}</span>,
+    },
+    {
       title: "CCY2",
       dataIndex: "ccY2",
       key: "ccY2",
