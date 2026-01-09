@@ -512,7 +512,7 @@ const Spot = () => {
               menuPortalTarget={document.body}
             />
           </Col>
-          <Col lg={2} md={2} sm={2} xs={12}>
+          <Col lg={2} md={6} sm={6} xs={12}>
             <TextField
               name="employeeName"
               placeholder="Employee Name"
@@ -523,7 +523,7 @@ const Spot = () => {
               maxLength={50}
             />
           </Col>
-          <Col lg={2} md={2} sm={2} xs={12}>
+          <Col lg={2} md={6} sm={6} xs={12}>
             <TextField
               name="employeeId"
               placeholder="Employee ID"
@@ -536,8 +536,8 @@ const Spot = () => {
           </Col>
           <Col
             lg={5}
-            md={5}
-            sm={5}
+            md={12}
+            sm={12}
             xs={12}
             className="d-flex justify-content-start gap-2"
           >
