@@ -491,15 +491,14 @@
 .authLoginBtn {
   border-radius: 4px !important;
   font-size: 14px !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   transition: all 0.3s ease-in !important;
   -webkit-transition: all 0.3s ease-in !important;
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%);
   border-color: #e97225 !important;
   padding: 0.5rem 1.5rem !important;
   height: auto !important;
-  font-weight: 700;
-  font-family: "POPPINS";
+  /* font-family: "POPPINS"; */
   margin: 0 auto;
 }
 

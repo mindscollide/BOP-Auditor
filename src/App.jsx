@@ -9,12 +9,12 @@ import "./assets/globalstyles/height.css";
 import Dashboard from "./container/Dashboard";
 import AuditTrialByBank from "./container/Pages/AuditTrialByBank/AuditTrialByBank";
 import AuditTrialByCorporate from "./container/Pages/AuditTrialByCorporate/AuditTrialByCorporate";
-import TradeCount from "./container/Pages/TradeCount/TradeCount";
-import ActivityByBank from "./container/Pages/ActivityByBank/ActivityByBank";
-import ActivityByCorporate from "./container/Pages/ActivityByCorporate/ActivityByCorporate";
 import BopLogin from "./container/Pages/Login/BopLogin";
 import { Loader } from "./components/elements";
 import PrivateRoute from "./routes/PrivateRoute";
+import UserManagementReport from "./container/Pages/UserManagementReport";
+import MainInputReport from "./container/Pages/RateInputReport";
+import { useSelector } from "react-redux";
 
 function App() {
   const [routes, setRoutes] = useState([]);
@@ -38,16 +38,12 @@ function App() {
           element: <PrivateRoute element={<AuditTrialByCorporate />} />,
         },
         {
-          path: "TradeCount",
-          element: <PrivateRoute element={<TradeCount />} />,
+          path: "userManagement",
+          element: <PrivateRoute element={<UserManagementReport />} />,
         },
         {
-          path: "ActivityByBank",
-          element: <PrivateRoute element={<ActivityByBank />} />,
-        },
-        {
-          path: "ActivityByCorporate",
-          element: <PrivateRoute element={<ActivityByCorporate />} />,
+          path: "rateInputReport",
+          element: <PrivateRoute element={<MainInputReport />} />,
         },
       ],
     };

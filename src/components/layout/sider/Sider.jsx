@@ -1,128 +1,101 @@
-import React, { Fragment } from "react";
-import { Row, Col, Nav, Container, Navbar, NavDropdown } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { Breadcrumb, Layout, Menu } from "antd";
-import Users from "../../../assets/images/Assignees-Icon.png";
-import Broadcast from "../../../assets/images/6.png";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Nav, Navbar } from "react-bootstrap";
 import "./Sidebar.css";
 
 const Sidebar = () => {
-  const { SubMenu } = Menu;
-  const { Sider } = Layout;
-  const navigate = useNavigate();
-  let defaultOpenKey = localStorage.getItem("defaultOpenKey ");
-  let defaultSelectedKey = localStorage.getItem("defaultSelectedKey");
+  const [expandedKey, setExpandedKey] = useState(
+    localStorage.getItem("defaultOpenKey") || null
+  );
+  const location = useLocation();
 
-  //Create User Page Name is Pending User Requests
+  // const selectedKey = localStorage.getItem("defaultSelectedKey");
 
-  const navigateToBankUser = () => {
-    localStorage.setItem("defaultOpenKey ", "sub1");
-    localStorage.setItem("defaultSelectedKey", "5");
-    navigate("/BOP/audittrailbank");
+  const handleToggle = (eventKey) => {
+    if (eventKey === "sub1") {
+      setExpandedKey(expandedKey === eventKey ? null : eventKey);
+      localStorage.setItem(
+        "defaultOpenKey",
+        expandedKey === eventKey ? null : eventKey
+      );
+    }
   };
 
-  const navigateToCorporateUser = () => {
-    localStorage.setItem("defaultOpenKey ", "sub1");
-    localStorage.setItem("defaultSelectedKey", "6");
-    navigate("/BOP/audittrailCorporate");
+  const handleItemClick = (selectedKey) => {
+    localStorage.setItem("defaultSelectedKey", selectedKey);
   };
-
-  const navigateToTradeCount = () => {
-    localStorage.setItem("defaultOpenKey ", "sub1");
-    localStorage.setItem("defaultSelectedKey", "7");
-    navigate("/BOP/TradeCount");
-  };
-
-  const navigateToActivityByBank = () => {
-    localStorage.setItem("defaultOpenKey ", "sub1");
-    localStorage.setItem("defaultSelectedKey", "8");
-    navigate("/BOP/ActivityByBank");
-  };
-
-  const navigateToActivityByCorporate = () => {
-    localStorage.setItem("defaultOpenKey ", "sub1");
-    localStorage.setItem("defaultSelectedKey", "9");
-    navigate("/BOP/ActivityByCorporate");
-  };
-
-  let defaultKeySidebar = localStorage.getItem("defaultSelectedKey");
 
   return (
-    <Row>
-      <Col lg={12} md={12} sm={12}>
-        <Menu
-          theme="dark"
-          defaultOpenKeys={[defaultOpenKey]}
-          defaultSelectedKeys={[defaultSelectedKey]}
-          mode="inline"
-          className="Menu-sidebar-class"
-        >
-          <SubMenu
-            key="sub1"
-            icon={<i className="icon-file"></i>}
-            title="Audit Trail"
-            className="submenu-sidebar-icons"
+    <Navbar expand={false} className="sidebar-navbar">
+      <Nav className="w-100">
+        {/* Reports Section */}
+        <Nav.Item className="sidebar-menu-group">
+          <Nav.Link
+            onClick={() => handleToggle("sub1")}
+            className="sidebar-menu-header"
           >
-            <Menu.Item
-              className={
-                defaultKeySidebar !== "5"
-                  ? "menu-items-sidebar noDefault"
-                  : "menu-items-sidebar"
-              }
-              key="5"
-              onClick={navigateToBankUser}
-            >
-              Audit Trail by Bank
-            </Menu.Item>
-            <Menu.Item
-              className={
-                defaultKeySidebar !== "6"
-                  ? "menu-items-sidebar noDefault"
-                  : "menu-items-sidebar"
-              }
-              key="6"
-              onClick={navigateToCorporateUser}
-            >
-              Audit Trail by Corporate
-            </Menu.Item>
-            <Menu.Item
-              className={
-                defaultKeySidebar !== "7"
-                  ? "menu-items-sidebar noDefault"
-                  : "menu-items-sidebar"
-              }
-              key="7"
-              onClick={navigateToTradeCount}
-            >
-              Trade Count
-            </Menu.Item>
-            <Menu.Item
-              className={
-                defaultKeySidebar !== "8"
-                  ? "menu-items-sidebar noDefault"
-                  : "menu-items-sidebar"
-              }
-              key="8"
-              onClick={navigateToActivityByBank}
-            >
-              Activity by Bank
-            </Menu.Item>
-            <Menu.Item
-              className={
-                defaultKeySidebar !== "9"
-                  ? "menu-items-sidebar noDefault"
-                  : "menu-items-sidebar"
-              }
-              key="9"
-              onClick={navigateToActivityByCorporate}
-            >
-              Activity by Corporate
-            </Menu.Item>
-          </SubMenu>
-        </Menu>
-      </Col>
-    </Row>
+            <span>
+              <i className={"sidebar-icon icon-file"} /> <span>Reports</span>
+            </span>
+            <i
+              className={`sidebarExpendIcon ${
+                expandedKey === "sub1" ? "icon-arrow-down" : "icon-arrow-right"
+              }`}
+            ></i>
+          </Nav.Link>
+          {expandedKey === "sub1" && (
+            <div className="sidebar-submenu">
+              <Link
+                to="/BOP/audittrailbank"
+                className={
+                  location.pathname.includes("audittrailbank")
+                    ? "sidebar-menu-item_Active"
+                    : "sidebar-menu-item"
+                }
+                onClick={() => handleItemClick("audittrailbank")}
+              >
+                Transaction by Bank
+              </Link>
+              <Link
+                to="/BOP/audittrailCorporate"
+                className={
+                  location.pathname.includes("audittrailCorporate")
+                    ? "sidebar-menu-item_Active"
+                    : "sidebar-menu-item"
+                }
+                onClick={() => handleItemClick("audittrailCorporate")}
+              >
+                Transaction by Corporate
+              </Link>
+
+              <Link
+                to="/BOP/userManagement"
+                className={
+                  location.pathname.includes("userManagement")
+                    ? "sidebar-menu-item_Active"
+                    : "sidebar-menu-item"
+                }
+                onClick={() => handleItemClick("userManagement")}
+              >
+                User Management Report
+              </Link>
+
+              <Link
+                to="/BOP/rateInputReport"
+                className={
+                  location.pathname.includes("rateInputReport")
+                    ? "sidebar-menu-item_Active"
+                    : "sidebar-menu-item"
+                }
+                onClick={() => handleItemClick("rateInputReport")}
+              >
+                Rate Input Report
+              </Link>
+            </div>
+          )}
+        </Nav.Item>
+      </Nav>
+    </Navbar>
   );
 };
 

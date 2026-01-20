@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./AuditTrialByCorporate.module.css";
 import { Col, Row } from "react-bootstrap";
 import DatePicker from "react-multi-date-picker";
-import { Popover } from "antd";
 import pdfIcon from "../../../assets/images/pdf.png";
 import excelIcon from "../../../assets/images/excel.png";
 import {
@@ -11,7 +10,7 @@ import {
   CustomTable,
   TextField,
 } from "../../../components/elements";
-import { formatDate } from "../../../components/common/utils";
+import { formatDate, formatPkAmount } from "../../../components/common/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GetTransactionDetailsByCorporateAuditor } from "../../../store/AuditorActions/AuditorActions";
@@ -20,6 +19,12 @@ import {
   GetTransactionDetailsByCorporateExcelTypeReportAuditor,
   GetTransactionDetailsByCorporatePDFTypeReportAuditor,
 } from "../../../store/ReportActions/ReportActions";
+import {
+  convertDateTimeIntoLocal,
+  getDateTimeString,
+} from "../../../utils/Timer";
+import moment from "moment";
+import ExportShowComponent from "../../../components/common/ExportShowComponent/ExportShowComponent";
 const AuditTrialByCorporate = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,6 +40,7 @@ const AuditTrialByCorporate = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [sRow, setSRow] = useState(0);
+  const [dropdownvalue, setDropdownvalue] = useState(50);
   const [totalRecord, setTotalRecord] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [transactionByBankTblData, setTransactionByBankTblData] = useState([]);
@@ -45,6 +51,24 @@ const AuditTrialByCorporate = () => {
     txnByTreasuryUser: "",
   });
 
+  const handlePageSizeChange = (newSize) => {
+    setDropdownvalue(newSize);
+    setSRow(0);
+    setIsLoading(false);
+    setTransactionByBankTblData([]); // other wise append the new records only
+    setTotalRecord(0);
+
+    const Data = {
+      EmployeeID: Number(formData.employeeId) || 0,
+      EmployeeName: formData.employeeName || "",
+      StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
+      EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
+      Length: newSize,
+      sRow: 0,
+    };
+
+    dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
+  };
   //Calling
   useEffect(() => {
     try {
@@ -55,7 +79,7 @@ const AuditTrialByCorporate = () => {
         TransactionByTreasuryUser: "",
         StartDate: "",
         EndDate: "",
-        Length: 10,
+        Length: dropdownvalue,
         sRow: 0,
       };
       dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
@@ -88,6 +112,11 @@ const AuditTrialByCorporate = () => {
           setSRow(newRecords.length);
           setTotalRecord(AuditorTransactionCorporateData.totalCount);
         }
+      } else if (AuditorTransactionCorporateData === null) {
+        setIsLoading(false);
+        setTotalRecord(0);
+        setSRow(0);
+        setTransactionByBankTblData([]);
       }
     } catch (error) {
       console.log(error, "errorerror");
@@ -114,10 +143,9 @@ const AuditTrialByCorporate = () => {
         formData.corporateName !== "" ? formData.corporateName : "",
       TransactionByTreasuryUser:
         formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+      StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
+      EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
     };
-
     dispatch(
       GetTransactionDetailsByCorporateExcelTypeReportAuditor({ navigate, Data })
     );
@@ -133,8 +161,8 @@ const AuditTrialByCorporate = () => {
         formData.corporateName !== "" ? formData.corporateName : "",
       TransactionByTreasuryUser:
         formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+      StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
+      EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
     };
 
     dispatch(
@@ -144,12 +172,12 @@ const AuditTrialByCorporate = () => {
 
   //Handle Start Date Change
   const handleStartDateChange = (dateObject) => {
-    setStartDate(formatDate(dateObject));
+    setStartDate(dateObject);
   };
 
   //Handle End Date Change
   const handleEndDateChange = (dateObject) => {
-    setEndDate(formatDate(dateObject));
+    setEndDate(dateObject);
   };
 
   //Toggle Fucntion to view Export Icons
@@ -175,10 +203,17 @@ const AuditTrialByCorporate = () => {
   const handleTextChange = (e) => {
     const { name, value } = e.target;
 
-    console.log({ name, value }, "DataDataDataData");
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    const cleanedValue = value.replace(/^[\t ]+/, "");
 
+    if (name === "txnId") {
+      const numericValue = cleanedValue.replace(/\D/g, "");
+      setFormData((prev) => ({ ...prev, [name]: numericValue }));
+      return;
+    }
+
+    // For all other fields, strip tabs and trim, then limit to 50 characters
+    setFormData((prev) => ({ ...prev, [name]: cleanedValue }));
+  };
   //Handle Search Button
   const handleSearchBtn = () => {
     let Data = {
@@ -186,8 +221,8 @@ const AuditTrialByCorporate = () => {
       CorporateUser: formData.corporateUser,
       CorporateName: formData.corporateName,
       TransactionByTreasuryUser: formData.txnByTreasuryUser,
-      StartDate: startDate !== null ? startDate : "",
-      EndDate: endDate !== null ? endDate : "",
+      StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
+      EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
       Length: 10,
       sRow: 0,
     };
@@ -197,38 +232,29 @@ const AuditTrialByCorporate = () => {
 
   //Handle Reset Button
   const handleResetBtn = () => {
-    if (
-      formData.txnId !== "" ||
-      formData.corporateName !== "" ||
-      formData.corporateUser !== "" ||
-      formData.txnByTreasuryUser !== "" ||
-      startDate !== null ||
-      endDate !== null
-    ) {
-      setFormData({
-        txnId: "",
-        corporateUser: "",
-        corporateName: "",
-        txnByTreasuryUser: "",
-      });
-      setStartDate(null);
-      setEndDate(null);
-      setTransactionByBankTblData([]);
-      setSRow(0);
-      setIsLoading(false);
-      setTotalRecord(0);
-      let Data = {
-        TXNID: 0,
-        CorporateUser: "",
-        CorporateName: "",
-        TransactionByTreasuryUser: "",
-        StartDate: "",
-        EndDate: "",
-        Length: 10,
-        sRow: 0,
-      };
-      dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
-    }
+    setFormData({
+      txnId: "",
+      corporateUser: "",
+      corporateName: "",
+      txnByTreasuryUser: "",
+    });
+    setStartDate(null);
+    setEndDate(null);
+    setTransactionByBankTblData([]);
+    setSRow(0);
+    setIsLoading(false);
+    setTotalRecord(0);
+    let Data = {
+      TXNID: 0,
+      CorporateUser: "",
+      CorporateName: "",
+      TransactionByTreasuryUser: "",
+      StartDate: "",
+      EndDate: "",
+      Length: 10,
+      sRow: 0,
+    };
+    dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
   };
 
   // Columns for Audit Trial By Bank
@@ -244,20 +270,23 @@ const AuditTrialByCorporate = () => {
       title: "Corporate Name",
       dataIndex: "corporateName",
       key: "corporateName",
-      width: 180,
+      ellipsis: true,
+      width: 150,
       render: (text) => <span>{text}</span>,
     },
     {
       title: "Corporate User",
       dataIndex: "corporateUser",
+      ellipsis: true,
       key: "corporateUser",
-      width: 190,
+      width: 150,
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Treasury User",
+      title: "Treasury Sales User",
       dataIndex: "treasuryUser",
       key: "treasuryUser",
+      ellipsis: true,
       width: 150,
       render: (text) => <span>{text}</span>,
     },
@@ -265,15 +294,34 @@ const AuditTrialByCorporate = () => {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      width: 120,
-      render: (text) => <span>{text}</span>,
+      width: 100,
+      render: (text, record) => {
+        let dateStr = getDateTimeString(record.date, record.time);
+        return (
+          <>
+            <span>
+              {dateStr &&
+                moment(convertDateTimeIntoLocal(dateStr)).format("YYYY-MM-DD")}
+            </span>
+          </>
+        );
+      },
     },
     {
       title: "Time",
       dataIndex: "time",
       key: "time",
       width: 100,
-      render: (text) => <span>{text}</span>,
+      render: (text, record) => {
+        let dateStr = getDateTimeString(record.date, record.time);
+
+        return (
+          <span>
+            {dateStr &&
+              moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss A")}
+          </span>
+        );
+      },
     },
     {
       title: "Type",
@@ -286,43 +334,139 @@ const AuditTrialByCorporate = () => {
       title: "Nature",
       dataIndex: "nature",
       key: "nature",
-      width: 220,
+      width: 160,
       render: (text) => <span>{text}</span>,
     },
     {
       title: "CCY1",
       dataIndex: "ccY1",
       key: "ccY1",
-      width: 80,
+      align: "center",
+      width: 50,
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Amount",
-      dataIndex: "amount1",
-      key: "amount1",
-      width: 130,
-      render: (text) => <span>{text}</span>,
+      title: "TXN Amount",
+      dataIndex: "amount2",
+      key: "amount2",
+      align: "center",
+      width: 120,
+      render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
       title: "Rate",
       dataIndex: "rate",
       key: "rate",
-      width: 90,
-      render: (text) => <span>{text}</span>,
+      align: "center",
+      width: 120,
+
+      render: (text) => <span>{formatPkAmount(text)}</span>,
+    },
+    {
+      title: "Squaring Rate",
+      dataIndex: "squaringRate",
+      key: "squaringRate",
+      width: 120,
+      ellipsis: true,
+      align: "center",
+      render: (text) => <span>{formatPkAmount(text)}</span>,
     },
     {
       title: "CCY2",
       dataIndex: "ccY2",
       key: "ccY2",
+      align: "center",
       width: 80,
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Amount",
-      dataIndex: "amount2",
-      key: "amount2",
+      title: "Total Amount",
+      dataIndex: "amount1",
+      key: "amount1",
+      align: "center",
       width: 130,
+      render: (text) => <span>{formatPkAmount(text)}</span>,
+    },
+    {
+      title: "LC #",
+      dataIndex: "lcNumber",
+      key: "lcNumber",
+      align: "center",
+      width: 80,
       render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Account #",
+      dataIndex: "accountNumber",
+      key: "accountNumber",
+      align: "center",
+      width: 80,
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Inititated By",
+      dataIndex: "initiatedBy",
+      key: "initiatedBy",
+      ellipsis: true,
+      align: "center",
+      width: 100,
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Accepted By",
+      dataIndex: "acceptedBy",
+      key: "acceptedBy",
+      ellipsis: true,
+      align: "center",
+      width: 100,
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "TXN Accepted Time",
+      dataIndex: "txnAcceptedTime",
+      key: "txnAcceptedTime",
+      align: "center",
+      width: 150,
+      render: (text, record) => {
+        let dateStr = getDateTimeString(record.date, record.txnAcceptedTime);
+
+        return (
+          <span>
+            {dateStr &&
+              moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss A")}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Cancelled By",
+      dataIndex: "cancelledBy",
+      key: "cancelledBy",
+      align: "center",
+      ellipsis: true,
+
+      width: 100,
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Cancelled Time",
+      dataIndex: "cancelledTime",
+      key: "cancelledTime",
+      align: "center",
+      width: 120,
+      render: (text, record) => {
+        let dateStr =
+          record.cancelledTime !== ""
+            ? getDateTimeString(record.date, record.cancelledTime)
+            : null;
+
+        return (
+          <span>
+            {dateStr &&
+              moment(convertDateTimeIntoLocal(dateStr)).format("hh:mm:ss A")}
+          </span>
+        );
+      },
     },
     {
       title: "Status",
@@ -350,8 +494,8 @@ const AuditTrialByCorporate = () => {
             formData.corporateName !== "" ? formData.corporateName : "",
           TransactionByTreasuryUser:
             formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
-          StartDate: startDate !== "" ? startDate : "",
-          EndDate: endDate !== "" ? endDate : "",
+          StartDate: formatDate(startDate) !== "" ? formatDate(startDate) : "",
+          EndDate: formatDate(endDate) !== "" ? formatDate(endDate) : "",
           Length: 10,
           sRow: sRow,
         };
@@ -367,113 +511,121 @@ const AuditTrialByCorporate = () => {
       <Row>
         <Col lg={12} md={12} sm={12}>
           <span className={styles["AuditTrialBankMainHeading"]}>
-            Audit Trial by Corporate
+            Audit Trail by Corporate
           </span>
         </Col>
       </Row>
-      <CustomPaper variant="outlined">
+      <CustomPaper variant='outlined'>
         <Row>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              name="txnId"
-              placeholder="TXN ID"
-              applyClass="TextFieldAuditors"
+              name='txnId'
+              placeholder='TXN ID'
+              applyClass='TextFieldAuditors'
+              maxLength={50}
               value={formData.txnId}
               onChange={handleTextChange}
             />
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              name="corporateuser"
-              placeholder="Corporate User"
-              applyClass="TextFieldAuditors"
+              maxLength={50}
+              name='corporateUser'
+              placeholder='Corporate User'
+              applyClass='TextFieldAuditors'
               value={formData.corporateUser}
               onChange={handleTextChange}
             />
           </Col>
           <Col lg={2} md={2} sm={2} xs={12}>
             <TextField
-              name="corporateName"
-              placeholder="Corporate Name"
-              applyClass="TextFieldAuditors"
+              name='corporateName'
+              maxLength={50}
+              placeholder='Corporate Name'
+              applyClass='TextFieldAuditors'
               value={formData.corporateName}
               onChange={handleTextChange}
             />
           </Col>
           <Col lg={3} md={3} sm={3} xs={12}>
             <TextField
-              name="txnAcceptedByTreasuryUser"
-              placeholder="Transaction Accepted by Treasury User"
-              applyClass="TextFieldAuditors"
+              maxLength={50}
+              name='txnByTreasuryUser'
+              placeholder='Transaction Accepted by Treasury Sales'
+              applyClass='TextFieldAuditors'
               value={formData.txnByTreasuryUser}
               onChange={handleTextChange}
             />
           </Col>
-          <Col lg={3} md={3} sm={12} className="d-flex align-items-center ">
+          <Col lg={3} md={3} sm={12} className='d-flex align-items-center '>
             <DatePicker
-              name="dateFrom"
-              placeholder="Start Date"
+              name='dateFrom'
+              placeholder='Start Date'
               value={startDate}
               onChange={handleStartDateChange}
               inputClass={styles["Tradecount-Datepicker-left"]}
-              labelClass="d-none"
+              labelClass='d-none'
               showOtherDays
+              editable={false}
+              maxDate={endDate}
+              minDate={null}
             />
 
             <label className={styles["Tradecount-date-to"]}>to</label>
 
             <DatePicker
-              name="dateTo"
+              name='dateTo'
               value={endDate}
               onChange={handleEndDateChange}
-              placeholder="End Date"
+              placeholder='End Date'
               inputClass={styles["Tradecount-Datepicker-right"]}
-              labelClass="d-none"
+              labelClass='d-none'
               showOtherDays
+              minDate={startDate}
+              maxDate={new Date(new Date().setHours(23, 59, 59, 999))}
+              editable={false}
             />
           </Col>
         </Row>
-        <Row className="mt-4">
+        <Row className='mt-4'>
           <Col
             lg={12}
             md={12}
             sm={12}
             xs={12}
-            className="d-flex justify-content-center gap-2"
-          >
+            className='d-flex justify-content-center gap-2'>
             <Button
-              icon={<i className="icon-search icon-check-space"></i>}
+              icon={<i className='icon-search icon-check-space'></i>}
               value={"Search"}
               className={styles["SearchButtonStyles"]}
               onClick={handleSearchBtn}
             />
             <Button
-              icon={<i className="icon-refresh"></i>}
+              icon={<i className='icon-refresh'></i>}
               value={"Reset"}
               className={styles["ResetButtonStyles"]}
               onClick={handleResetBtn}
             />
 
-            <div className="position-relative" ref={exportRef}>
+            <div className='position-relative' ref={exportRef}>
               <Button
-                icon={<i className="icon-download"></i>}
+                icon={<i className='icon-download'></i>}
                 className={styles["Export_Button"]}
-                value="Export"
+                value='Export'
                 iconClass={styles["resetIconClass"]}
                 onClick={toggleExportOptions}
               />
               <span
                 className={`${styles["Export_optionsBox"]} ${
                   open ? styles["open"] : styles["closed"]
-                }`}
-              >
+                }`}>
                 <Button
-                  icon={<img src={excelIcon} alt="Excel Icon" />}
+                  icon={<img src={excelIcon} alt='Excel Icon' />}
                   onClick={() => handleExport("excel")}
                   className={styles["export-button"]}
                 />
                 <Button
-                  icon={<img src={pdfIcon} alt="PDF Icon" />}
+                  icon={<img src={pdfIcon} alt='PDF Icon' />}
                   onClick={() => handleExport("pdf")}
                   className={styles["export-button"]}
                 />
@@ -481,13 +633,21 @@ const AuditTrialByCorporate = () => {
             </div>
           </Col>
         </Row>
-        <Row className="mt-5">
+        <Row className='mt-5'>
+          <Col lg={12} md={12} sm={12}>
+            <ExportShowComponent
+              value={dropdownvalue}
+              onChange={handlePageSizeChange}
+            />
+          </Col>
+        </Row>
+        <Row className=''>
           <Col lg={12} md={12} sm={12} xs={12}>
             <CustomTable
               column={AuditTrialByCorporate}
               rows={transactionByBankTblData}
               pagination={false}
-              scroll={{ x: "max-content", y: 350 }}
+              scroll={{ x: "max-content", y: "40vh" }}
               className={"BankUserList-table"}
             />
           </Col>

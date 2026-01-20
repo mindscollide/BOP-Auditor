@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   loginInApi,
+  logoutApi,
   refreshTokenAction,
 } from "../../container/Pages/Login/logInAction";
+import { GetAllTenorsAPI } from "../RateInputActions/RateInputActions";
 
 const authSlice = createSlice({
   name: "auth",
@@ -13,6 +15,7 @@ const authSlice = createSlice({
     error: null,
     refreshTokenResponse: null,
     logout: null,
+    getAllTenors: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -53,6 +56,35 @@ const authSlice = createSlice({
         state.Loader = false;
         state.refreshTokenResponse = null;
         state.responseMessage = payload;
+      })
+
+      .addCase(logoutApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(logoutApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.logout = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(logoutApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.logout = null;
+        state.responseMessage = payload;
+      })
+      .addCase(GetAllTenorsAPI.pending, (state) => {
+        state.Loader = true;
+        state.error = null;
+      })
+      .addCase(GetAllTenorsAPI.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.getAllTenors = payload.response;
+        state.error = false;
+        state.responseMessage = payload.message;
+      })
+      .addCase(GetAllTenorsAPI.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.getAllTenors = null;
+        state.responseMessage = payload.message;
       });
   },
 });

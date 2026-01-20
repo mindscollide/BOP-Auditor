@@ -1,19 +1,30 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { reportApi } from "../../Common/API_EndPoints";
 import {
+  DownloadSpotRateInputExcelReport,
+  DownloadSpotRateInputExcelReportPDF,
   ExcelReportTrasactionDetailsByBank,
   ExcelReportTrasactionDetailsByCorporate,
   PDFReportTrasactionDetailsByBank,
   PDFReportTrasactionDetailsByCorporate,
+  DownloadForwardRateInputExcelReport,
+  DownloadForwardRateInputReportPDF,
+  DownloadFeDiscountingRateInputExcelReport,
+  DownloadFeDiscountingRateInputReportPDF,
+  DownloadNonFEDiscountingRateInputExcelReport,
+  DownloadNonFEDiscountingRateInputReportPDF,
+  DownloadBranchUserForAuditorExcelReport,
+  DownloadBranchUserForAuditorReportPDF,
+  DownloadCorporateUserForAuditorExcelReport,
+  DownloadCorporateUserForAuditorReportPDF,
 } from "../../Common/API_Config";
-import { refreshTokenAction } from "../../container/Pages/Login/logInAction";
 import createPostAPI from "../../Common/GenericPostMethod";
 
 //Excel File Report Download For Transaction Details By Bank (API Func)
 export const GetTransactionDetailsByBankExcelTypeReportAuditor =
   createAsyncThunk(
     "Report/GetTransactionDetailsByBankExcelTypeReportAuditor",
-    async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    async ({ Data }, { rejectWithValue }) => {
       try {
         const getTransactionData = createPostAPI(
           reportApi,
@@ -44,18 +55,7 @@ export const GetTransactionDetailsByBankExcelTypeReportAuditor =
           );
         }
       } catch (error) {
-        console.log("Excel Download Error:", error);
-        if (error?.responseCode === 401) {
-          navigate("/");
-          return rejectWithValue("Unauthorized access, please login again");
-        }
-        console.log(error, "errorerrorerrorerror");
-        console.log(error?.responseCode, "errorerrorerrorerror");
-        if (error?.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-        }
-
+        console.log(error);
         return rejectWithValue("Something went wrong while downloading Excel");
       }
     }
@@ -64,7 +64,7 @@ export const GetTransactionDetailsByBankExcelTypeReportAuditor =
 //PDF File Report Download For Transaction Details By Bank (API Func)
 export const GetTransactionDetailsByBankPDFTypeReportAuditor = createAsyncThunk(
   "Report/GetTransactionDetailsByBankPDFTypeReportAuditor",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async ({ Data }, { rejectWithValue }) => {
     try {
       const getTransactionData = createPostAPI(
         reportApi,
@@ -92,17 +92,7 @@ export const GetTransactionDetailsByBankPDFTypeReportAuditor = createAsyncThunk(
         return rejectWithValue("Something went wrong while downloading PDF");
       }
     } catch (error) {
-      console.log("PDF Download Error:", error);
-      if (error?.responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
-
-      if (error?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        return;
-      }
-
+      console.log(error);
       return rejectWithValue("Something went wrong while downloading PDF");
     }
   }
@@ -112,7 +102,7 @@ export const GetTransactionDetailsByBankPDFTypeReportAuditor = createAsyncThunk(
 export const GetTransactionDetailsByCorporateExcelTypeReportAuditor =
   createAsyncThunk(
     "Report/GetTransactionDetailsByCorporateExcelTypeReportAuditor",
-    async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    async ({ Data }, { rejectWithValue }) => {
       try {
         const getTransactionData = createPostAPI(
           reportApi,
@@ -143,17 +133,7 @@ export const GetTransactionDetailsByCorporateExcelTypeReportAuditor =
           );
         }
       } catch (error) {
-        console.log("Excel Download Error:", error);
-        if (error?.responseCode === 401) {
-          navigate("/");
-          return rejectWithValue("Unauthorized access, please login again");
-        }
-        console.log(error, "errorerrorerrorerror");
-        console.log(error?.responseCode, "errorerrorerrorerror");
-        if (error?.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-        }
+        console.log(error);
 
         return rejectWithValue("Something went wrong while downloading Excel");
       }
@@ -164,7 +144,7 @@ export const GetTransactionDetailsByCorporateExcelTypeReportAuditor =
 export const GetTransactionDetailsByCorporatePDFTypeReportAuditor =
   createAsyncThunk(
     "Report/GetTransactionDetailsByCorporatePDFTypeReportAuditor",
-    async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    async ({ Data }, { rejectWithValue }) => {
       try {
         const getTransactionData = createPostAPI(
           reportApi,
@@ -192,18 +172,486 @@ export const GetTransactionDetailsByCorporatePDFTypeReportAuditor =
           return rejectWithValue("Something went wrong while downloading PDF");
         }
       } catch (error) {
-        console.log("PDF Download Error:", error);
-        if (error?.responseCode === 401) {
-          navigate("/");
-          return rejectWithValue("Unauthorized access, please login again");
-        }
-
-        if (error?.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-        }
-
+        console.log(error);
         return rejectWithValue("Something went wrong while downloading PDF");
       }
     }
   );
+
+//Download Spot Report Excell
+export const DownloadSpotRateInputExcelReportAPI = createAsyncThunk(
+  "Report/DownloadSpotRateInputExcelReport",
+  async ({ Data }, { rejectWithValue }) => {
+    try {
+      const DownloadSpotRateInputExcelReportData = createPostAPI(
+        reportApi,
+        DownloadSpotRateInputExcelReport.RequestMethod
+      );
+
+      const response = await DownloadSpotRateInputExcelReportData(Data, true);
+      console.log(response, "errorerrorerrorerror");
+
+      // 🚨 Ensure response is valid before trying to read Excel blob
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "SpotRateInputReport.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "Excel downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading Excel");
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Something went wrong while downloading Excel");
+    }
+  }
+);
+
+//Download Spot Report PDF
+export const DownloadSpotRateInputExcelReportPDFAPI = createAsyncThunk(
+  "Report/DownloadSpotRateInputExcelReportPDF",
+  async ({ Data }, { rejectWithValue }) => {
+    try {
+      const DownloadSpotRateInputExcelReportPDFData = createPostAPI(
+        reportApi,
+        DownloadSpotRateInputExcelReportPDF.RequestMethod
+      );
+
+      const response = await DownloadSpotRateInputExcelReportPDFData(
+        Data,
+        true
+      );
+
+      // 🟢 PDF file response
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/pdf",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "SpotRateInputReport.pdf");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "PDF downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading PDF");
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Something went wrong while downloading PDF");
+    }
+  }
+);
+
+//Download Forward Report Excel
+export const DownloadForwardRateInputExcelReportAPI = createAsyncThunk(
+  "Report/DownloadForwardRateInputExcelReport",
+  async ({ Data }, { rejectWithValue }) => {
+    try {
+      const DownloadForwardRateInputExcelReportData = createPostAPI(
+        reportApi,
+        DownloadForwardRateInputExcelReport.RequestMethod
+      );
+
+      const response = await DownloadForwardRateInputExcelReportData(
+        Data,
+        true
+      );
+      console.log(response, "errorerrorerrorerror");
+
+      // 🚨 Ensure response is valid before trying to read Excel blob
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "ForwardRateInputReport.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "Excel downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading Excel");
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Something went wrong while downloading Excel");
+    }
+  }
+);
+
+//Download Forward Report PDF
+export const DownloadForwardRateInputReportPDFAPI = createAsyncThunk(
+  "Report/DownloadForwardRateInputReportPDF",
+  async ({ Data }, { rejectWithValue }) => {
+    try {
+      const DownloadForwardRateInputReportPDFData = createPostAPI(
+        reportApi,
+        DownloadForwardRateInputReportPDF.RequestMethod
+      );
+
+      const response = await DownloadForwardRateInputReportPDFData(Data, true);
+
+      // 🟢 PDF file response
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/pdf",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "ForwardRateInputReport.pdf");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "PDF downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading PDF");
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Something went wrong while downloading PDF");
+    }
+  }
+);
+
+//Download FE Discounting Report Excel
+export const DownloadFeDiscountingRateInputExcelReportAPI = createAsyncThunk(
+  "Report/DownloadFeDiscountingRateInputExcelReport",
+  async ({ Data }, { rejectWithValue }) => {
+    try {
+      const DownloadFeDiscountingRateInputExcelReportData = createPostAPI(
+        reportApi,
+        DownloadFeDiscountingRateInputExcelReport.RequestMethod
+      );
+
+      const response = await DownloadFeDiscountingRateInputExcelReportData(
+        Data,
+        true
+      );
+      console.log(response, "errorerrorerrorerror");
+
+      // 🚨 Ensure response is valid before trying to read Excel blob
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "FeDiscountingRateInputReport.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "Excel downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading Excel");
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Something went wrong while downloading Excel");
+    }
+  }
+);
+
+//Download Forward Report PDF
+export const DownloadFeDiscountingRateInputReportPDFAPI = createAsyncThunk(
+  "Report/DownloadFeDiscountingRateInputReportPDF",
+  async ({ Data }, { rejectWithValue }) => {
+    try {
+      const DownloadFeDiscountingRateInputReportPDFData = createPostAPI(
+        reportApi,
+        DownloadFeDiscountingRateInputReportPDF.RequestMethod
+      );
+
+      const response = await DownloadFeDiscountingRateInputReportPDFData(
+        Data,
+        true
+      );
+
+      // 🟢 PDF file response
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/pdf",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "FeDiscountingRateInputReport.pdf");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "PDF downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading PDF");
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Something went wrong while downloading PDF");
+    }
+  }
+);
+
+//Download FE Discounting Report Excel
+export const DownloadNonFEDiscountingRateInputExcelReportAPI = createAsyncThunk(
+  "Report/DownloadNonFEDiscountingRateInputExcelReport",
+  async ({ Data }, { rejectWithValue }) => {
+    try {
+      const DownloadNonFEDiscountingRateInputExcelReportData = createPostAPI(
+        reportApi,
+        DownloadNonFEDiscountingRateInputExcelReport.RequestMethod
+      );
+
+      const response = await DownloadNonFEDiscountingRateInputExcelReportData(
+        Data,
+        true
+      );
+      console.log(response, "errorerrorerrorerror");
+
+      // 🚨 Ensure response is valid before trying to read Excel blob
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "NonFEDiscountingRateInput.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "Excel downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading Excel");
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Something went wrong while downloading Excel");
+    }
+  }
+);
+
+//Download Forward Report PDF
+export const DownloadNonFEDiscountingRateInputReportPDFAPI = createAsyncThunk(
+  "Report/DownloadNonFEDiscountingRateInputReportPDF",
+  async ({ Data }, { rejectWithValue }) => {
+    try {
+      const DownloadNonFEDiscountingRateInputReportPDFData = createPostAPI(
+        reportApi,
+        DownloadNonFEDiscountingRateInputReportPDF.RequestMethod
+      );
+
+      const response = await DownloadNonFEDiscountingRateInputReportPDFData(
+        Data,
+        true
+      );
+
+      // 🟢 PDF file response
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/pdf",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "NonFEDiscountingRateInputReport.pdf");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "PDF downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading PDF");
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Something went wrong while downloading PDF");
+    }
+  }
+);
+
+//Download BranchReport Auditor Excel Report
+export const DownloadBranchUserForAuditorExcelReportAPI = createAsyncThunk(
+  "Report/DownloadBranchUserForAuditorExcelReport",
+  async ({ Data }, { rejectWithValue }) => {
+    try {
+      const DownloadBranchUserForAuditorExcelReportData = createPostAPI(
+        reportApi,
+        DownloadBranchUserForAuditorExcelReport.RequestMethod
+      );
+
+      const response = await DownloadBranchUserForAuditorExcelReportData(
+        Data,
+        true
+      );
+
+      // 🟢 PDF file response
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "BranchUserAuditorReport.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "Excel downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading Excel");
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Something went wrong while downloading Excel");
+    }
+  }
+);
+
+//Download BranchReport Auditor PDF Report
+export const DownloadBranchUserForAuditorReportPDFAPI = createAsyncThunk(
+  "Report/DownloadBranchUserForAuditorReportPDF",
+  async ({ Data }, { rejectWithValue }) => {
+    try {
+      const DownloadBranchUserForAuditorReportPDFData = createPostAPI(
+        reportApi,
+        DownloadBranchUserForAuditorReportPDF.RequestMethod
+      );
+
+      const response = await DownloadBranchUserForAuditorReportPDFData(
+        Data,
+        true
+      );
+
+      // 🟢 PDF file response
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/pdf",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "BranchUserAuditorReport.pdf");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "PDF downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading PDF");
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Something went wrong while downloading PDF");
+    }
+  }
+);
+
+//Download CorporateUser Auditor Excel Report
+export const DownloadCorporateUserForAuditorExcelReportAPI = createAsyncThunk(
+  "Report/DownloadCorporateUserForAuditorExcelReport",
+  async ({ Data }, { rejectWithValue }) => {
+    try {
+      const DownloadCorporateUserForAuditorExcelReportData = createPostAPI(
+        reportApi,
+        DownloadCorporateUserForAuditorExcelReport.RequestMethod
+      );
+
+      const response = await DownloadCorporateUserForAuditorExcelReportData(
+        Data,
+        true
+      );
+
+      // 🟢 PDF file response
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "CorporateUserAuditorReport.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "Excel downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading Excel");
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Something went wrong while downloading Excel");
+    }
+  }
+);
+
+//Download CorporateReport Auditor PDF Report
+export const DownloadCorporateUserForAuditorReportPDFAPI = createAsyncThunk(
+  "Report/DownloadCorporateUserForAuditorReportPDF",
+  async ({ Data }, { rejectWithValue }) => {
+    try {
+      const DownloadCorporateUserForAuditorReportPDFData = createPostAPI(
+        reportApi,
+        DownloadCorporateUserForAuditorReportPDF.RequestMethod
+      );
+
+      const response = await DownloadCorporateUserForAuditorReportPDFData(
+        Data,
+        true
+      );
+
+      // 🟢 PDF file response
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/pdf",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "CorporateUserAuditorReport.pdf");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "PDF downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading PDF");
+      }
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue("Something went wrong while downloading PDF");
+    }
+  }
+);

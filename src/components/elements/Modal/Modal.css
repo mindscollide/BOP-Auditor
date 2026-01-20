@@ -1,0 +1,58 @@
+.modal-backdrop {
+  background-color: transparent;
+}
+.modal-backdrop.show {
+  backdrop-filter: blur(5px) !important;
+  background-color: rgba(255, 255, 255, 0.3);
+  opacity: 1 !important;
+}
+
+.modal.fade {
+  z-index: 1050 !important;
+}
+
+.UniversalBOPModalStyles .modal-content {
+  background: #f3f2f1 !important;
+  border: 1px solid #dbd7d5 !important;
+  max-width: 500px !important;
+  /* margin-left: 90px !important; */
+  overflow: hidden !important;
+  padding: 10px !important;
+}
+
+.UniversalBOPModalStylesTradeAccessManagment .modal-content {
+  background: #ffffff !important;
+  border: 1px solid #dbd7d5 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  padding: 10px !important;
+}
+
+.UniversalBOPModalStylesAddCategory .modal-content {
+  background: #f3f2f1 !important;
+  border: 1px solid #dbd7d5 !important;
+  max-width: 500px !important;
+  margin-left: 90px !important;
+  overflow: hidden !important;
+  overflow-x: hidden !important;
+  padding: 10px !important;
+}
+
+.userDetailsCorporateList .modal-content {
+  background: #f3f2f1 !important;
+  border: 1px solid #dbd7d5 !important;
+  padding: 10px 12px !important;
+  width: 100% !important;
+  overflow: auto !important;
+}
+
+.UniversalBOPModalStylesfooter {
+  width: 100% !important;
+  display: contents;
+}
+
+.UniversalBOPModalStylesfooterTradeAccessMangement {
+  width: 100% !important;
+  display: Block !important;
+  border: none !important;
+}

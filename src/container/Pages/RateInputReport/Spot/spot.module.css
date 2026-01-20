@@ -1,0 +1,157 @@
+.AuditTrialBankMainHeading {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: #4d4946 !important;
+}
+
+.Tradecount-Datepicker-left {
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+  border-top-left-radius: 6px !important;
+  border-bottom-left-radius: 6px !important;
+  border: 1px solid #ced4da;
+  width: 100% !important;
+  height: 37px !important;
+  font-size: 13px !important;
+  font-family: "Montserrat", sans-serif !important;
+  cursor: pointer;
+  padding: 8px;
+}
+.Tradecount-Datepicker-left:is(:focus, :focus-visible) {
+  outline: none !important;
+}
+
+.Tradecount-Datepicker-right {
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-top-right-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
+  border: 1px solid #ced4da;
+  font-size: 13px !important;
+  width: 100% !important;
+  height: 37px !important;
+  font-family: "Montserrat", sans-serif !important;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.Tradecount-Datepicker-right:is(:focus, :focus-visible) {
+  outline: none !important;
+}
+
+.Tradecount-date-to {
+  display: flex;
+  justify-content: center;
+  min-width: 35px;
+  height: 100% !important;
+  align-items: center !important;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+}
+
+.SearchButtonStyles {
+  font-size: 14px;
+  border-radius: 4px !important;
+  padding: 6px 12px !important;
+  height: 100% !important;
+  border: none;
+  background: #096fed !important;
+  display: flex !important;
+  gap: 4px !important;
+  font-family: "Poppins", sans-serif;
+  align-items: center !important;
+}
+
+.SearchButtonStyles:is(:hover, :focus, :focus-visible) {
+  border: none;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  display: flex !important;
+  gap: 4px !important;
+  font-family: "Poppins", sans-serif;
+  height: 100% !important;
+  align-items: center !important;
+}
+
+.ResetButtonStyles {
+  font-size: 14px;
+  height: 100% !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  gap: 4px !important;
+  font-family: "Poppins", sans-serif;
+  align-items: center;
+  padding: 6px 18px !important;
+  border: none;
+  background: #dc3545 !important;
+}
+
+.ResetButtonStyles:hover {
+  border: none;
+  height: 100% !important;
+  display: flex !important;
+  gap: 4px !important;
+  font-family: "Poppins", sans-serif;
+  align-items: center;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+}
+
+.Export_Button {
+  font-size: 14px;
+  border-radius: 4px !important;
+  padding: 6px 18px !important;
+  border: none;
+  height: 100% !important;
+  background: #019308 !important;
+  display: flex !important;
+  gap: 4px !important;
+  font-family: "Poppins", sans-serif;
+  align-items: center !important;
+}
+
+.Export_Button:is(:hover, :focus, :focus-visible) {
+  font-size: 14px;
+  border-radius: 4px !important;
+  padding: 6px 18px !important;
+  border: none;
+  height: 100% !important;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  display: flex !important;
+  gap: 4px !important;
+  font-family: "Poppins", sans-serif;
+  align-items: center !important;
+}
+
+.Export_optionsBox {
+  padding: 5px;
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid #e1e1e1;
+  position: absolute;
+  top: 100%;
+  right: 8%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.closed {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.export-button {
+  background: none !important;
+}
+.mt-4-5 {
+  margin-top: 2.3rem; /* Or any other desired value */
+}

@@ -19,14 +19,14 @@ export const GetTransactionDetailsByBankAuditor = createAsyncThunk(
       const response = await getTransactionData(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+      // if (responseCode === 401) {
+      //   navigate("/");
+      //   return rejectWithValue("Unauthorized access, please login again");
+      // }
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-      }
+      // if (responseCode === 417) {
+      //   await dispatch(refreshTokenAction({ navigate }));
+      // }
 
       if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -36,26 +36,22 @@ export const GetTransactionDetailsByBankAuditor = createAsyncThunk(
 
           if (
             msg.includes(
-              "Blotter_BlotterServiceManager_GetTransactionDetailsByBankData_01"
+              "Auditor_AuditorServiceManager_GetTransactionDetailsByBankData_01"
             )
           ) {
-            console.log(
-              response.data.responseResult,
-              "responseResultresponseResult"
-            );
             return {
               response: response.data.responseResult,
-              message: "Data Available",
+              message: "",
             };
           } else if (
             msg.includes(
-              "Blotter_BlotterServiceManager_GetTransactionDetailsByBankData_02"
+              "Auditor_AuditorServiceManager_GetTransactionDetailsByBankData_02"
             )
           ) {
             return rejectWithValue("No Data Available");
           } else if (
             msg.includes(
-              "Blotter_BlotterServiceManager_GetTransactionDetailsByBankData_03"
+              "Auditor_AuditorServiceManager_GetTransactionDetailsByBankData_03"
             )
           ) {
             return rejectWithValue("Something went wrong");
@@ -90,14 +86,14 @@ export const GetTransactionDetailsByCorporateAuditor = createAsyncThunk(
       const response = await getTransactionData(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+      // if (responseCode === 401) {
+      //   navigate("/");
+      //   return rejectWithValue("Unauthorized access, please login again");
+      // }
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-      }
+      // if (responseCode === 417) {
+      //   await dispatch(refreshTokenAction({ navigate }));
+      // }
 
       if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -107,26 +103,22 @@ export const GetTransactionDetailsByCorporateAuditor = createAsyncThunk(
 
           if (
             msg.includes(
-              "Blotter_BlotterServiceManager_GetTransactionDetailsByCorporateData_01"
+              "Auditor_AuditorServiceManager_GetTransactionDetailsByCorporateData_01"
             )
           ) {
-            console.log(
-              response.data.responseResult,
-              "responseResultresponseResult"
-            );
             return {
               response: response.data.responseResult,
-              message: "Data Available",
+              message: "",
             };
           } else if (
             msg.includes(
-              "Blotter_BlotterServiceManager_GetTransactionDetailsByCorporateData_02"
+              "Auditor_AuditorServiceManager_GetTransactionDetailsByCorporateData_02"
             )
           ) {
             return rejectWithValue("No Data Available");
           } else if (
             msg.includes(
-              "Blotter_BlotterServiceManager_GetTransactionDetailsByCorporateData_03"
+              "Auditor_AuditorServiceManager_GetTransactionDetailsByCorporateData_03"
             )
           ) {
             return rejectWithValue("Something went wrong");

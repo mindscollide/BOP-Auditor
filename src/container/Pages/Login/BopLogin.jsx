@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./BopLogin.module.css";
 import { Row, Col, InputGroup, Form } from "react-bootstrap";
 import BOPLogo from "../../../assets/images/logo.png";
@@ -8,12 +8,15 @@ import { updateEmail, updatePassword, updateUsername } from "./Loginfunctions";
 import IconElement from "../../../components/IconElement/IconElement";
 import CustomButton from "../../../components/elements/globalButton/button";
 import { loginInApi } from "./logInAction";
+import { useNotification } from "../../../context/NotificationProvider";
 
 // Conditionally import CustomButton based on the environment variables
 const BopLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  useEffect(() => {}, []);
+  const { showMessage } = useNotification();
+
+  const passwordRef = useRef(null);
   const [crendentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -56,10 +59,10 @@ const BopLogin = () => {
    * Validates the credentials and dispatches the login action if valid.
    */
   const handleSubmit = (e) => {
+    e.preventDefault();
     const {
       email,
       password,
-      hasEmailisValid,
       hasErrorOnEmail,
       hasErrorOnPassword,
       hasErrorOnUserName, // Typo corrected in state initialization to hasErrorOnUserName
@@ -82,6 +85,7 @@ const BopLogin = () => {
         Password: password,
         DeviceID: "1",
         Device: "Browser",
+        RoleID: 6,
       };
 
       // Dispatch the login API action for non-corporate user
@@ -94,6 +98,20 @@ const BopLogin = () => {
         setUserNameError("Please enter a username");
       }
       return;
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      if (e.target.name === "email") {
+        if (e.target.value.trim() !== "") {
+          passwordRef.current?.focus();
+        } else {
+          setUserNameError("Please enter a username");
+        }
+      } else if (e.target.name === "password") {
+        handleSubmit(e);
+      }
     }
   };
 
@@ -130,6 +148,7 @@ const BopLogin = () => {
                     required
                     value={crendentials.email}
                     onChange={handleChangeFields}
+                    onKeyDown={handleKeyDown}
                     type="text"
                     // pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
                     aria-label="email"
@@ -158,6 +177,8 @@ const BopLogin = () => {
                   className={styles["form-comtrol-textfield-password"]}
                   placeholder="Password"
                   required
+                  ref={passwordRef}
+                  onKeyDown={handleKeyDown}
                   value={crendentials.password}
                   onChange={handleChangeFields}
                   type={showPassowrd ? "text" : "password"}
@@ -194,14 +215,14 @@ const BopLogin = () => {
                 className={"mt-3"}
               />
 
-              <p className="mt-2">
+              {/* <p className="mt-2">
                 <Link
                   to={"/forgotpassword"}
                   className={styles["forgotPasswordLink"]}
                 >
                   Forgot Password?
                 </Link>
-              </p>
+              </p> */}
             </section>
           </Form>
         </Col>
