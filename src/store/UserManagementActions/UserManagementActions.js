@@ -10,7 +10,7 @@ import {
 
 export const GetRoleforUserManagementAPI = createAsyncThunk(
   "Auditor/GetRoleforUserManagement",
-  async ({ rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const GetRoleforUserManagementData = createPostAPI(
         auditorApi,
@@ -67,7 +67,7 @@ export const GetRoleforUserManagementAPI = createAsyncThunk(
 
 export const GetAdminEmailforUserManagementAPI = createAsyncThunk(
   "Auditor/GetAdminEmailforUserManagement",
-  async ({ rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const GetAdminEmailforUserManagementData = createPostAPI(
         auditorApi,

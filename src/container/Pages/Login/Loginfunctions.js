@@ -1,4 +1,4 @@
-import { emailValidation } from "@/common/utils";
+import { emailValidation } from "@/Common/Utils";
 
 /**
  * Updates the email field and its related validation states.
@@ -27,7 +27,7 @@ const updateUsername = (username, setCredentials) => {
   setCredentials((prev) => ({
     ...prev,
     email: username,
-    hasErrroOnUserName: username !== "" ? false : true,
+    hasErrorOnUserName: username !== "" ? false : true,
   }));
 };
 

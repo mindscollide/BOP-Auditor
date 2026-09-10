@@ -5,6 +5,7 @@ import {
   refreshTokenAction,
 } from "../../container/Pages/Login/logInAction";
 import { GetAllTenorsAPI } from "../RateInputActions/RateInputActions";
+import { EmailTokenVerifyApi, ForgotPasswordApi, ResetPasswordApi } from "../AuthActions/authActions";
 
 const authSlice = createSlice({
   name: "auth",
@@ -16,6 +17,9 @@ const authSlice = createSlice({
     refreshTokenResponse: null,
     logout: null,
     getAllTenors: null,
+        resetPassword: null,
+    forgotPassword: null,
+    resetPasswordEmailVerification: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -85,6 +89,44 @@ const authSlice = createSlice({
         state.Loader = false;
         state.getAllTenors = null;
         state.responseMessage = payload.message;
+      }).addCase(ResetPasswordApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(ResetPasswordApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.resetPassword = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(ResetPasswordApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.resetPassword = null;
+        state.responseMessage = payload;
+      })
+      .addCase(EmailTokenVerifyApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(EmailTokenVerifyApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.resetPasswordEmailVerification = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(EmailTokenVerifyApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.resetPasswordEmailVerification = null;
+        state.responseMessage = payload;
+      })
+      .addCase(ForgotPasswordApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(ForgotPasswordApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.forgotPassword = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(ForgotPasswordApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.forgotPassword = null;
+        state.responseMessage = payload;
       });
   },
 });

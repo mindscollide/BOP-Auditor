@@ -18,8 +18,6 @@ const MainInputReport = () => {
   const [activeTab, setActiveTab] = useState("Spot"); // default tab key
   // const [activeTabNo, setActiveTabNo] = useState(null);
 
-  console.log(activeTab, "activeTabactiveTab");
-
   const hasFetched = React.useRef(false);
 
   useEffect(() => {

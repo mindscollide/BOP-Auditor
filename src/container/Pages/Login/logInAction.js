@@ -5,7 +5,7 @@ import {
   LogOut,
   refreshTokenRM,
 } from "../../../Common/API_Config";
-import { roleBasedNavigation } from "../../../Common/Utils";
+import { encryptField, roleBasedNavigation } from "../../../Common/Utils";
 import { authApi } from "../../../Common/API_EndPoints";
 
 //Login API
@@ -15,18 +15,20 @@ export const loginInApi = createAsyncThunk(
     try {
       let getBlotterData = createPostAPI(
         authApi,
-        loginRequestMethod.RequestMethod
+        loginRequestMethod.RequestMethod,
       );
 
       const response = await getBlotterData(Data);
       if (response.data.responseCode === 200) {
-        const { isExecuted, responseMessage, token, refreshToken } =
-          response.data.responseResult;
-        console.log(isExecuted, "messageKeymessageKey");
+        const {
+          isExecuted,
+          responseMessage,
+          token,
+          refreshToken,
+          isPasswordReset,
+        } = response.data.responseResult;
 
         if (isExecuted) {
-          console.log(responseMessage, "responseMessage");
-
           switch (responseMessage.toLowerCase()) {
             case "ERM_AuthService_AuthManager_Login_01".toLowerCase():
               return rejectWithValue("Device is Empty");
@@ -61,11 +63,9 @@ export const loginInApi = createAsyncThunk(
               return rejectWithValue("Invalid Role");
 
             case "ERM_AuthService_AuthManager_Login_13".toLowerCase():
-              console.log("", response.data);
               return rejectWithValue("Branch is InActive");
 
             case "ERM_AuthService_AuthManager_Login_14".toLowerCase():
-              console.log("", response.data);
               return rejectWithValue("Invalid Role");
 
             case "ERM_AuthService_AuthManager_Login_03".toLowerCase(): {
@@ -81,6 +81,24 @@ export const loginInApi = createAsyncThunk(
                 userStatusID,
               } = response.data.responseResult.user;
 
+              if (!isPasswordReset) {
+                const encryptedName = await encryptField(firstName);
+                const encryptedUserID = await encryptField(String(userID));
+                navigate("/resetPassword", {
+                  state: {
+                    isResetPassword: false,
+                    firstName: encryptedName,
+                    email: email,
+                    userID: encryptedUserID,
+                  },
+                });
+                return {
+                  response: response.data.responseResult,
+                  message: "",
+                };
+                return;
+              }
+
               localStorage.setItem("token", token);
               localStorage.setItem("refreshToken", refreshToken);
               localStorage.setItem("name", firstName);
@@ -93,7 +111,7 @@ export const loginInApi = createAsyncThunk(
               localStorage.setItem("contactNumber", contactNumber);
               localStorage.setItem("userStatusID", userStatusID);
 
-              roleBasedNavigation(navigate, userRoleID);
+              roleBasedNavigation(navigate);
 
               return {
                 response: response.data.responseResult,
@@ -102,20 +120,17 @@ export const loginInApi = createAsyncThunk(
             }
 
             default:
-              console.log("", response.data);
               return rejectWithValue("Something went wrong");
           }
         } else {
-          console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
       }
     } catch (error) {
       // Reject with error message
-      console.log("", error);
       return rejectWithValue("Something went wrong");
     }
-  }
+  },
 );
 
 //Refresh Token
@@ -145,7 +160,7 @@ export const refreshTokenAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_AuthService_AuthManager_RefreshToken_01".toLowerCase()
+                "ERM_AuthService_AuthManager_RefreshToken_01".toLowerCase(),
               )
           ) {
             console.log("", response.data);
@@ -159,7 +174,7 @@ export const refreshTokenAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_AuthService_AuthManager_RefreshToken_02".toLowerCase()
+                "ERM_AuthService_AuthManager_RefreshToken_02".toLowerCase(),
               )
           ) {
             localStorage.clear();
@@ -181,16 +196,16 @@ export const refreshTokenAction = createAsyncThunk(
       // Reject with error message
       return rejectWithValue("Something went wrong");
     }
-  }
+  },
 );
 
 //Logout API
 export const logoutApi = createAsyncThunk(
   "auth/logoutApi",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
       const getBlotterData = createPostAPI(authApi, LogOut.RequestMethod);
-      const response = await getBlotterData(Data);
+      const response = await getBlotterData();
 
       const resCode = response?.data?.responseCode;
       const resResult = response?.data?.responseResult;
@@ -222,7 +237,7 @@ export const logoutApi = createAsyncThunk(
               };
 
             case "ERM_AuthService_AuthManager_LogOut_02":
-              return rejectWithValue("Data UnAvailable");
+              return rejectWithValue("");
 
             case "ERM_AuthService_AuthManager_LogOut_03":
               return rejectWithValue("Exception");
@@ -240,7 +255,7 @@ export const logoutApi = createAsyncThunk(
       console.log("Logout error:", error);
       return rejectWithValue("Something went wrong");
     }
-  }
+  },
 );
 
 // ✅ Plain async function (can be called anywhere)
@@ -268,7 +283,7 @@ export const refreshTokenFn = async () => {
           responseMessage
             .toLowerCase()
             .includes(
-              "ERM_AuthService_AuthManager_RefreshToken_01".toLowerCase()
+              "ERM_AuthService_AuthManager_RefreshToken_01".toLowerCase(),
             )
         ) {
           localStorage.setItem("token", token);
@@ -278,7 +293,7 @@ export const refreshTokenFn = async () => {
           responseMessage
             .toLowerCase()
             .includes(
-              "ERM_AuthService_AuthManager_RefreshToken_02".toLowerCase()
+              "ERM_AuthService_AuthManager_RefreshToken_02".toLowerCase(),
             )
         ) {
           window.location.href = "/";

@@ -223,10 +223,9 @@ const AuditTrialByCorporate = () => {
       TransactionByTreasuryUser: formData.txnByTreasuryUser,
       StartDate: formatDate(startDate) !== null ? formatDate(startDate) : "",
       EndDate: formatDate(endDate) !== null ? formatDate(endDate) : "",
-      Length: 10,
+      Length: dropdownvalue,
       sRow: 0,
     };
-    console.log(Data, "DataDataDataData");
     dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
   };
 
@@ -251,7 +250,7 @@ const AuditTrialByCorporate = () => {
       TransactionByTreasuryUser: "",
       StartDate: "",
       EndDate: "",
-      Length: 10,
+      Length: dropdownvalue,
       sRow: 0,
     };
     dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));
@@ -496,7 +495,7 @@ const AuditTrialByCorporate = () => {
             formData.txnByTreasuryUser !== "" ? formData.txnByTreasuryUser : "",
           StartDate: formatDate(startDate) !== "" ? formatDate(startDate) : "",
           EndDate: formatDate(endDate) !== "" ? formatDate(endDate) : "",
-          Length: 10,
+          Length: dropdownvalue,
           sRow: sRow,
         };
         dispatch(GetTransactionDetailsByCorporateAuditor({ navigate, Data }));

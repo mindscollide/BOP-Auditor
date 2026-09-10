@@ -1,7 +1,7 @@
 import { Layout } from "antd";
 import React from "react";
 import MainHeader from "../../components/layout/header/header";
-import Sidebar from "../../components/layout/sider/sider";
+import Sidebar from "../../components/layout/sider/Sider";
 import { Outlet } from "react-router-dom";
 
 const Dashboard = () => {

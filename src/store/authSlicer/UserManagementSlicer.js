@@ -24,20 +24,17 @@ const userManagementSlicer = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(GetRoleforUserManagementAPI.pending, (state) => {
-        console.log(state, "state");
         state.Loader = true;
       })
       .addCase(GetRoleforUserManagementAPI.fulfilled, (state, { payload }) => {
-        console.log(state, "state");
         state.Loader = false;
         state.GetRoleforUserManagement = payload.response;
         state.responseMessage = payload.message;
       })
       .addCase(GetRoleforUserManagementAPI.rejected, (state, { payload }) => {
-        console.log(state, "state");
         state.Loader = false;
         state.GetRoleforUserManagement = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload;
       })
       .addCase(GetAdminEmailforUserManagementAPI.pending, (state) => {
         state.Loader = true;
@@ -55,7 +52,7 @@ const userManagementSlicer = createSlice({
         (state, { payload }) => {
           state.Loader = false;
           state.GetAdminEmailforUserManagement = null;
-          state.responseMessage = payload.message;
+          state.responseMessage = payload;
         }
       )
       // Pending state (while the API call is being made GetSpotRateInputDataAPI)

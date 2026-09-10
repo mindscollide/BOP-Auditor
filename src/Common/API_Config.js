@@ -124,3 +124,16 @@ export const DownloadCorporateUserForAuditorExcelReport = {
 export const DownloadCorporateUserForAuditorReportPDF = {
   RequestMethod: "ServiceManager.DownloadCorporateUserForAuditorReportPDF",
 };
+
+
+export const BankResetPassword = {
+  RequestMethod: "ServiceManager.ResetPassword",
+};
+
+export const EmailTokenVerify = {
+  RequestMethod: "ServiceManager.EmailTokenVerify",
+};
+
+export const ForgetPassword = {
+  RequestMethod: "ServiceManager.ForgetPassword"
+}

@@ -1,5 +1,5 @@
 // src/utils/apiCaller.js
-import { setCustomHeaders } from "@/common/utils";
+import { setCustomHeaders } from "@/Common/Utils";
 import axios from "axios";
 import { ensureTokenRefreshed } from "./refreshHandler";
 
@@ -94,7 +94,7 @@ const createPostAPI =
   (url, requestMethod) =>
   async (bodyData = {}, isDoc = false, fileName, ext) => {
     try {
-      const headers = setCustomHeaders(isDoc, fileName, ext);
+      const headers = setCustomHeaders(isDoc, ext);
 
       const form = new FormData();
       form.append("RequestMethod", requestMethod);

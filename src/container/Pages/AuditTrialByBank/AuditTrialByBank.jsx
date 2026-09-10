@@ -272,12 +272,15 @@ const AuditTrialByBankCom = () => {
       title: "TXN ID",
       dataIndex: "txnid",
       key: "txnid",
-      width: 100,
+      width: 130,
+         ellipsis: true,
     },
     {
       title: "Corporate Name",
       dataIndex: "corporateName",
       ellipsis: true,
+      align: "center",
+
       key: "corporateName",
       width: 150,
     },
@@ -286,6 +289,8 @@ const AuditTrialByBankCom = () => {
       dataIndex: "branchName",
       key: "branchName",
       ellipsis: true,
+      align: "center",
+
       width: 150,
       render: (text) => <span style={{ maxWidth: "100%" }}>{text}</span>,
     },
@@ -294,12 +299,16 @@ const AuditTrialByBankCom = () => {
       dataIndex: "branchUser",
       ellipsis: true,
       key: "branchUser",
+      align: "center",
+      
+
       width: 150,
     },
     {
       title: "Treasury Sales User",
       dataIndex: "treasuryUser",
       ellipsis: true,
+      align: "center",
       key: "treasuryUser",
       width: 150,
     },
@@ -307,6 +316,8 @@ const AuditTrialByBankCom = () => {
       title: "Date",
       dataIndex: "date",
       key: "date",
+      align: "center",
+
       width: 120,
       render: (text, record) => {
         let dateStr = getDateTimeString(record.date, record.time);
@@ -325,6 +336,8 @@ const AuditTrialByBankCom = () => {
       dataIndex: "time",
       key: "time",
       width: 100,
+      align: "center",
+
       render: (text, record) => {
         let dateStr = getDateTimeString(record.date, record.time);
 
@@ -341,12 +354,16 @@ const AuditTrialByBankCom = () => {
       dataIndex: "type",
       key: "type",
       width: 100,
+      align: "center",
+
     },
     {
       title: "Nature",
       dataIndex: "nature",
       key: "nature",
       ellipsis: true,
+      align: "center",
+
       width: 150,
     },
     {
@@ -482,6 +499,8 @@ const AuditTrialByBankCom = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      align: "center",
+
       width: 110,
       render: (text) => (
         <span

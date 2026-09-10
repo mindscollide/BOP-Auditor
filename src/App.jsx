@@ -14,7 +14,11 @@ import { Loader } from "./components/elements";
 import PrivateRoute from "./routes/PrivateRoute";
 import UserManagementReport from "./container/Pages/UserManagementReport";
 import MainInputReport from "./container/Pages/RateInputReport";
-import { useSelector } from "react-redux";
+import ForgotPassword from "./container/Pages/forgetPassword/ForgotPassword";
+import ResetPassword from "./container/Pages/ResetPassword/ResetPassword";
+import ResetPasswordLinkExpired from "./container/Pages/resetPasswordLinkExpired";
+import ForgotPasswordEmailSentTo from "./container/Pages/forgetPassword/ForgotPasswordEmailSentTo";
+import Redirected from "./container/Pages/redirected";
 
 function App() {
   const [routes, setRoutes] = useState([]);
@@ -53,10 +57,24 @@ function App() {
         path: "/",
         element: <BopLogin />,
       },
+      {
+        path: "/forgotpassword",
+        element: <ForgotPassword />,
+      },
+      {
+        path: "/emailsent",
+        element: <ForgotPasswordEmailSentTo />,
+      },
+      { path: "/resetPassword", element: <ResetPassword /> },
+      {
+        path: "/resetPasswordLinkExpired",
+        element: <ResetPasswordLinkExpired />,
+      },
+      { path: "/redirected", element: <Redirected /> },
       dashboardRoutes,
       {
         path: "*",
-        element: <Navigate to="/" />,
+        element: <Navigate to='/' />,
       },
     ];
 
