@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useNotification } from "@/context/NotificationProvider";
 import { decryptField, encryptField } from "@/Common/Utils";
 import { ResetPasswordApi } from "@/store/AuthActions/authActions";
+import MaskedPasswordField from "@/components/common/maskedPasswordField/MaskedPasswordField";
 // Common weak/dictionary passwords rejected outright, regardless of other rules being met.
 const COMMON_PASSWORDS = [
   "password",
@@ -197,13 +198,12 @@ const ResetPassword = () => {
                 className={styles["Icon-Field-class"]}>
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
-              <Form.Control
+              <MaskedPasswordField
                 id='reset-new-password-field'
                 name='newPassword'
-                type={"text"}
-                autoComplete='off'
+                value={passwordData.newPassword}
                 onChange={(event) => handleChangePassword("newPassword", event)}
-                className={`${styles["form-comtrol-textfield-password"]} ${styles["pwdMask"]}`}
+                className={styles["form-comtrol-textfield-password"]}
                 placeholder='Password'
                 aria-label='newPassword'
               />
@@ -214,15 +214,14 @@ const ResetPassword = () => {
                 className={styles["Icon-Field-class"]}>
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
-              <Form.Control
+              <MaskedPasswordField
                 id='reset-confirm-password-field'
                 name='confirmPassword'
-                type={"text"}
-                autoComplete='off'
+                value={passwordData.confirmPassword}
                 onChange={(event) =>
                   handleChangePassword("confirmPassword", event)
                 }
-                className={`${styles["form-comtrol-textfield-password"]} ${styles["pwdMask"]}`}
+                className={styles["form-comtrol-textfield-password"]}
                 placeholder='New Confirm Password'
                 aria-label='confirmPassword'
               />

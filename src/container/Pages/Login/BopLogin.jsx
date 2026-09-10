@@ -1,23 +1,36 @@
 import React, { useEffect, useRef, useState } from "react";
+
 import styles from "./BopLogin.module.css";
+
 import { Row, Col, InputGroup, Form } from "react-bootstrap";
+
 import BOPLogo from "../../../assets/images/logo.png";
+
 import { Link, useNavigate } from "react-router-dom";
+
 import { useDispatch } from "react-redux";
-import { updateEmail, updatePassword, updateUsername } from "./Loginfunctions";
+
+import { updateEmail, updatePassword } from "./Loginfunctions";
+
 import IconElement from "../../../components/IconElement/IconElement";
+
 import CustomButton from "../../../components/elements/globalButton/button";
+
 import { loginInApi } from "./logInAction";
+
 import { useNotification } from "../../../context/NotificationProvider";
+
 import { bopEmailValidation, encryptField } from "../../../Common/Utils";
 
-// Conditionally import CustomButton based on the environment variables
+import MaskedPasswordField from "../../../components/common/maskedPasswordField/MaskedPasswordField";
+
 const BopLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { showMessage } = useNotification();
 
   const passwordRef = useRef(null);
+
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -25,57 +38,102 @@ const BopLogin = () => {
     hasEmailisValid: true,
     hasErrorOnPassword: false,
   });
-  const [showPassowrd, setShowPassword] = useState(false);
+
   const [passwordError, setPasswordError] = useState("");
   const [userNameError, setUserNameError] = useState("");
-  /**
-   * Handles input field changes for email and password.
-   * Validates email format and updates the credentials state.
-   *
-   * @param {object} e - Event object from the input field change.
-   */
 
   useEffect(() => {
     localStorage.clear();
   }, []);
+
   const handleChangeFields = (e) => {
     const { name, value } = e.target;
+
     if (name === "email") {
-      updateEmail(value, setCredentials);
-    }
-    if (name === "password") {
-      updatePassword(value, setCredentials);
-    }
-  };
+      const email = value;
 
-  /**
-   * Handles the submission of the login form.
-   * Validates the credentials and dispatches the login action if valid.
-   */
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+      setUserNameError("");
 
-    const { email, password, hasErrorOnEmail, hasErrorOnPassword } =
-      credentials;
-
-    if (!email || !password || hasErrorOnEmail || hasErrorOnPassword) {
-      if (!email) {
-        setUserNameError("Please enter an email");
+      if (!email.trim()) {
+        setCredentials((prev) => ({
+          ...prev,
+          email,
+          hasErrorOnEmail: true,
+          hasEmailisValid: false,
+        }));
+        return;
       }
+
+      if (!bopEmailValidation(email.trim())) {
+        setCredentials((prev) => ({
+          ...prev,
+          email,
+          hasErrorOnEmail: true,
+          hasEmailisValid: false,
+        }));
+        setUserNameError("Please enter a valid email");
+        return;
+      }
+
+      updateEmail(email, setCredentials);
+
+      setUserNameError("");
+    }
+
+    if (name === "password") {
+      const password = value;
+
+      setPasswordError("");
+
+      updatePassword(password, setCredentials);
 
       if (!password) {
         setPasswordError("Please enter a password");
       }
+    }
+  };
 
+  const validateFields = () => {
+    const trimmedEmail = credentials.email.trim();
+    const password = credentials.password;
+
+    let isValid = true;
+
+    // Email validation
+    if (!trimmedEmail) {
+      setUserNameError("Please enter an email");
+      isValid = false;
+    } else if (!bopEmailValidation(trimmedEmail)) {
+      setUserNameError("Please enter a valid email");
+      isValid = false;
+    } else {
+      setUserNameError("");
+    }
+
+    // Password validation
+    if (!password) {
+      setPasswordError("Please enter a password");
+      isValid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    return isValid;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateFields()) {
       return;
     }
 
-    try {
-      const trimmedEmail = email.trim();
+    const trimmedEmail = credentials.email.trim();
 
+    try {
       const [encryptedEmail, encryptedPassword] = await Promise.all([
         encryptField(trimmedEmail),
-        encryptField(password),
+        encryptField(credentials.password),
       ]);
 
       const Data = {
@@ -89,22 +147,32 @@ const BopLogin = () => {
       dispatch(loginInApi({ Data, navigate }));
     } catch (error) {
       console.error("Login encryption error:", error);
-
       showMessage("Unable to process login. Please try again.", "error");
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      if (e.target.name === "email") {
-        if (e.target.value.trim() !== "") {
-          passwordRef.current?.focus();
-        } else {
-          setUserNameError("Please enter a username");
-        }
-      } else if (e.target.name === "password") {
-        handleSubmit(e);
+    if (e.key !== "Enter") return;
+
+    if (e.target.name === "email") {
+      const email = e.target.value.trim();
+
+      if (!email) {
+        setUserNameError("Please enter an email");
+        return;
       }
+
+      if (!bopEmailValidation(email)) {
+        setUserNameError("Please enter a valid email");
+        return;
+      }
+
+      setUserNameError("");
+      passwordRef.current?.focus();
+    }
+
+    if (e.target.name === "password") {
+      handleSubmit(e);
     }
   };
 
@@ -115,87 +183,99 @@ const BopLogin = () => {
           sm={12}
           md={12}
           lg={12}
-          className='d-flex justify-content-center mt-5 '>
+          className="d-flex justify-content-center mt-5"
+        >
           <img
             src={BOPLogo}
             style={{ maxWidth: "100%" }}
-            width='300'
-            className='img-fluid'
-            alt='BOP Logo'
+            width="300"
+            className="img-fluid"
+            alt="BOP Logo"
           />
         </Col>
+
         <Col sm={12} md={12} lg={12}>
           <Form onSubmit={handleSubmit}>
             <section className={styles["LoginCard"]}>
-              <>
-                <h4 className={styles["Heading-js"]}>{"Login"}</h4>
-                <InputGroup>
-                  <InputGroup.Text className={styles["Icon-Field-class"]}>
-                    <IconElement iconClass={"icon-user"} />
-                  </InputGroup.Text>
-                  <Form.Control
-                    name='email'
-                    autoComplete='off'
-                    className={styles["form-comtrol-textfield"]}
-                    placeholder='Email'
-                    required
-                    value={credentials.email}
-                    onChange={handleChangeFields}
-                    onKeyDown={handleKeyDown}
-                    type='email'
-                    aria-label='email'
-                    maxLength={100}
-                    aria-describedby='basic-addon1'
-                  />
-                </InputGroup>
+              <h4 className={styles["Heading-js"]}>Login</h4>
 
-                {credentials.email === "" && (
-                  <p className='color-red fs-sm d-flex justify-content-start m-0'>
-                    {userNameError}
-                  </p>
-                )}
-              </>
-
-              <InputGroup className='mt-3'>
-                <InputGroup.Text
-                  id='basic-addon1'
-                  className={styles["Icon-Field-class"]}>
-                  <IconElement iconClass={"icon-lock"} />
+              {/* Email */}
+              <InputGroup>
+                <InputGroup.Text className={styles["Icon-Field-class"]}>
+                  <IconElement iconClass="icon-user" />
                 </InputGroup.Text>
+
                 <Form.Control
-                  id='login-password-field'
-                  name='password'
-                  autoComplete='off'
-                  className={`${styles["form-comtrol-textfield-password"]} ${styles["pwdMask"]}`}
-                  placeholder='Password'
-                  required
+                  name="email"
+                  autoComplete="off"
+                  className={styles["form-comtrol-textfield"]}
+                  placeholder="Email"
+                  value={credentials.email}
+                  onChange={handleChangeFields}
+                  onKeyDown={handleKeyDown}
+                  type="email"
+                  aria-label="email"
+                  maxLength={100}
+                  aria-describedby="email-error"
+                  isInvalid={!!userNameError}
+                />
+              </InputGroup>
+
+              {userNameError && (
+                <p
+                  id="email-error"
+                  className="color-red fs-sm d-flex justify-content-start m-0"
+                >
+                  {userNameError}
+                </p>
+              )}
+
+              {/* Password */}
+              <InputGroup className="mt-3">
+                <InputGroup.Text
+                  id="basic-addon1"
+                  className={styles["Icon-Field-class"]}
+                >
+                  <IconElement iconClass="icon-lock" />
+                </InputGroup.Text>
+
+                <MaskedPasswordField
+                  id="login-password-field"
+                  name="password"
+                  className={styles["form-comtrol-textfield-password"]}
+                  placeholder="Password"
                   ref={passwordRef}
                   onKeyDown={handleKeyDown}
                   value={credentials.password}
                   onChange={handleChangeFields}
-                  type={"text"}
-                  aria-label='password'
-                  aria-describedby='basic-addon2'
+                  aria-label="password"
+                  aria-describedby="password-error"
                 />
               </InputGroup>
 
-              {credentials.password === "" && (
-                <p className='color-red fs-sm d-flex justify-content-start m-0'>
+              {passwordError && (
+                <p
+                  id="password-error"
+                  className="color-red fs-sm d-flex justify-content-start m-0"
+                >
                   {passwordError}
                 </p>
               )}
-              <p className='mt-2 text-end'>
+
+              <p className="mt-2 text-end">
                 <Link
-                  to={"/forgotpassword"}
-                  className={styles["forgotPasswordLink"]}>
+                  to="/forgotpassword"
+                  className={styles["forgotPasswordLink"]}
+                >
                   Forgot Password?
                 </Link>
               </p>
+
               <CustomButton
-                value={"Login"}
+                value="Login"
                 onClick={handleSubmit}
-                applyClass={"authLoginBtn"}
-                className={"mt-3"}
+                applyClass="authLoginBtn"
+                className="mt-3"
               />
             </section>
           </Form>

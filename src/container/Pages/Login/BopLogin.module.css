@@ -89,11 +89,3 @@
   display: flex;
   justify-content: center;
 }
-
-/* Renders a plain text input visually as a masked password field (dots),
-   without type="password" — browsers don't offer to save/autofill a
-   text input, so this keeps the "Save password?" prompt from appearing. */
-.pwdMask {
-  -webkit-text-security: disc;
-  text-security: disc;
-}

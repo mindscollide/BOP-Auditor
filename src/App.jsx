@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   RouterProvider,
   createBrowserRouter,
@@ -22,6 +22,47 @@ import Redirected from "./container/Pages/redirected";
 
 function App() {
   const [routes, setRoutes] = useState([]);
+  const currentBundle = useRef(null);
+
+  // Detects a new deployment without exposing any extra file: index.html is
+  // already unavoidably public (it's what boots the SPA), and Vite stamps a
+  // fresh content-hash into its entry <script src="/assets/index-<hash>.js">
+  // on every build. Re-fetching it and watching that src change is enough to
+  // know a new build has shipped — no separate version.json needed.
+  useEffect(() => {
+    const extractBundleSrc = (html) => {
+      const match = html.match(/<script[^>]+src="([^"]+\.js)"[^>]*>/i);
+      return match ? match[1] : null;
+    };
+
+    const checkForNewBuild = async () => {
+      try {
+        const response = await fetch("/index.html", { cache: "no-cache" });
+        const html = await response.text();
+        const bundleSrc = extractBundleSrc(html);
+
+        if (!bundleSrc) return;
+
+        if (currentBundle.current && currentBundle.current !== bundleSrc) {
+          // 🔹 Clear browser caches (for service workers / cache API)
+          if ("caches" in window) {
+            const names = await caches.keys();
+            await Promise.all(names.map((name) => caches.delete(name)));
+          }
+          window.location.reload();
+          return;
+        }
+
+        currentBundle.current = bundleSrc;
+      } catch (err) {
+        console.log("Error checking for new build:", err);
+      }
+    };
+
+    checkForNewBuild();
+    const interval = setInterval(checkForNewBuild, 30000); // check every 30 sec
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     document.title = "BOP Auditor"; // Or customize with env vars if needed
