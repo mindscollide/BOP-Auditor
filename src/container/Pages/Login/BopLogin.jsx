@@ -163,16 +163,17 @@ const BopLogin = () => {
                   <IconElement iconClass={"icon-lock"} />
                 </InputGroup.Text>
                 <Form.Control
+                  id='login-password-field'
                   name='password'
                   autoComplete='off'
-                  className={styles["form-comtrol-textfield-password"]}
+                  className={`${styles["form-comtrol-textfield-password"]} ${styles["pwdMask"]}`}
                   placeholder='Password'
                   required
                   ref={passwordRef}
                   onKeyDown={handleKeyDown}
                   value={credentials.password}
                   onChange={handleChangeFields}
-                  type={"password"}
+                  type={"text"}
                   aria-label='password'
                   aria-describedby='basic-addon2'
                 />

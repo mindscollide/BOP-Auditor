@@ -15,20 +15,20 @@ const Redirected = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // if (!location.search.includes("resetPass_action=")) {
-    //   navigate("/resetPasswordLinkExpired");
-    //   return;
-    // }
+    if (!location.search.includes("resetPass_action=")) {
+      navigate("/");
+      return;
+    }
 
     const token = location.search.split("resetPass_action=")[1];
+
     const Data = { EncryptedString: token };
 
     // EmailTokenVerifyApi itself routes on the response message: a valid token goes
     // to /resetPassword, an expired/used one to /resetPasswordLinkExpired. Navigating
     // again here would replace whichever route it just picked, so only failures are
     // handled below.
-    dispatch(EmailTokenVerifyApi({ Data, navigate }))
-   
+    dispatch(EmailTokenVerifyApi({ Data, navigate }));
   }, [location.search]);
 
   return (
@@ -38,14 +38,13 @@ const Redirected = () => {
           sm={12}
           md={12}
           lg={12}
-          className="d-flex justify-content-center mt-5 "
-        >
+          className='d-flex justify-content-center mt-5 '>
           <img
             src={BOPLogo}
             style={{ maxWidth: "100%" }}
-            width="300"
-            className="img-fluid"
-            alt="BOP Logo"
+            width='300'
+            className='img-fluid'
+            alt='BOP Logo'
           />
         </Col>
         <Col sm={12} md={12} lg={12}>

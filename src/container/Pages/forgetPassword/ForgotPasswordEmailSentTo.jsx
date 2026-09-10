@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
 import BOPLogo from "@/assets/logo.png";
 import styles from "./ForgotPassword.module.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { replace } from "lodash";
 
 
 const ForgotPasswordEmailSentTo = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const location = useLocation()
+  useEffect(() => {
+    if(location.state === null) {
+      navigate("/", { replace: true })
+      return
+    }
+  }, [location.state])
   return (
     <section className={styles["sign-in"]}>
       <Row>

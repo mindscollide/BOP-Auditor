@@ -127,7 +127,7 @@ export const ForgotPasswordApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_SendEmailForForgetPasword_01".toLowerCase(),
               )
           ) {
-            navigate("/emailsent", { replace: true });
+            navigate("/emailsent", { replace: true, state: "EmailSentSuccessfully" });
             return {
               response: response.data.responseResult,
               message: "Email Sent Successfully",

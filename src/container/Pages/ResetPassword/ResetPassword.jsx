@@ -198,11 +198,12 @@ const ResetPassword = () => {
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
               <Form.Control
+                id='reset-new-password-field'
                 name='newPassword'
-                type={"password"}
-                autoComplete='new-password'
+                type={"text"}
+                autoComplete='off'
                 onChange={(event) => handleChangePassword("newPassword", event)}
-                className={styles["form-comtrol-textfield-password"]}
+                className={`${styles["form-comtrol-textfield-password"]} ${styles["pwdMask"]}`}
                 placeholder='Password'
                 aria-label='newPassword'
               />
@@ -214,13 +215,14 @@ const ResetPassword = () => {
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
               <Form.Control
+                id='reset-confirm-password-field'
                 name='confirmPassword'
-                type={"password"}
-                autoComplete='new-password'
+                type={"text"}
+                autoComplete='off'
                 onChange={(event) =>
                   handleChangePassword("confirmPassword", event)
                 }
-                className={styles["form-comtrol-textfield-password"]}
+                className={`${styles["form-comtrol-textfield-password"]} ${styles["pwdMask"]}`}
                 placeholder='New Confirm Password'
                 aria-label='confirmPassword'
               />

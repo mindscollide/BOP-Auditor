@@ -28,7 +28,7 @@ const ForgotPassword = () => {
 
     // Only the Auditor role exists in this app, so RoleID is always 6 —
     // matches the hardcoded RoleID used for login.
-    let Data = { Email: encryptedEmail };
+    let Data = { Email: encryptedEmail, RoleID: 6 };
     dispatch(ForgotPasswordApi({ Data, navigate }));
   };
 
