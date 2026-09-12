@@ -15,6 +15,7 @@ body {
   padding: 20px 12px !important;
   background-color: #fff;
   border-radius: 4px;
+  z-index: 10000 !important;
 }
 .custom-notification-snackbar .ant-notification-notice-message {
   color: #fff !important;

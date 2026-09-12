@@ -54,7 +54,7 @@ export const loginInApi = createAsyncThunk(
               return rejectWithValue("Login Failed");
 
             case "ERM_AuthService_AuthManager_Login_10".toLowerCase():
-              return rejectWithValue("Login Failed");
+              return rejectWithValue("Not a valid user. Please login with valid ID");
 
             case "ERM_AuthService_AuthManager_Login_11".toLowerCase():
               return rejectWithValue("Someting went wrong");
