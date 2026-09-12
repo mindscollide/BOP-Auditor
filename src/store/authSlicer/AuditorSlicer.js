@@ -9,6 +9,7 @@ const AuditorSlice = createSlice({
   initialState: {
     responseMessage: "",
     Loader: false,
+    errorSeverity: null,
     error: null,
     transactionDetailsByBankData: null,
     transactionDetailsByCorporateData: null,
@@ -34,6 +35,7 @@ const AuditorSlice = createSlice({
         GetTransactionDetailsByBankAuditor.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.transactionDetailsByBankData = payload.response;
           state.error = null;
           state.responseMessage = payload.message;
@@ -42,6 +44,7 @@ const AuditorSlice = createSlice({
       // Rejected state (when the API call fails GetTransactionDetailsByBankAuditor)
       .addCase(GetTransactionDetailsByBankAuditor.rejected, (state, action) => {
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.responseMessage = action.payload;
         state.transactionDetailsByBankData = null;
       })
@@ -55,6 +58,7 @@ const AuditorSlice = createSlice({
         GetTransactionDetailsByCorporateAuditor.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.transactionDetailsByCorporateData = payload.response;
           state.error = null;
           state.responseMessage = payload.message;
@@ -65,6 +69,7 @@ const AuditorSlice = createSlice({
         GetTransactionDetailsByCorporateAuditor.rejected,
         (state, action) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.responseMessage = action.payload;
           state.transactionDetailsByCorporateData = null;
         }

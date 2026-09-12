@@ -10,6 +10,7 @@ const userManagementSlicer = createSlice({
   name: "userManagement",
   initialState: {
     Loader: false,
+    errorSeverity: null,
     responseMessage: "",
     GetRoleforUserManagement: null,
     GetAdminEmailforUserManagement: null,
@@ -28,11 +29,13 @@ const userManagementSlicer = createSlice({
       })
       .addCase(GetRoleforUserManagementAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Success";
         state.GetRoleforUserManagement = payload.response;
         state.responseMessage = payload.message;
       })
       .addCase(GetRoleforUserManagementAPI.rejected, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.GetRoleforUserManagement = null;
         state.responseMessage = payload;
       })
@@ -43,6 +46,7 @@ const userManagementSlicer = createSlice({
         GetAdminEmailforUserManagementAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.GetAdminEmailforUserManagement = payload.response;
           state.responseMessage = payload.message;
         }
@@ -51,6 +55,7 @@ const userManagementSlicer = createSlice({
         GetAdminEmailforUserManagementAPI.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.GetAdminEmailforUserManagement = null;
           state.responseMessage = payload;
         }
@@ -65,6 +70,7 @@ const userManagementSlicer = createSlice({
         SearchBranchUserForUserManagementAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.SearchBranchUserForUserManagement = payload.response;
           state.error = null;
           state.responseMessage = payload.message;
@@ -75,6 +81,7 @@ const userManagementSlicer = createSlice({
         SearchBranchUserForUserManagementAPI.rejected,
         (state, action) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.responseMessage = action.payload;
           state.SearchBranchUserForUserManagement = null;
         }
@@ -88,6 +95,7 @@ const userManagementSlicer = createSlice({
         SearchCorporateUserForUserManagementAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.SearchCorporateUserForUserManagement = payload.response;
           state.error = null;
           state.responseMessage = payload.message;
@@ -98,6 +106,7 @@ const userManagementSlicer = createSlice({
         SearchCorporateUserForUserManagementAPI.rejected,
         (state, action) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.responseMessage = action.payload;
           state.SearchCorporateUserForUserManagement = null;
         }

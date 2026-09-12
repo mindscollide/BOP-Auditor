@@ -11,8 +11,17 @@ body {
   box-sizing: border-box;
 }
 
+/* The z-index on .custom-notification-snackbar below only affects the notice
+   item itself — the fixed-position container antd renders it into (.ant-
+   notification) is what actually needs to sit above the loader overlay
+   (.body-loader, z-index: 9999 — see Loader.css), otherwise the whole tray
+   stacks underneath it regardless of the notice's own z-index. */
+.ant-notification {
+  z-index: 10000 !important;
+}
+
 .custom-notification-snackbar {
-  padding: 20px 12px !important;
+  padding: 12px !important;
   background-color: #fff;
   border-radius: 4px;
   z-index: 10000 !important;
@@ -26,11 +35,17 @@ body {
 .custom-notification-snackbar .ant-notification-notice-close {
   text-decoration: none !important;
   color: #fff !important;
+  top: 13px !important;
 }
 .custom-notification-snackbar {
   max-width: 350px !important;
-  background: linear-gradient(to bottom, #eeb592 0%, #fc6d0f 100%) !important;
   color: #fff !important;
+}
+.custom-notification-snackbar-success {
+  background: #32a852 !important;
+}
+.custom-notification-snackbar-error {
+  background: #ce0000 !important;
 }
 [class^="icon-"],
 [class*=" icon-"] {

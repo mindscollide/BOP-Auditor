@@ -27,31 +27,37 @@ export const NotificationProvider = ({ children }) => {
     {
       key: "auth",
       msg: useSelector((s) => s.authReducer?.responseMessage),
+      severity: useSelector((s) => s.authReducer?.errorSeverity),
       clear: clearAuthResponseMessage,
     },
     {
       key: "auditor",
       msg: useSelector((s) => s.AuditorReducer?.responseMessage),
+      severity: useSelector((s) => s.AuditorReducer?.errorSeverity),
       clear: clearAuditorResponseMessage,
     },
     {
       key: "report",
       msg: useSelector((s) => s.ReportReducer?.responseMessage),
+      severity: useSelector((s) => s.ReportReducer?.errorSeverity),
       clear: clearReportResponseMessage,
     },
     {
       key: "setting",
       msg: useSelector((s) => s.SettingReducer?.responseMessage),
+      severity: useSelector((s) => s.SettingReducer?.errorSeverity),
       clear: clearSettingResponseMessage,
     },
     {
       key: "rateInput",
       msg: useSelector((s) => s.RateInputSlicer?.responseMessage),
+      severity: useSelector((s) => s.RateInputSlicer?.errorSeverity),
       clear: clearRateInputResponseMessage,
     },
     {
       key: "userManagement",
       msg: useSelector((s) => s.userManagementSlicer?.responseMessage),
+      severity: useSelector((s) => s.userManagementSlicer?.errorSeverity),
       clear: clearUserManagementResponseMessage,
     },
   ];
@@ -59,13 +65,14 @@ export const NotificationProvider = ({ children }) => {
   // Listen to all Redux messages
   useEffect(
     () => {
-      sources.forEach(({ key, msg, clear }) => {
+      sources.forEach(({ key, msg, severity, clear }) => {
         if (!msg || timeouts.current[key]) return;
 
         const newItem = {
           id: `${key}-${Date.now()}`,
           message: msg,
           source: key,
+          severity,
         };
         setMessages((prev) => [...prev, newItem]);
 
@@ -83,13 +90,14 @@ export const NotificationProvider = ({ children }) => {
         timeouts.current = {};
       };
     },
-    sources.map((s) => s.msg)
+    sources.flatMap((s) => [s.msg, s.severity])
   );
 
-  // Manual trigger
-  const showMessage = useCallback((msg) => {
+  // Manual trigger — every current call site is a validation/error message,
+  // so severity defaults to "Error"; pass "Success" explicitly if needed.
+  const showMessage = useCallback((msg, severity = "Error") => {
     const id = `manual-${Date.now()}`;
-    const newItem = { id, message: msg, source: "manual" };
+    const newItem = { id, message: msg, source: "manual", severity };
     setMessages((prev) => [...prev, newItem]);
     setTimeout(() => {
       setMessages((prev) => prev.filter((m) => m.id !== id));

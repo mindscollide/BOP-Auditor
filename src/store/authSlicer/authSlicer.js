@@ -13,6 +13,7 @@ const authSlice = createSlice({
     userDetails: null,
     responseMessage: "",
     Loader: false,
+    errorSeverity: null,
     error: null,
     refreshTokenResponse: null,
     logout: null,
@@ -36,6 +37,7 @@ const authSlice = createSlice({
       // Fulfilled state (when the API call succeeds)
       .addCase(loginInApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Success";
         state.userDetails = payload.response;
         state.error = null;
         state.responseMessage = payload.message;
@@ -44,6 +46,7 @@ const authSlice = createSlice({
       .addCase(loginInApi.rejected, (state, action) => {
         console.log(action, "actionaction");
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.responseMessage = action.payload;
         state.user = null;
       })
@@ -53,11 +56,13 @@ const authSlice = createSlice({
       })
       .addCase(refreshTokenAction.fulfilled, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Success";
         state.refreshTokenResponse = payload.response;
         state.responseMessage = payload.message;
       })
       .addCase(refreshTokenAction.rejected, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.refreshTokenResponse = null;
         state.responseMessage = payload;
       })
@@ -67,11 +72,13 @@ const authSlice = createSlice({
       })
       .addCase(logoutApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Success";
         state.logout = payload.response;
         state.responseMessage = payload.message;
       })
       .addCase(logoutApi.rejected, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.logout = null;
         state.responseMessage = payload;
       })
@@ -81,12 +88,14 @@ const authSlice = createSlice({
       })
       .addCase(GetAllTenorsAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Success";
         state.getAllTenors = payload.response;
         state.error = false;
         state.responseMessage = payload.message;
       })
       .addCase(GetAllTenorsAPI.rejected, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.getAllTenors = null;
         state.responseMessage = payload.message;
       }).addCase(ResetPasswordApi.pending, (state) => {
@@ -94,11 +103,13 @@ const authSlice = createSlice({
       })
       .addCase(ResetPasswordApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Success";
         state.resetPassword = payload.response;
         state.responseMessage = payload.message;
       })
       .addCase(ResetPasswordApi.rejected, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.resetPassword = null;
         state.responseMessage = payload;
       })
@@ -107,11 +118,13 @@ const authSlice = createSlice({
       })
       .addCase(EmailTokenVerifyApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Success";
         state.resetPasswordEmailVerification = payload.response;
         state.responseMessage = payload.message;
       })
       .addCase(EmailTokenVerifyApi.rejected, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.resetPasswordEmailVerification = null;
         state.responseMessage = payload;
       })
@@ -120,11 +133,13 @@ const authSlice = createSlice({
       })
       .addCase(ForgotPasswordApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Success";
         state.forgotPassword = payload.response;
         state.responseMessage = payload.message;
       })
       .addCase(ForgotPasswordApi.rejected, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.forgotPassword = null;
         state.responseMessage = payload;
       });

@@ -12,6 +12,7 @@ const RateInputSlicer = createSlice({
   initialState: {
     responseMessage: "",
     Loader: false,
+    errorSeverity: null,
     error: null,
     transactionDetailsByBankData: null,
     transactionDetailsByCorporateData: null,
@@ -48,6 +49,7 @@ const RateInputSlicer = createSlice({
       // Fulfilled state (when the API call succeeds GetSpotRateInputDataAPI)
       .addCase(GetSpotRateInputDataAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Success";
         state.GetSpotRateInputData = payload.response;
         state.error = null;
         state.responseMessage = payload.message;
@@ -55,6 +57,7 @@ const RateInputSlicer = createSlice({
       // Rejected state (when the API call fails GetSpotRateInputDataAPI)
       .addCase(GetSpotRateInputDataAPI.rejected, (state, action) => {
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.responseMessage = action.payload;
         state.GetSpotRateInputData = null;
       })
@@ -66,6 +69,7 @@ const RateInputSlicer = createSlice({
       // Fulfilled state (when the API call succeeds GetSpotRateInputDataAPI)
       .addCase(GetForwardRateInputDataAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Success";
         state.GetForwardRateInputData = payload.response;
         state.error = null;
         state.responseMessage = payload.message;
@@ -73,6 +77,7 @@ const RateInputSlicer = createSlice({
       // Rejected state (when the API call fails GetSpotRateInputDataAPI)
       .addCase(GetForwardRateInputDataAPI.rejected, (state, action) => {
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.responseMessage = action.payload;
         state.GetForwardRateInputData = null;
       }) // Pending state (while the API call is being made GetSpotRateInputDataAPI)
@@ -85,6 +90,7 @@ const RateInputSlicer = createSlice({
         GetFEDiscountingRateInputDataAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.GetFEDiscountingRateInputData = payload.response;
           state.error = null;
           state.responseMessage = payload.message;
@@ -93,6 +99,7 @@ const RateInputSlicer = createSlice({
       // Rejected state (when the API call fails GetSpotRateInputDataAPI)
       .addCase(GetFEDiscountingRateInputDataAPI.rejected, (state, action) => {
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.responseMessage = action.payload;
         state.GetFEDiscountingRateInputData = null;
       })
@@ -106,6 +113,7 @@ const RateInputSlicer = createSlice({
         GetNonFEDiscountingRateInputDataAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.GetNonFEDiscountingRateInputData = payload.response;
           state.error = null;
           state.responseMessage = payload.message;
@@ -116,6 +124,7 @@ const RateInputSlicer = createSlice({
         GetNonFEDiscountingRateInputDataAPI.rejected,
         (state, action) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.responseMessage = action.payload;
           state.GetNonFEDiscountingRateInputData = null;
         }

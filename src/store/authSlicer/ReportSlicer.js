@@ -23,6 +23,7 @@ const ReportSlice = createSlice({
   initialState: {
     responseMessage: "",
     Loader: false,
+    errorSeverity: null,
     error: null,
     refreshTokenResponse: null,
     excelReportTransactionByBankReport: null,
@@ -60,6 +61,7 @@ const ReportSlice = createSlice({
         GetTransactionDetailsByBankExcelTypeReportAuditor.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.excelReportTransactionByBankReport = payload.response;
           state.responseMessage = payload.message;
         }
@@ -68,6 +70,7 @@ const ReportSlice = createSlice({
         GetTransactionDetailsByBankExcelTypeReportAuditor.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.excelReportTransactionByBankReport = null;
           state.responseMessage = payload;
         }
@@ -83,6 +86,7 @@ const ReportSlice = createSlice({
         GetTransactionDetailsByBankPDFTypeReportAuditor.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.pdfReportTransactionByBankReport = payload.response;
           state.responseMessage = payload.message;
         }
@@ -91,6 +95,7 @@ const ReportSlice = createSlice({
         GetTransactionDetailsByBankPDFTypeReportAuditor.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.pdfReportTransactionByBankReport = null;
           state.responseMessage = payload;
         }
@@ -106,6 +111,7 @@ const ReportSlice = createSlice({
         GetTransactionDetailsByCorporateExcelTypeReportAuditor.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.excelReportTransactionByCorporateReport = payload.response;
           state.responseMessage = payload.message;
         }
@@ -114,6 +120,7 @@ const ReportSlice = createSlice({
         GetTransactionDetailsByCorporateExcelTypeReportAuditor.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.excelReportTransactionByCorporateReport = null;
           state.responseMessage = payload;
         }
@@ -129,6 +136,7 @@ const ReportSlice = createSlice({
         GetTransactionDetailsByCorporatePDFTypeReportAuditor.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.pdfReportTransactionByCorporateReport = payload.response;
           state.responseMessage = payload.message;
         }
@@ -137,6 +145,7 @@ const ReportSlice = createSlice({
         GetTransactionDetailsByCorporatePDFTypeReportAuditor.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.pdfReportTransactionByCorporateReport = null;
           state.responseMessage = payload;
         }
@@ -148,6 +157,7 @@ const ReportSlice = createSlice({
         DownloadSpotRateInputExcelReportAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.DownloadSpotRateInputExcelReport = payload.response;
           state.responseMessage = payload.message;
         }
@@ -156,6 +166,7 @@ const ReportSlice = createSlice({
         DownloadSpotRateInputExcelReportAPI.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.DownloadSpotRateInputExcelReport = null;
           state.responseMessage = payload;
         }
@@ -168,6 +179,7 @@ const ReportSlice = createSlice({
         DownloadSpotRateInputExcelReportPDFAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.DownloadSpotRateInputExcelReportPDF = payload.response;
           state.responseMessage = payload.message;
         }
@@ -176,6 +188,7 @@ const ReportSlice = createSlice({
         DownloadSpotRateInputExcelReportPDFAPI.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.DownloadSpotRateInputExcelReportPDF = null;
           state.responseMessage = payload;
         }
@@ -187,6 +200,7 @@ const ReportSlice = createSlice({
         DownloadForwardRateInputExcelReportAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.DownloadForwardRateInputExcelReport = payload.response;
           state.responseMessage = payload.message;
         }
@@ -195,6 +209,7 @@ const ReportSlice = createSlice({
         DownloadForwardRateInputExcelReportAPI.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.DownloadForwardRateInputExcelReport = null;
           state.responseMessage = payload;
         }
@@ -206,6 +221,7 @@ const ReportSlice = createSlice({
         DownloadForwardRateInputReportPDFAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.DownloadForwardRateInputReportPDF = payload.response;
           state.responseMessage = payload.message;
         }
@@ -214,6 +230,7 @@ const ReportSlice = createSlice({
         DownloadForwardRateInputReportPDFAPI.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.DownloadForwardRateInputReportPDF = null;
           state.responseMessage = payload;
         }
@@ -228,6 +245,7 @@ const ReportSlice = createSlice({
         DownloadFeDiscountingRateInputExcelReportAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.DownloadFeDiscountingRateInputExcelReport = payload.response;
           state.responseMessage = payload.message;
         }
@@ -236,6 +254,7 @@ const ReportSlice = createSlice({
         DownloadFeDiscountingRateInputExcelReportAPI.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.DownloadFeDiscountingRateInputExcelReport = null;
           state.responseMessage = payload;
         }
@@ -247,6 +266,7 @@ const ReportSlice = createSlice({
         DownloadFeDiscountingRateInputReportPDFAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.DownloadFeDiscountingRateInputReportPDF = payload.response;
           state.responseMessage = payload.message;
         }
@@ -255,6 +275,7 @@ const ReportSlice = createSlice({
         DownloadFeDiscountingRateInputReportPDFAPI.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.DownloadFeDiscountingRateInputReportPDF = null;
           state.responseMessage = payload;
         }
@@ -269,6 +290,7 @@ const ReportSlice = createSlice({
         DownloadNonFEDiscountingRateInputExcelReportAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.DownloadNonFEDiscountingRateInputExcelReport = payload.response;
           state.responseMessage = payload.message;
         }
@@ -277,6 +299,7 @@ const ReportSlice = createSlice({
         DownloadNonFEDiscountingRateInputExcelReportAPI.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.DownloadNonFEDiscountingRateInputExcelReport = null;
           state.responseMessage = payload;
         }
@@ -291,6 +314,7 @@ const ReportSlice = createSlice({
         DownloadNonFEDiscountingRateInputReportPDFAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.DownloadNonFEDiscountingRateInputReportPDF = payload.response;
           state.responseMessage = payload.message;
         }
@@ -299,6 +323,7 @@ const ReportSlice = createSlice({
         DownloadNonFEDiscountingRateInputReportPDFAPI.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.DownloadNonFEDiscountingRateInputReportPDF = null;
           state.responseMessage = payload;
         }
@@ -310,6 +335,7 @@ const ReportSlice = createSlice({
         DownloadBranchUserForAuditorExcelReportAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.DownloadBranchUserForAuditorExcelReport = payload.response;
           state.responseMessage = payload.message;
         }
@@ -318,6 +344,7 @@ const ReportSlice = createSlice({
         DownloadBranchUserForAuditorExcelReportAPI.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.DownloadBranchUserForAuditorExcelReport = null;
           state.responseMessage = payload;
         }
@@ -329,6 +356,7 @@ const ReportSlice = createSlice({
         DownloadBranchUserForAuditorReportPDFAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.DownloadBranchUserForAuditorReportPDF = payload.response;
           state.responseMessage = payload.message;
         }
@@ -337,6 +365,7 @@ const ReportSlice = createSlice({
         DownloadBranchUserForAuditorReportPDFAPI.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.DownloadBranchUserForAuditorReportPDF = null;
           state.responseMessage = payload;
         }
@@ -351,6 +380,7 @@ const ReportSlice = createSlice({
         DownloadCorporateUserForAuditorExcelReportAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.DownloadCorporateUserForAuditorExcelReport = payload.response;
           state.responseMessage = payload.message;
         }
@@ -359,6 +389,7 @@ const ReportSlice = createSlice({
         DownloadCorporateUserForAuditorExcelReportAPI.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.DownloadCorporateUserForAuditorExcelReport = null;
           state.responseMessage = payload;
         }
@@ -370,6 +401,7 @@ const ReportSlice = createSlice({
         DownloadCorporateUserForAuditorReportPDFAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Success";
           state.DownloadCorporateUserForAuditorReportPDF = payload.response;
           state.responseMessage = payload.message;
         }
@@ -378,6 +410,7 @@ const ReportSlice = createSlice({
         DownloadCorporateUserForAuditorReportPDFAPI.rejected,
         (state, { payload }) => {
           state.Loader = false;
+          state.errorSeverity = "Error";
           state.DownloadCorporateUserForAuditorReportPDF = null;
           state.responseMessage = payload;
         }

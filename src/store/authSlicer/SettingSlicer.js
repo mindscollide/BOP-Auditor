@@ -9,6 +9,7 @@ const SettingsSlice = createSlice({
   initialState: {
     responseMessage: "",
     Loader: false,
+    errorSeverity: null,
     error: null,
     getUserSettingsData: null,
     updateUserSettingsApiData: null,
@@ -28,6 +29,7 @@ const SettingsSlice = createSlice({
       // Fulfilled state (when the API call succeeds GetUserSettingsAuditorAPI)
       .addCase(GetUserSettingsAuditorAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Success";
         state.getUserSettingsData = payload.response;
         state.error = null;
         state.responseMessage = payload.message;
@@ -35,6 +37,7 @@ const SettingsSlice = createSlice({
       // Rejected state (when the API call fails GetUserSettingsAuditorAPI)
       .addCase(GetUserSettingsAuditorAPI.rejected, (state, action) => {
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.responseMessage = action.payload;
         state.getUserSettingsData = null;
       })
@@ -46,6 +49,7 @@ const SettingsSlice = createSlice({
       // Fulfilled state (when the API call succeeds SaveUserSettingsAuditorAPI)
       .addCase(SaveUserSettingsAuditorAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
+        state.errorSeverity = "Success";
         state.updateUserSettingsApiData = payload.response;
         state.error = null;
         state.responseMessage = payload.message;
@@ -53,6 +57,7 @@ const SettingsSlice = createSlice({
       // Rejected state (when the API call fails SaveUserSettingsAuditorAPI)
       .addCase(SaveUserSettingsAuditorAPI.rejected, (state, action) => {
         state.Loader = false;
+        state.errorSeverity = "Error";
         state.responseMessage = action.payload;
         state.updateUserSettingsApiData = null;
       });
