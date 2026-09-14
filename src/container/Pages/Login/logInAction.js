@@ -36,7 +36,7 @@ export const loginInApi = createAsyncThunk(
               return rejectWithValue("Device ID is Empty");
 
             case "ERM_AuthService_AuthManager_Login_04".toLowerCase():
-              return rejectWithValue("LDAP Auth Failed");
+              return rejectWithValue("Wrong Password");
 
             case "ERM_AuthService_AuthManager_Login_05".toLowerCase():
               return rejectWithValue("User is Locked");
