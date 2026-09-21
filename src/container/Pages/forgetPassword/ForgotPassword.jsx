@@ -107,19 +107,18 @@ const ForgotPassword = () => {
                 <p className={styles["emailErrorText"]}>{emailError.message}</p>
               )}
             </>
+
+            <CustomButton
+              className='mt-3'
+              value={"Send Change Password Link"}
+              onClick={handleClickResetBtn}
+              applyClass={"authLoginBtn"}
+            />
             <span className='mt-2 text-center'>
               <Link className={styles["forgotPasswordLink"]} to={"/"}>
                 Back to Login
               </Link>
             </span>
-            <CustomButton
-              className='mt-3'
-              value={"Send Change Password Link"}
-              // type="submit"
-              onClick={handleClickResetBtn}
-              applyClass={"authLoginBtn"}
-              // disabled={email ? false : true}
-            />
           </section>
         </Col>
       </Row>
