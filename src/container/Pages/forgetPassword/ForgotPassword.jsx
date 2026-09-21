@@ -4,7 +4,7 @@ import BOPLogo from "@/assets/logo.png";
 import styles from "./ForgotPassword.module.css";
 import IconElement from "@/components/common/IconElement/IconElement";
 import CustomButton from "@/components/elements/globalButton/button";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ForgotPasswordApi } from "@/store/AuthActions/authActions";
 import { bopEmailValidation, encryptField } from "@/Common/Utils";
 import { useDispatch } from "react-redux";
@@ -79,7 +79,7 @@ const ForgotPassword = () => {
         </Col>
         <Col sm={12} md={12} lg={12}>
           <section className={styles["LoginCard"]}>
-            <h4 className={styles["Heading-js"]}>Forgot Passowrd?</h4>
+            <h4 className={styles["Heading-js"]}>Recover Password</h4>
             <span className='mb-4 text-center'>
               Please type your full email
             </span>
@@ -107,14 +107,18 @@ const ForgotPassword = () => {
                 <p className={styles["emailErrorText"]}>{emailError.message}</p>
               )}
             </>
-
+            <span className='mt-2 text-center'>
+              <Link className={styles["forgotPasswordLink"]} to={"/"}>
+                Back to Login
+              </Link>
+            </span>
             <CustomButton
               className='mt-3'
-              value={"Recover"}
+              value={"Send Change Password Link"}
               // type="submit"
               onClick={handleClickResetBtn}
               applyClass={"authLoginBtn"}
-              disabled={email ? false : true}
+              // disabled={email ? false : true}
             />
           </section>
         </Col>
