@@ -36,7 +36,7 @@ const ForgotPassword = () => {
   const handleChangeEmailInput = (event) => {
     const { name, value } = event.target;
 
-    if (name === "email") {
+    if (name === "new_email") {
       if (value !== "") {
         setEmail(value);
         const isValidEmail = bopEmailValidation(value);
@@ -54,7 +54,7 @@ const ForgotPassword = () => {
     // console.log(e, fieldName, "testestets");
     if (e.key === "Enter") {
       e.preventDefault();
-      if (fieldName === "email") {
+      if (fieldName === "new_email") {
         handleClickResetBtn(e);
       }
     }
@@ -89,16 +89,15 @@ const ForgotPassword = () => {
                   <IconElement iconClass={"icon-user"} />
                 </InputGroup.Text>
                 <Form.Control
-                  name='email'
+                  name='new_email'
                   ref={emailRef}
-                  onKeyDown={(e) => handleKeyDown(e, "email")}
+                  onKeyDown={(e) => handleKeyDown(e, "new_email")}
                   autoComplete='off'
                   className={styles["form-comtrol-textfield"]}
                   placeholder='Email ID'
                   onChange={handleChangeEmailInput}
                   value={email}
                   required={true}
-                  pattern='^[a-zA-Z0-9._%+-]+@bop\.com\.pk$'
                   aria-label='Username'
                   aria-describedby='basic-addon1'
                 />
